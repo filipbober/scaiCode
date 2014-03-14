@@ -9,6 +9,8 @@
 
 #define GOAL_ADD(G, M, N) G.push_back(std::pair<MetaType, int>(M, N))
 
+#include "extensions\BuildOrderTest.h"
+
 ProductionManager::ProductionManager() 
 	: initialBuildSet(false)
 	, reservedMinerals(0)
@@ -22,7 +24,12 @@ ProductionManager::ProductionManager()
 
 	if (!Options::Modules::USING_BUILD_LEARNER && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
-		setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+		// Extension
+		//setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+		BuildOrderTest buildOrder;
+		//buildOrder.GenerateTestQueue();
+		setBuildOrder(buildOrder.GenerateTestQueue());
+		// eof Extension
 	}
 }
 

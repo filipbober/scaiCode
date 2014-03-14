@@ -26,7 +26,7 @@ public:
 };
 
 class ProductionManager 
-{
+{	
 	ProductionManager();
 
 	BuildLearner				buildLearner;
