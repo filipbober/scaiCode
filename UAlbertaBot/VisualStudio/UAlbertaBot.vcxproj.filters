@@ -171,6 +171,12 @@
     <ClCompile Include="..\Source\extensions\BuildOrderTest.cpp">
       <Filter>game\macro\Extensions</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\extensions\BuildOrderCreator.cpp">
+      <Filter>game\macro\Extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\extensions\ZergBuildOrderCreator.cpp">
+      <Filter>game\macro\Extensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -303,6 +309,12 @@
       <Filter>extra</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\extensions\BuildOrderTest.h">
+      <Filter>game\macro\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\extensions\BuildOrderCreator.h">
+      <Filter>game\macro\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\extensions\ZergBuildOrderCreator.h">
       <Filter>game\macro\Extensions</Filter>
     </ClInclude>
   </ItemGroup>
