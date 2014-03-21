@@ -46,6 +46,9 @@
     <Filter Include="extra">
       <UniqueIdentifier>{f0cc82d6-1735-46ae-a722-c81699ab361d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\macro\Extensions">
+      <UniqueIdentifier>{fb496d7a-9bfd-4c7f-b259-06f89d7dc81d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\CombatCommander.cpp">
@@ -164,6 +167,15 @@
     </ClCompile>
     <ClCompile Include="..\Source\Visualizer.cpp">
       <Filter>extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\extensions\BuildOrderTest.cpp">
+      <Filter>game\macro\Extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\extensions\BuildOrderCreator.cpp">
+      <Filter>game\macro\Extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\extensions\ZergBuildOrderCreator.cpp">
+      <Filter>game\macro\Extensions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +307,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\Visualizer.h">
       <Filter>extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\extensions\BuildOrderTest.h">
+      <Filter>game\macro\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\extensions\BuildOrderCreator.h">
+      <Filter>game\macro\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\extensions\ZergBuildOrderCreator.h">
+      <Filter>game\macro\Extensions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 
 BuildOrderGoalManager::BuildOrderGoalManager()
 {
-	
+	// Build order goal
 }
 
 bool BuildOrderGoalManager::isCompleted(const BuildOrderGoal & bog) const

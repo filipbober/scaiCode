@@ -9,6 +9,10 @@
 
 #define GOAL_ADD(G, M, N) G.push_back(std::pair<MetaType, int>(M, N))
 
+#include "extensions\BuildOrderTest.h"
+#include "extensions\BuildOrderCreator.h"
+#include "extensions\ZergBuildOrderCreator.h"
+
 ProductionManager::ProductionManager() 
 	: initialBuildSet(false)
 	, reservedMinerals(0)
@@ -22,7 +26,23 @@ ProductionManager::ProductionManager()
 
 	if (!Options::Modules::USING_BUILD_LEARNER && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
-		setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+		//setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+
+		// Extension
+		
+		//BuildOrderTest buildOrder;
+		//setBuildOrder(buildOrder.GenerateTestQueue());
+
+		// Create base build order class
+		BuildOrderCreator* buildOrder = new ZergBuildOrderCreator();
+
+		// Set build order to active build
+		setBuildOrder(buildOrder->GenerateQueue());
+
+		// Free memory
+		delete buildOrder;
+
+		// eof Extension
 	}
 }
 
