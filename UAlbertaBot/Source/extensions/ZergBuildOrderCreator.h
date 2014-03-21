@@ -8,5 +8,10 @@ public:
 	~ZergBuildOrderCreator();
 
 	std::vector<MetaType>  GenerateQueue();
+
+private:
+	std::vector<MetaType> Cerver4PoolPush();
+
+
 };
 
