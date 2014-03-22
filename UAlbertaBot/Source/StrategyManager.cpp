@@ -32,12 +32,12 @@ void StrategyManager::addStrategies()
     protossOpeningBook[ProtossDarkTemplar]	=     "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons]		= "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
+	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
 	zergOpeningBook[Cerver4PoolPush]		= "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
 	// eof Extensions
-
+	
 	if (selfRace == BWAPI::Races::Protoss)
 	{
 		results = std::vector<IntPair>(NumProtossStrategies);

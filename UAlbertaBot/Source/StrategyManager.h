@@ -67,7 +67,9 @@ public:
 
 	enum { ProtossZealotRush=0, ProtossDarkTemplar=1, ProtossDragoons=2, NumProtossStrategies=3 };
 	enum { TerranMarineRush=0, NumTerranStrategies=1 };
-	enum { ZergZerglingRush = 0, Cerver4PoolPush = 1, NumZergStrategies = 2 };
+	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
+	
+	enum { Cerver4PoolPush = 0, NumZergStrategies = 1 };
 
 	static	StrategyManager &	Instance();
 
