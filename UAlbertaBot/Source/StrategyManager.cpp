@@ -34,6 +34,10 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
 	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
 
+	// Extensions
+	zergOpeningBook[Cerver4PoolPush]		= "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+	// eof Extensions
+
 	if (selfRace == BWAPI::Races::Protoss)
 	{
 		results = std::vector<IntPair>(NumProtossStrategies);
@@ -70,7 +74,12 @@ void StrategyManager::addStrategies()
 	else if (selfRace == BWAPI::Races::Zerg)
 	{
 		results = std::vector<IntPair>(NumZergStrategies);
-		usableStrategies.push_back(ZergZerglingRush);
+		//usableStrategies.push_back(ZergZerglingRush);		// ext
+
+		// Extensions
+		usableStrategies.push_back(Cerver4PoolPush);
+		// eof Extensions
+
 	}
 
 	if (Options::Modules::USING_STRATEGY_IO)
