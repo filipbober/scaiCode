@@ -100,17 +100,17 @@ class StarcraftData {
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Drone, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Overlord, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hatchery, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Spawning_Pool, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Zergling, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Extractor, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Lair, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hydralisk_Den, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Spire, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hydralisk, actions.size()));
-			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Mutalisk, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Drone, actions.size()));					// 0
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Overlord, actions.size()));				// 1
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hatchery, actions.size()));				// 2
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Spawning_Pool, actions.size()));			// 3
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Zergling, actions.size()));				// 4
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Extractor, actions.size()));				// 5
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Lair, actions.size()));					// 6
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hydralisk_Den, actions.size()));			// 7
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Spire, actions.size()));					// 8
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hydralisk, actions.size()));				// 9
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Mutalisk, actions.size()));				// 10
 		}	
 	}
 

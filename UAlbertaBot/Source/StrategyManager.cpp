@@ -32,8 +32,13 @@ void StrategyManager::addStrategies()
     protossOpeningBook[ProtossDarkTemplar]	=     "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons]		= "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 	terranOpeningBook[TerranMarineRush]		= "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-	zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";
+	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
+	// Extensions
+	zergOpeningBook[Cerver4PoolPush]		= "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
+	zergOpeningBook[Zerg9PoolHatch]			= "0 0 0 0 0 1 3 2 4 4 4";
+	// eof Extensions
+	
 	if (selfRace == BWAPI::Races::Protoss)
 	{
 		results = std::vector<IntPair>(NumProtossStrategies);
@@ -70,7 +75,12 @@ void StrategyManager::addStrategies()
 	else if (selfRace == BWAPI::Races::Zerg)
 	{
 		results = std::vector<IntPair>(NumZergStrategies);
-		usableStrategies.push_back(ZergZerglingRush);
+		//usableStrategies.push_back(ZergZerglingRush);		// ext
+
+		// Extensions
+		CreateZergUsableStrategies();
+		// eof Extensions
+
 	}
 
 	if (Options::Modules::USING_STRATEGY_IO)
@@ -182,17 +192,24 @@ void StrategyManager::setStrategy()
 	else
 	{
 		// otherwise return a random strategy
+		currentStrategy = GetStrategyIdx();
+		// TODO: genetic algorithm to choose the right strategy
 
-        std::string enemyName(BWAPI::Broodwar->enemy()->getName());
-        
-        if (enemyName.compare("Skynet") == 0)
-        {
-            currentStrategy = ProtossDarkTemplar;
-        }
-        else
-        {
-            currentStrategy = ProtossZealotRush;
-        }
+
+
+		if (selfRace == BWAPI::Races::Protoss)		// ext
+		{
+			std::string enemyName(BWAPI::Broodwar->enemy()->getName());
+
+			if (enemyName.compare("Skynet") == 0)
+			{
+				currentStrategy = ProtossDarkTemplar;
+			}
+			else
+			{
+				currentStrategy = ProtossZealotRush;
+			}
+		}
 	}
 
 }
@@ -658,4 +675,45 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
  const int StrategyManager::getCurrentStrategy()
  {
 	 return currentStrategy;
+ }
+
+ void StrategyManager::CreateZergUsableStrategies()
+ {
+	 usableStrategies.push_back(Zerg9PoolHatch);
+	 usableStrategies.push_back(Cerver4PoolPush);
+	 //_usableStrategiesNo = 2;
+	 //_usableStrategiesNo = usableStrategies.size
+ }
+
+ int StrategyManager::GetStrategyIdx()
+ {
+	 int chosenStrategy = 0;
+
+	 int strategyNo;
+	 if (selfRace == BWAPI::Races::Protoss)
+	 {
+		 strategyNo = NumProtossStrategies;
+	 }
+
+	 if (selfRace == BWAPI::Races::Terran)
+	 {
+		 strategyNo = NumTerranStrategies;
+	 }
+
+	 if (selfRace == BWAPI::Races::Zerg)
+	 {
+		  strategyNo = usableStrategies.size();
+
+		 // choose strategy
+		 chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());
+		 
+	 }
+
+	 return chosenStrategy;
+ }
+
+ int StrategyManager::GenerateRandomStrategy(const int min, const int max)
+ {	 
+	 srand(time(NULL));
+	 return rand() % max + min;
  }

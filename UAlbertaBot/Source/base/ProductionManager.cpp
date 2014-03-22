@@ -26,7 +26,7 @@ ProductionManager::ProductionManager()
 
 	if (!Options::Modules::USING_BUILD_LEARNER && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
-		//setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+		setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
 
 		// Extension
 		
@@ -34,13 +34,13 @@ ProductionManager::ProductionManager()
 		//setBuildOrder(buildOrder.GenerateTestQueue());
 
 		// Create base build order class
-		BuildOrderCreator* buildOrder = new ZergBuildOrderCreator();
+		//BuildOrderCreator* buildOrder = new ZergBuildOrderCreator();
 
 		// Set build order to active build
-		setBuildOrder(buildOrder->GenerateQueue());
+		//setBuildOrder(buildOrder->GenerateQueue());
 
 		// Free memory
-		delete buildOrder;
+		//delete buildOrder;
 
 		// eof Extension
 	}
