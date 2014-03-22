@@ -35,7 +35,8 @@ void StrategyManager::addStrategies()
 	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
-	zergOpeningBook[Cerver4PoolPush]		= "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+	zergOpeningBook[Cerver4PoolPush]		= "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
+	zergOpeningBook[Zerg9PoolHatch]			= "0 0 0 0 0 1 3 2 4 4 4";
 	// eof Extensions
 	
 	if (selfRace == BWAPI::Races::Protoss)
@@ -77,7 +78,7 @@ void StrategyManager::addStrategies()
 		//usableStrategies.push_back(ZergZerglingRush);		// ext
 
 		// Extensions
-		usableStrategies.push_back(Cerver4PoolPush);
+		CreateZergUsableStrategies();
 		// eof Extensions
 
 	}
@@ -191,17 +192,24 @@ void StrategyManager::setStrategy()
 	else
 	{
 		// otherwise return a random strategy
+		currentStrategy = GetStrategyIdx();
+		// TODO: genetic algorithm to choose the right strategy
 
-        std::string enemyName(BWAPI::Broodwar->enemy()->getName());
-        
-        if (enemyName.compare("Skynet") == 0)
-        {
-            currentStrategy = ProtossDarkTemplar;
-        }
-        else
-        {
-            currentStrategy = ProtossZealotRush;
-        }
+
+
+		if (selfRace == BWAPI::Races::Protoss)		// ext
+		{
+			std::string enemyName(BWAPI::Broodwar->enemy()->getName());
+
+			if (enemyName.compare("Skynet") == 0)
+			{
+				currentStrategy = ProtossDarkTemplar;
+			}
+			else
+			{
+				currentStrategy = ProtossZealotRush;
+			}
+		}
 	}
 
 }
@@ -667,4 +675,45 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
  const int StrategyManager::getCurrentStrategy()
  {
 	 return currentStrategy;
+ }
+
+ void StrategyManager::CreateZergUsableStrategies()
+ {
+	 usableStrategies.push_back(Zerg9PoolHatch);
+	 usableStrategies.push_back(Cerver4PoolPush);
+	 //_usableStrategiesNo = 2;
+	 //_usableStrategiesNo = usableStrategies.size
+ }
+
+ int StrategyManager::GetStrategyIdx()
+ {
+	 int chosenStrategy = 0;
+
+	 int strategyNo;
+	 if (selfRace == BWAPI::Races::Protoss)
+	 {
+		 strategyNo = NumProtossStrategies;
+	 }
+
+	 if (selfRace == BWAPI::Races::Terran)
+	 {
+		 strategyNo = NumTerranStrategies;
+	 }
+
+	 if (selfRace == BWAPI::Races::Zerg)
+	 {
+		  strategyNo = usableStrategies.size();
+
+		 // choose strategy
+		 chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());
+		 
+	 }
+
+	 return chosenStrategy;
+ }
+
+ int StrategyManager::GenerateRandomStrategy(const int min, const int max)
+ {	 
+	 srand(time(NULL));
+	 return rand() % max + min;
  }

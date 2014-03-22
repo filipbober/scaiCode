@@ -69,7 +69,7 @@ public:
 	enum { TerranMarineRush=0, NumTerranStrategies=1 };
 	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
 	
-	enum { Cerver4PoolPush = 0, NumZergStrategies = 1 };
+	enum { Cerver4PoolPush = 0, Zerg9PoolHatch = 1, NumZergStrategies = 2 };
 
 	static	StrategyManager &	Instance();
 
@@ -84,4 +84,15 @@ public:
 
 	const	MetaPairVector		getBuildOrderGoal();
 	const	std::string			getOpeningBook() const;
+
+
+	// Extensions
+private:
+	//int _usableStrategiesNo;			// Number of strategies to be chosen from
+
+	void CreateZergUsableStrategies();
+	int GetStrategyIdx();
+	int GenerateRandomStrategy(const int min, const int max);
+
+
 };
