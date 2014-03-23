@@ -100,6 +100,7 @@ class StarcraftData {
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{
+			// Max actions = 30
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Drone, actions.size()));					// 0
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Overlord, actions.size()));				// 1
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hatchery, actions.size()));				// 2
@@ -111,6 +112,42 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Spire, actions.size()));					// 8
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hydralisk, actions.size()));				// 9
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Mutalisk, actions.size()));				// 10
+
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Hive, actions.size()));					// 11
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Evolution_Chamber, actions.size()));		// 12
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Creep_Colony, actions.size()));			// 13
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Sunken_Colony, actions.size()));			// 14	
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Spore_Colony, actions.size()));			// 15
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Queens_Nest, actions.size()));				// 16
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Greater_Spire, actions.size()));			// 17
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Defiler_Mound, actions.size()));			// 18
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Ultralisk_Cavern, actions.size()));		// 19
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Nydus_Canal, actions.size()));				// 20
+
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Queen, actions.size()));					// 21
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Ultralisk, actions.size()));				// 22
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Defiler, actions.size()));					// 23
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Lurker, actions.size()));					// 24
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Guardian, actions.size()));				// 25
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Devourer, actions.size()));				// 26
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Broodling, actions.size()));				// 27
+			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Zerg_Infested_Terran, actions.size()));			// 28
+
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Zerg_Carapace, actions.size()));				// 29
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Zerg_Flyer_Attacks, actions.size()));		// 30
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Zerg_Flyer_Carapace, actions.size()));		// 31
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Zerg_Melee_Attacks, actions.size()));		// 32
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Zerg_Missile_Attacks, actions.size()));		// 33
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Chitinous_Plating, actions.size()));			// 34
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Adrenal_Glands, actions.size()));			// 35
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Pneumatized_Carapace, actions.size()));		// 36
+			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Metabolic_Boost, actions.size()));			// 37 21
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Ventral_Sacs, actions.size()));				// 38
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Muscular_Augments, actions.size()));			// 39
+			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Burrowing, actions.size()));					// 40
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::getUpgradeType("Glial Reconstruction"), actions.size()));		// 41
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::getUpgradeType("Tunneling Claws"), actions.size()));				// 42
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::getUpgradeType("Centrifugal Hooks"), actions.size()));			// 43
 		}	
 	}
 

@@ -37,8 +37,10 @@ void StrategyManager::addStrategies()
 	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
-	zergOpeningBook[Cerver4PoolRush]		= "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
+	zergOpeningBook[Cerver4PoolRush]		= "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6"; 
 	zergOpeningBook[Zerg9PoolHatch]			= "0 0 0 0 0 1 0 0 0 3 2 4 4 4";
+	zergOpeningBook[Zerg7PoolRush] = "0 0 0 3 1 0 4 4 4";
+	zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0 0 0 0 3 0 5 1 0 21 4 4 4";
 
 
 	// eof Extensions
@@ -690,6 +692,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
  {
 	 usableStrategies.push_back(Zerg9PoolHatch);
 	 usableStrategies.push_back(Cerver4PoolRush);
+	 usableStrategies.push_back(Zerg9PoolSpeedlingsRush);
  }
 
  int StrategyManager::GetStrategyIdx()
@@ -716,6 +719,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 		 
 	 }
 
+	 BWAPI::Broodwar->printf("Chosen strategy: %d", chosenStrategy);	
 	 return chosenStrategy;
  }
 
