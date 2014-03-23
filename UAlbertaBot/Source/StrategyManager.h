@@ -69,7 +69,8 @@ public:
 	enum { TerranMarineRush=0, NumTerranStrategies=1 };
 	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
 	
-	enum { Cerver4PoolPush = 0, Zerg9PoolHatch = 1, NumZergStrategies = 2 };
+	enum { Cerver4PoolRush = 0, Zerg9PoolHatch = 1, NumZergStrategies = 2 };
+	enum { ZergMidOne, NumZergMid = 1 };
 
 	static	StrategyManager &	Instance();
 
@@ -93,6 +94,8 @@ private:
 	void CreateZergUsableStrategies();
 	int GetStrategyIdx();
 	int GenerateRandomStrategy(const int min, const int max);
+
+	std::vector<std::string>	zergMidgameBook;
 
 
 };

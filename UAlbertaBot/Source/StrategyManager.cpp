@@ -25,6 +25,8 @@ void StrategyManager::addStrategies()
 	terranOpeningBook  = std::vector<std::string>(NumTerranStrategies);
 	zergOpeningBook    = std::vector<std::string>(NumZergStrategies);
 
+	zergMidgameBook = std::vector<std::string>(NumZergMid);
+
 	//protossOpeningBook[ProtossZealotRush]	= "0 0 0 0 1 0 0 3 0 0 3 0 1 3 0 4 4 4 4 4 1 0 4 4 4";
     protossOpeningBook[ProtossZealotRush]	= "0 0 0 0 1 0 3 3 0 0 4 1 4 4 0 4 4 0 1 4 3 0 1 0 4 0 4 4 4 4 1 0 4 4 4";
 	//protossOpeningBook[ProtossZealotRush]	= "0";
@@ -35,8 +37,10 @@ void StrategyManager::addStrategies()
 	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
-	zergOpeningBook[Cerver4PoolPush]		= "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
-	zergOpeningBook[Zerg9PoolHatch]			= "0 0 0 0 0 1 3 2 4 4 4";
+	zergOpeningBook[Cerver4PoolRush]		= "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
+	zergOpeningBook[Zerg9PoolHatch]			= "0 0 0 0 0 1 0 0 0 3 2 4 4 4";
+
+
 	// eof Extensions
 	
 	if (selfRace == BWAPI::Races::Protoss)
@@ -659,12 +663,17 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 	
 	int numMutas  =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
-	int numHydras  =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
+	int numHydras  =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);	
 
 	int mutasWanted = numMutas + 6;
 	int hydrasWanted = numHydras + 6;
 
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 4));
+
+	// Extension
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, hydrasWanted));
+	// eof Extension
+
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Stim_Packs,	1));
 
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
@@ -680,9 +689,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
  void StrategyManager::CreateZergUsableStrategies()
  {
 	 usableStrategies.push_back(Zerg9PoolHatch);
-	 usableStrategies.push_back(Cerver4PoolPush);
-	 //_usableStrategiesNo = 2;
-	 //_usableStrategiesNo = usableStrategies.size
+	 usableStrategies.push_back(Cerver4PoolRush);
  }
 
  int StrategyManager::GetStrategyIdx()
