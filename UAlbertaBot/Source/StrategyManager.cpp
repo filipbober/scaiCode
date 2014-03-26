@@ -35,6 +35,7 @@ void StrategyManager::addStrategies()
 	protossOpeningBook[ProtossDarkTemplar] = "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons] = "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+	//terranOpeningBook[TerranMarineRush] = "0 0";
 	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
@@ -42,6 +43,11 @@ void StrategyManager::addStrategies()
 	zergOpeningBook[Zerg9PoolHatch] = "0 0 0 0 0 1 0 0 0 3 2 4 4 4";
 	zergOpeningBook[Zerg7PoolRush] = "0 0 0 3 1 0 4 4 4";
 	zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0 0 0 0 3 0 5 1 0 21 4 4 4";
+
+	//zergOpeningBook[ZergCerver4PoolRush] = "0 0";
+	//zergOpeningBook[Zerg9PoolHatch] = "0 0";
+	//zergOpeningBook[Zerg7PoolRush] = "0 0";
+	//zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0";
 
 
 	// eof Extensions
@@ -339,8 +345,8 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 
 	int numUnitsNeededForAttack = 1;
 
-	bool doAttack = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Dark_Templar) >= 1
-		|| ourForceSize >= numUnitsNeededForAttack;
+	bool doAttack = (selfRace == BWAPI::Races::Protoss && (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Dark_Templar) >= 1
+		|| ourForceSize >= numUnitsNeededForAttack));
 
 	// Extension
 
@@ -706,26 +712,108 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 {
-	// the goal to return
-	std::vector< std::pair<MetaType, UnitCountType> > goal;
+	//// the goal to return
+	//std::vector< std::pair<MetaType, UnitCountType> > goal;		// ext
 
-	int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
-	int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
+	//int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);		// ext
+	//int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);		// ext
 
-	int mutasWanted = numMutas + 6;
-	int hydrasWanted = numHydras + 6;
+	//int mutasWanted = numMutas + 6;		// ext
+	//int hydrasWanted = numHydras + 6;		// ext
 
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 4));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 4));		// ext
 
-	// Extension
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, hydrasWanted));
+	//Extension
+	MetaPairVector goal;
+
+	int dronesNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Drone);
+	int mutasNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
+	int hydrasNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
+	int zerglingsNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Zergling);
+
+	int dronesPerHatchery = 24;
+	int dronesWanted = (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hatchery)) * dronesPerHatchery;
+	int mutasWanted = 0;
+	int hydrasWanted = hydrasNo + 6;
+
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 90));
+
+	// If enemy is Protoss
+	if (enemyRace == BWAPI::Races::Protoss)
+	{
+		// Anti protoss strategies
+		// TODO: move to separate function later
+
+		// Mutas vs Zealots
+		int enemyZealotsNo = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Zealot);
+		int enemyDragoonsNo = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Dragoon);
+
+		// Enemy has Zealots but no aa units -> build Mutalisks
+		if (enemyZealotsNo >= 1 && enemyDragoonsNo < 1)
+		{
+			mutasWanted += 6;
+		}
+
+		if (mutasWanted > 0)
+		{
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Mutalisk, mutasWanted));
+		}
+	}
+
+
+	// Drones goal always active
+	//dronesWanted += 2;
+	//if (dronesNo < dronesWanted)
+	//{
+	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
+	//}
+
+
+	return goal;
+
 	// eof Extension
+
+
+
+
+
+
+	////////////////////////////////////////////////////////////////
+
+	//std::vector< std::pair<MetaType, UnitCountType> > goal;
+
+	//int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
+	//int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
+
+	//int mutasWanted = numMutas + 6;
+	//int hydrasWanted = numHydras + 6;
+
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, 4));
+
+	//return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+
+	////////////////////////////////////////////////////////////////
+	//MetaPairVector goal;
+
+	//int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
+	//int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
+
+	//int mutasWanted = numMutas + 6;
+	//int hydrasWanted = numHydras + 6;
+
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, 4));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, 4));
+
+	//return goal;
+
+	////////////////////////////////////////////////////////////////
+
 
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Stim_Packs,	1));
 
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
 
-	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+	//return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;			// ext
 }
 
 const int StrategyManager::getCurrentStrategy()
@@ -735,8 +823,9 @@ const int StrategyManager::getCurrentStrategy()
 
 void StrategyManager::CreateZergUsableStrategies()
 {
-	usableStrategies.push_back(Zerg9PoolHatch);
 	usableStrategies.push_back(ZergCerver4PoolRush);
+	usableStrategies.push_back(Zerg9PoolHatch);
+	usableStrategies.push_back(Zerg7PoolRush);
 	usableStrategies.push_back(Zerg9PoolSpeedlingsRush);
 }
 
@@ -777,7 +866,7 @@ int StrategyManager::GenerateRandomStrategy(const int min, const int max)
 bool StrategyManager::doAttackZergCerver4PoolRush()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) > 2)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 2)
 	{
 		return true;
 	}
@@ -790,7 +879,7 @@ bool StrategyManager::doAttackZergCerver4PoolRush()
 bool StrategyManager::doAttackZerg9PoolHatch()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) > 6)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6)
 	{
 		return true;
 	}
@@ -803,7 +892,7 @@ bool StrategyManager::doAttackZerg9PoolHatch()
 bool StrategyManager::doAttackZerg7PoolRush()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) > 6)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6)
 	{
 		return true;
 	}
@@ -816,7 +905,7 @@ bool StrategyManager::doAttackZerg7PoolRush()
 bool StrategyManager::doAttackZerg9PoolSpeedlingsRush()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) > 6)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6)
 	{
 		return true;
 	}
