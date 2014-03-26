@@ -69,7 +69,7 @@ public:
 	enum { TerranMarineRush=0, NumTerranStrategies=1 };
 	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
 	
-	enum { Cerver4PoolRush = 0, Zerg9PoolHatch = 1, Zerg7PoolRush = 2,
+	enum { ZergCerver4PoolRush = 0, Zerg9PoolHatch = 1, Zerg7PoolRush = 2,
 		Zerg9PoolSpeedlingsRush = 3, NumZergStrategies = 4 };
 	enum { ZergMidOne, NumZergMid = 1 };
 
@@ -89,14 +89,24 @@ public:
 
 
 	// Extensions
+public:
+	bool isMidGame;			// sets to true when opening build order has finished
+
 private:
-	//int _usableStrategiesNo;			// Number of strategies to be chosen from
+	//int _usableStrategiesNo;			// Number of strategies to be chosen from	
 
 	void CreateZergUsableStrategies();
 	int GetStrategyIdx();
 	int GenerateRandomStrategy(const int min, const int max);
 
 	std::vector<std::string>	zergMidgameBook;
+
+	// Attack checkers
+	bool doAttackZergCerver4PoolRush();
+	bool doAttackZerg9PoolHatch();
+	bool doAttackZerg7PoolRush();
+	bool doAttackZerg9PoolSpeedlingsRush();
+	bool doAttackZergMidgame();
 
 
 };
