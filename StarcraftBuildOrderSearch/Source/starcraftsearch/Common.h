@@ -39,7 +39,7 @@
 #define EXTRA_STARCRAFTSTATE_STATISTICS
 
 // debug output
-static bool GSN_DEBUG 		= false;
+static bool GSN_DEBUG 		= true;
 static bool PROTOSS_DEBUG 	= false;
 static bool TERRAN_DEBUG 	= false;
 

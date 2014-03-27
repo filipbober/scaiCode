@@ -31,6 +31,10 @@ std::vector<MetaType> StarcraftBuildOrderSearchManager::findBuildOrder(const std
 // function which does all the searching
 BuildOrderSearch::SearchResults StarcraftBuildOrderSearchManager::search(const std::vector< std::pair<MetaType, UnitCountType> > & goalUnits)
 {	
+	BWAPI::Broodwar->printf("                                           DebExt: Searching");
+	BWAPI::Broodwar->printf("                                           DebExt: size1 = %d", goalUnits[0].first);	
+	BWAPI::Broodwar->printf("                                           DebExt: size2 = %d", goalUnits[0].second);
+
 	// construct the Smart Starcraft Search
 	BuildOrderSearch::SmartStarcraftSearch sss;
 
@@ -174,9 +178,10 @@ BuildOrderSearch::StarcraftSearchGoal StarcraftBuildOrderSearchManager::getGoal(
 std::vector<MetaType> StarcraftBuildOrderSearchManager::getMetaVector(const BuildOrderSearch::SearchResults & results)
 {
 	std::vector<MetaType> metaVector;
-
-	const std::vector<BuildOrderSearch::Action> & buildOrder = results.buildOrder;
 	
+	const std::vector<BuildOrderSearch::Action> & buildOrder = results.buildOrder;
+	BWAPI::Broodwar->printf("                                 results.buildOrder: %d", buildOrder.size());
+
 	//Logger::Instance().log("Get Meta Vector:\n");
 
 	// for each item in the results build order, add it
@@ -206,6 +211,7 @@ std::vector<MetaType> StarcraftBuildOrderSearchManager::getOpeningBuildOrder()
 
 MetaType StarcraftBuildOrderSearchManager::getMetaType(BuildOrderSearch::Action a)
 {
+	BWAPI::Broodwar->printf("                                 getMetaType");
 	const BuildOrderSearch::StarcraftAction & s = DATA[a];
 
 	MetaType meta;

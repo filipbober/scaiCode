@@ -35,7 +35,7 @@ void StrategyManager::addStrategies()
 	protossOpeningBook[ProtossDarkTemplar] = "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons] = "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-	//terranOpeningBook[TerranMarineRush] = "0 0";
+	//terranOpeningBook[TerranMarineRush] = "0";
 	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
@@ -44,10 +44,10 @@ void StrategyManager::addStrategies()
 	zergOpeningBook[Zerg7PoolRush] = "0 0 0 3 1 0 4 4 4";
 	zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0 0 0 0 3 0 5 1 0 21 4 4 4";
 
-	//zergOpeningBook[ZergCerver4PoolRush] = "0 0";
-	//zergOpeningBook[Zerg9PoolHatch] = "0 0";
-	//zergOpeningBook[Zerg7PoolRush] = "0 0";
-	//zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0";
+	//zergOpeningBook[ZergCerver4PoolRush] = "0";
+	//zergOpeningBook[Zerg9PoolHatch] = "0";
+	//zergOpeningBook[Zerg7PoolRush] = "0";
+	//zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0";
 
 
 	// eof Extensions
@@ -354,7 +354,7 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 	if (!firstAttackSent)
 	{
 		// Always perform the first attack with any trained attack unity (usually Zerglings rush)
-		doAttack == true;
+		doAttack = true;
 	}
 	else if (isMidGame == false && selfRace == BWAPI::Races::Zerg)
 	{
@@ -725,7 +725,8 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 
 	//Extension
 	MetaPairVector goal;
-
+	
+	int overlordsNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Overlord);
 	int dronesNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Drone);
 	int mutasNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
 	int hydrasNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
@@ -736,7 +737,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	int mutasWanted = 0;
 	int hydrasWanted = hydrasNo + 6;
 
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 90));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 90));
 
 	// If enemy is Protoss
 	if (enemyRace == BWAPI::Races::Protoss)
@@ -751,11 +752,11 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 		// Enemy has Zealots but no aa units -> build Mutalisks
 		if (enemyZealotsNo >= 1 && enemyDragoonsNo < 1)
 		{
-			mutasWanted += 6;
+			mutasWanted = mutasNo + 6;
 		}
 
 		if (mutasWanted > 0)
-		{
+		{			
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Mutalisk, mutasWanted));
 		}
 	}
@@ -768,6 +769,11 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
 	//}
 
+	// Works if drones to build number is less than 15
+	//dronesWanted = std::max(dronesWanted, 6);
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 4));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Overlord, overlordsNo + 1));
 
 	return goal;
 

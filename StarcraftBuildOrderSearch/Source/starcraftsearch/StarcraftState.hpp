@@ -1557,7 +1557,7 @@ public:
 			return false; 
 		}
 
-		// if we have no mineral income we'll never have a minerla unit
+		// if we have no mineral income we'll never have a mineral unit
 		bool noMoney = (mineralWorkers == 0) && (progress.numInProgress(DATA.getWorker()) == 0);
 		if (((DATA[a].mineralPrice() - minerals) > 0) && noMoney) 
 		{ 
