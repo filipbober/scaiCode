@@ -223,6 +223,12 @@ BWAPI::Unit * GameCommander::getFirstSupplyProvider()
 			{
 				supplyProvider = unit;
 			}
+			// Extension - not tested
+			//else if (unit->getType() == BWAPI::UnitTypes::Zerg_Overlord)
+			//{
+			//	supplyProvider = unit;
+			//}
+			// eof extension
 		}
 	}
 	else
