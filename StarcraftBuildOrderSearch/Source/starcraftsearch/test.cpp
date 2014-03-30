@@ -33,7 +33,7 @@ StarcraftSearchGoal defaultProtossGoal()
 	return goal;
 }
 
-// returns a sample protoss goal
+// returns a sample zerg goal
 StarcraftSearchGoal defaultZergGoal()
 {
 	// the goal itself

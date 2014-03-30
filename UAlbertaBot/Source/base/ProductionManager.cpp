@@ -26,7 +26,7 @@ ProductionManager::ProductionManager()
 
 	if (!Options::Modules::USING_BUILD_LEARNER && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
-		//setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+		setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
 
 		// Extension
 		
@@ -34,13 +34,13 @@ ProductionManager::ProductionManager()
 		//setBuildOrder(buildOrder.GenerateTestQueue());
 
 		// Create base build order class
-		BuildOrderCreator* buildOrder = new ZergBuildOrderCreator();
+		//BuildOrderCreator* buildOrder = new ZergBuildOrderCreator();
 
 		// Set build order to active build
-		setBuildOrder(buildOrder->GenerateQueue());
+		//setBuildOrder(buildOrder->GenerateQueue());
 
 		// Free memory
-		delete buildOrder;
+		//delete buildOrder;
 
 		// eof Extension
 	}
@@ -95,6 +95,13 @@ void ProductionManager::update()
 	// if nothing is currently building, get a new goal from the strategy manager
 	if ((queue.size() == 0) && (BWAPI::Broodwar->getFrameCount() > 10) && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
+		if (!StrategyManager::Instance().isMidGame)
+		{
+			// If it is not mid game yet (just finished build order), set midgame falg to true
+			StrategyManager::Instance().isMidGame = true;
+			BWAPI::Broodwar->printf("Midgame started!");
+		}
+
 		BWAPI::Broodwar->drawTextScreen(150, 10, "Nothing left to build, new search!");
 		const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();
 		performBuildOrderSearch(newGoal);
