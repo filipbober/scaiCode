@@ -697,6 +697,8 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
+	int numScv = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 	int numWraith = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
@@ -705,7 +707,25 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int medicsWanted = numMedics + 2;
 	int wraithsWanted = numWraith + 4;
 
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	int scvWanted = numScv;
+
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+
+	// ext
+
+	// This is working
+	//int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	//int scvWanted = numSCV + 500;
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvWanted)));
+
+	scvWanted = numScv + 1;
+	marinesWanted = numMarines + 6;
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvWanted)));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+
+	// eof ext
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
@@ -721,11 +741,12 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	//int mutasWanted = numMutas + 6;		// ext
 	//int hydrasWanted = numHydras + 6;		// ext
 
+
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 4));		// ext
 
 	//Extension
 	MetaPairVector goal;
-	
+
 	int overlordsNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Overlord);
 	int dronesNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Drone);
 	int mutasNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
@@ -734,8 +755,9 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 
 	int dronesPerHatchery = 24;
 	int dronesWanted = (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hatchery)) * dronesPerHatchery;
-	int mutasWanted = 0;
+	int mutasWanted = mutasNo;
 	int hydrasWanted = hydrasNo + 6;
+	int zerglingsWanted = zerglingsNo;
 
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 90));
 
@@ -750,16 +772,59 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 		int enemyDragoonsNo = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Dragoon);
 
 		// Enemy has Zealots but no aa units -> build Mutalisks
-		if (enemyZealotsNo >= 1 && enemyDragoonsNo < 1)
+		if (enemyDragoonsNo < 1)
 		{
 			mutasWanted = mutasNo + 6;
 		}
+		else
+		{
+			hydrasWanted = hydrasNo + 6;
+			zerglingsWanted = zerglingsWanted + 6;
+		}
+
+		BWAPI::Broodwar->printf("                                           DebExt: Zealots = %d", enemyZealotsNo);
 
 		if (mutasWanted > 0)
-		{			
+		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Mutalisk, mutasWanted));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Flyer_Attacks, 1));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Flyer_Carapace, 1));
 		}
+		BWAPI::Broodwar->printf("                                           DebExt: mutasWanted = %d", mutasWanted);
+
+		if (zerglingsWanted > 0)
+		{
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, zerglingsWanted));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Metabolic_Boost, 1));
+		}
+
+		if (hydrasWanted > 0)
+		{
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, hydrasWanted));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Missile_Attacks, 1));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Carapace, 1));
+		}		
+
 	}
+	else if (enemyRace == BWAPI::Races::Terran)
+	{
+		// Go for mass Zerglings
+		zerglingsWanted = zerglingsWanted + 6;
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, zerglingsWanted));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Metabolic_Boost, 1));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Melee_Attacks, 1));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Carapace, 1));
+	}
+	else
+	{
+		zerglingsWanted = zerglingsWanted + 6;
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, zerglingsWanted));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Metabolic_Boost, 1));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Melee_Attacks, 1));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Carapace, 1));
+	}
+
+
 
 
 	// Drones goal always active
@@ -772,8 +837,35 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	// Works if drones to build number is less than 15
 	//dronesWanted = std::max(dronesWanted, 6);
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 4));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Overlord, overlordsNo + 1));
+
+
+	
+
+	// this works for at least 30 drones
+	//dronesWanted = dronesNo + 1;
+
+	// This works only once. After first 15 drones are built, searching fails
+	//dronesWanted = dronesNo + 15;
+
+
+	
+	// Terran Mirror---------------------------------------------
+	//zerglingsWanted += 6;
+	//dronesWanted = dronesNo + 1;
+	// Constraint maximum Drones with value of 90
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Zerg_Zergling, zerglingsWanted));
+	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Metabolic_Boost, 1));
+	// ----------------------------------------------------------
+	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Zerg_Melee_Attacks, 1));
+
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 30));
+
+
+	// This works for infinite drones and overlords (tested on two loops
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 4));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Overlord, overlordsNo + 1));
+	// ----------
 
 	return goal;
 
@@ -872,7 +964,7 @@ int StrategyManager::GenerateRandomStrategy(const int min, const int max)
 bool StrategyManager::doAttackZergCerver4PoolRush()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 2)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 2 || isMidGame)
 	{
 		return true;
 	}
@@ -885,7 +977,7 @@ bool StrategyManager::doAttackZergCerver4PoolRush()
 bool StrategyManager::doAttackZerg9PoolHatch()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6 || isMidGame)
 	{
 		return true;
 	}
@@ -898,7 +990,7 @@ bool StrategyManager::doAttackZerg9PoolHatch()
 bool StrategyManager::doAttackZerg7PoolRush()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6 || isMidGame)
 	{
 		return true;
 	}
@@ -911,7 +1003,7 @@ bool StrategyManager::doAttackZerg7PoolRush()
 bool StrategyManager::doAttackZerg9PoolSpeedlingsRush()
 {
 	// Attack with 6 Zerglings
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6)
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Zerg_Zergling) >= 6 || isMidGame)
 	{
 		return true;
 	}
