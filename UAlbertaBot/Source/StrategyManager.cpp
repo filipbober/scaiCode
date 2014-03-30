@@ -34,20 +34,20 @@ void StrategyManager::addStrategies()
 	//protossOpeningBook[ProtossDarkTemplar]	= "0 0 0 0 1 3 0 7 5 0 0 12 3 13 0 22 22 22 22 0 1 0";
 	protossOpeningBook[ProtossDarkTemplar] = "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons] = "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
-	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
-	//terranOpeningBook[TerranMarineRush] = "0";
+	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";
+	terranOpeningBook[TerranMarineRush] = "0";
 	//zergOpeningBook[ZergZerglingRush]		= "0 0 0 0 0 1 0 0 0 2 3 5 0 0 0 0 0 0 1 6";	// ext
 
 	// Extensions
-	zergOpeningBook[ZergCerver4PoolRush] = "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
-	zergOpeningBook[Zerg9PoolHatch] = "0 0 0 0 0 1 0 0 0 3 2 4 4 4";
-	zergOpeningBook[Zerg7PoolRush] = "0 0 0 3 1 0 4 4 4";
-	zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0 0 0 0 3 0 5 1 0 21 4 4 4";
+	//zergOpeningBook[ZergCerver4PoolRush] = "3 0 4 4 4 0 0 1 2 4 4 4 5 0 0 0 6";
+	//zergOpeningBook[Zerg9PoolHatch] = "0 0 0 0 0 1 0 0 0 3 2 4 4 4";
+	//zergOpeningBook[Zerg7PoolRush] = "0 0 0 3 1 0 4 4 4";
+	//zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0 0 0 0 0 3 0 5 1 0 21 4 4 4";
 
-	//zergOpeningBook[ZergCerver4PoolRush] = "0";
-	//zergOpeningBook[Zerg9PoolHatch] = "0";
-	//zergOpeningBook[Zerg7PoolRush] = "0";
-	//zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0";
+	zergOpeningBook[ZergCerver4PoolRush] = "0";
+	zergOpeningBook[Zerg9PoolHatch] = "0";
+	zergOpeningBook[Zerg7PoolRush] = "0";
+	zergOpeningBook[Zerg9PoolSpeedlingsRush] = "0";
 
 
 	// eof Extensions
@@ -705,7 +705,13 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int medicsWanted = numMedics + 2;
 	int wraithsWanted = numWraith + 4;
 
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+
+	// ext
+	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	int scvWanted = numSCV + 30;
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvWanted)));
+	// eof ext
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
@@ -772,8 +778,22 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	// Works if drones to build number is less than 15
 	//dronesWanted = std::max(dronesWanted, 6);
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 4));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Overlord, overlordsNo + 1));
+	
+	
+	
+
+	dronesWanted = dronesNo + 30;
+
+	// Constraint maximum Drones with value of 90
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
+	
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 30));
+
+
+	// This works for infinite drones and overlords (tested on two loops
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 4));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Overlord, overlordsNo + 1));
+	// ----------
 
 	return goal;
 

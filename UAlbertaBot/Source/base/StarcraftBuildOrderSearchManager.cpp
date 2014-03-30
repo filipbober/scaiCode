@@ -60,7 +60,7 @@ BuildOrderSearch::SearchResults StarcraftBuildOrderSearchManager::search(const s
 	}
 	else
 	{
-		//BWAPI::Broodwar->printf("No solution found!");
+		BWAPI::Broodwar->printf("                                          No solution found!");
 		//BWAPI::Broodwar->printf("%12d%12d%12d%14llu", result.upperBound, result.lowerBound, 0, result.nodesExpanded);
 	}
 
@@ -211,7 +211,6 @@ std::vector<MetaType> StarcraftBuildOrderSearchManager::getOpeningBuildOrder()
 
 MetaType StarcraftBuildOrderSearchManager::getMetaType(BuildOrderSearch::Action a)
 {
-	BWAPI::Broodwar->printf("                                 getMetaType");
 	const BuildOrderSearch::StarcraftAction & s = DATA[a];
 
 	MetaType meta;
