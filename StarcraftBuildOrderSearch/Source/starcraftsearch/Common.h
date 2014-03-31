@@ -42,6 +42,7 @@
 static bool GSN_DEBUG 		= false;
 static bool PROTOSS_DEBUG 	= false;
 static bool TERRAN_DEBUG 	= false;
+static bool	EXTENSIONS_ENABLED = true;
 
 // type definitions for storing data
 typedef		int				ResourceCountType;

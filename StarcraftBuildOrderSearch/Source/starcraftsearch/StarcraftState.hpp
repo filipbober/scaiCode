@@ -379,7 +379,7 @@ public:
 		
 		// extra statistics here
 		#ifdef EXTRA_STARCRAFTSTATE_STATISTICS
-			armyIntegral.push_back( std::pair<FrameCountType, ResourceCountType>(currentFrame, getArmyValue()) );
+			armyIntegral.( std::pair<FrameCountType, ResourceCountType>(currentFrame, getArmyValue()) );
 		#endif
 
 		// create the struct

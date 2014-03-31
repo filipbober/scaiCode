@@ -180,7 +180,6 @@ std::vector<MetaType> StarcraftBuildOrderSearchManager::getMetaVector(const Buil
 	std::vector<MetaType> metaVector;
 	
 	const std::vector<BuildOrderSearch::Action> & buildOrder = results.buildOrder;
-	BWAPI::Broodwar->printf("                                 results.buildOrder: %d", buildOrder.size());
 
 	//Logger::Instance().log("Get Meta Vector:\n");
 
