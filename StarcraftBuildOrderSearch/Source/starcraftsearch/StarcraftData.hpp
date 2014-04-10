@@ -98,6 +98,7 @@ class StarcraftData {
 			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Starport, actions.size()));
 			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Wraith, actions.size()));
 
+			// Units
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_SCV, actions.size()));							// 0
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Marine, actions.size()));						// 1
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Medic, actions.size()));							// 2
@@ -113,6 +114,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Battlecruiser, actions.size()));					// 12
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Science_Vessel, actions.size()));				// 13
 
+			// Buildings
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Command_Center, actions.size()));				// 14
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Comsat_Station, actions.size()));				// 15
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Nuclear_Silo, actions.size()));					// 16
@@ -131,6 +133,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Covert_Ops, actions.size()));					// 29
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Missile_Turret, actions.size()));				// 30
 
+			// Upgrades
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Terran_Infantry_Armor, actions.size()));				// 31
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, actions.size()));			// 32
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Terran_Ship_Plating, actions.size()));				// 33
@@ -138,6 +141,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Terran_Vehicle_Plating, actions.size()));			// 35
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons, actions.size()));			// 36
 
+			// Techs
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Stim_Packs, actions.size()));							// 37
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Spider_Mines, actions.size()));							// 38
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Cloaking_Field, actions.size()));						// 39			
@@ -148,6 +152,10 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::EMP_Shockwave, actions.size()));						// 44			
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Irradiate, actions.size()));							// 45
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Yamato_Gun, actions.size()));							// 46
+
+			// Additional (forgotten...)
+			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Ion_Thrusters, actions.size()));						// 47
+			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Charon_Boosters, actions.size()));					// 48
 			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Healing, actions.size()));								// xx - starting tech
 			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Defensive_Matrix, actions.size()));						// xx - starting tech
 
