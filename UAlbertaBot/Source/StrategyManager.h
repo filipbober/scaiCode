@@ -96,6 +96,8 @@ private:
 	//int _usableStrategiesNo;			// Number of strategies to be chosen from	
 
 	void CreateZergUsableStrategies();
+	void CreateTerranUsableStrategies();
+
 	int GetStrategyIdx();
 	int GenerateRandomStrategy(const int min, const int max);
 
