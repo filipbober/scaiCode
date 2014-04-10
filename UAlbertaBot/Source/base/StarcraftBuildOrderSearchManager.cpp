@@ -31,9 +31,9 @@ std::vector<MetaType> StarcraftBuildOrderSearchManager::findBuildOrder(const std
 // function which does all the searching
 BuildOrderSearch::SearchResults StarcraftBuildOrderSearchManager::search(const std::vector< std::pair<MetaType, UnitCountType> > & goalUnits)
 {	
-	BWAPI::Broodwar->printf("                                           DebExt: Searching");
-	BWAPI::Broodwar->printf("                                           DebExt: unit type: %d", goalUnits[0].first);	
-	BWAPI::Broodwar->printf("                                           DebExt: unit count: %d", goalUnits[0].second);
+	//BWAPI::Broodwar->printf("                                           DebExt: Searching");
+	//BWAPI::Broodwar->printf("                                           DebExt: unit type: %d", goalUnits[0].first);	
+	//BWAPI::Broodwar->printf("                                           DebExt: unit count: %d", goalUnits[0].second);
 
 	// construct the Smart Starcraft Search
 	BuildOrderSearch::SmartStarcraftSearch sss;

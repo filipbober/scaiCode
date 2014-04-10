@@ -210,7 +210,7 @@ void CombatCommander::assignDefenseSquads(std::set<BWAPI::Unit *> & unitsToAssig
 					WorkerManager::Instance().setCombatWorker(groundDefender);
 				}
 
-				defenseForce.(groundDefender);
+				defenseForce.push_back(groundDefender);
 				unitsToAssign.erase(groundDefender);
 				groundDefenders.erase(groundDefender);
 			}
