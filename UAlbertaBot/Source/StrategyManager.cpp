@@ -38,7 +38,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
+	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 17 0 3 47 3 23 0 17 0 22 38";		// <- Preferred build order
@@ -55,7 +55,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	//terranOpeningBook[TerranDoubleRaxMnM] = "0";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0";
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";
@@ -1124,26 +1124,47 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
 		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
 	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
 	}
 
 	// If stimpacks are not researched and are not being researched, do it
 	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
 		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep))
 	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
+		//goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
 	}
 
 	// If stimpacks are researched and U238 Shells are not, then do it
 	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
 		BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
 	{
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
+	
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
+	{
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Singularity_Charge, 1));
+		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+		BWAPI::Broodwar->printf("                                           DebExt: Researching Stim_Packs = %d");
+	}
+	else
+	{
+		BWAPI::Broodwar->printf("                                           DebExt: Academy not ready = %d");
 	}
 
+
+
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
+	}
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
+
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
 
 	return goal;
 }

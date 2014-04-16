@@ -17,7 +17,7 @@
 #include "ActionInProgress.hpp"
 #include "MacroAction.hpp"
 
-static bool DEBUG_StarcraftData = false;
+static bool DEBUG_StarcraftData = true;
 
 namespace BuildOrderSearch
 {
