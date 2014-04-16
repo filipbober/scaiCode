@@ -117,8 +117,11 @@ void StrategyManager::addStrategies()
 	}
 	else if (selfRace == BWAPI::Races::Terran)
 	{
+		//results = std::vector<IntPair>(NumTerranStrategies);		// ext
+		//usableStrategies.push_back(TerranMarineRush);				// ext
+
 		results = std::vector<IntPair>(NumTerranStrategies);
-		usableStrategies.push_back(TerranMarineRush);
+		CreateTerranUsableStrategies();
 	}
 	else if (selfRace == BWAPI::Races::Zerg)
 	{
@@ -1072,7 +1075,8 @@ int StrategyManager::GetStrategyIdx()
 	if (selfRace == BWAPI::Races::Terran)
 	{
 		//strategyNo = NumTerranStrategies;
-		chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());
+		//chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
+		chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
 
 	}
 

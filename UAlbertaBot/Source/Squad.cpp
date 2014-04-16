@@ -118,7 +118,7 @@ void Squad::setManagerUnits()
 	{
 		if(unit->isCompleted() && unit->getHitPoints() > 0 && unit->exists())
 		{
-			// select dector units
+			// select detector units
 			if (unit->getType().isDetector() && !unit->getType().isBuilding())
 			{
 				detectorUnits.push_back(unit);
