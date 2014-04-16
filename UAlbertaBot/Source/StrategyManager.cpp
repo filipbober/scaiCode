@@ -38,7 +38,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
+	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 17 0 3 47 3 23 0 17 0 22 38";		// <- Preferred build order
@@ -55,7 +55,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	//terranOpeningBook[TerranDoubleRaxMnM] = "0";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0";
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";
@@ -117,8 +117,11 @@ void StrategyManager::addStrategies()
 	}
 	else if (selfRace == BWAPI::Races::Terran)
 	{
+		//results = std::vector<IntPair>(NumTerranStrategies);		// ext
+		//usableStrategies.push_back(TerranMarineRush);				// ext
+
 		results = std::vector<IntPair>(NumTerranStrategies);
-		usableStrategies.push_back(TerranMarineRush);
+		CreateTerranUsableStrategies();
 	}
 	else if (selfRace == BWAPI::Races::Zerg)
 	{
@@ -509,6 +512,11 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 	}
 	else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 	{
+		if (getCurrentStrategy() == TerranDoubleRaxMnM)
+		{
+			return getTerranDoubleRaxMnMBuildOrderGoal();
+		}
+
 		return getTerranBuildOrderGoal();
 	}
 	else
@@ -729,7 +737,7 @@ const MetaPairVector StrategyManager::getProtossZealotRushBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 {
-	std::vector< std::pair<MetaType, UnitCountType> > goal;
+	std::vector< std::pair<MetaType, UnitCountType> > goal;	
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
@@ -1072,7 +1080,8 @@ int StrategyManager::GetStrategyIdx()
 	if (selfRace == BWAPI::Races::Terran)
 	{
 		//strategyNo = NumTerranStrategies;
-		chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());
+		//chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
+		chosenStrategy = TerranDoubleRaxMnM;			// for testing purposes
 
 	}
 
@@ -1093,6 +1102,81 @@ int StrategyManager::GenerateRandomStrategy(const int min, const int max)
 {
 	srand(time(NULL));
 	return rand() % max + min;
+}
+
+const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() const
+{
+	std::vector< std::pair<MetaType, UnitCountType> > goal;
+
+	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+
+	int scvsWanted;
+	int marinesWanted;
+	int medicsWanted;		// marine/medic ratio: 5:1
+
+	scvsWanted = numSCV + 4;
+	marinesWanted = numMarines + 5;
+	medicsWanted = marinesWanted / 5;
+
+	// If stimpacks are not researched and are not being researched, do it
+	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
+		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
+	{
+		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	}
+
+	// If stimpacks are not researched and are not being researched, do it
+	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
+		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep))
+	{
+		//goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
+	}
+
+	//// If stimpacks are researched and U238 Shells are not, then do it
+	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
+	//	BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
+	//{
+	//	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	//}
+	
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
+	{
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Singularity_Charge, 1));
+		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
+
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1)
+	{
+		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
+	}
+
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, numSCV + 1));
+	//BWAPI::Broodwar->printf("                                           DebExt: building SCV = %d", numSCV + 1);
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_SCV) > 1)
+	{
+		BWAPI::Broodwar->printf("                                           DebExt: building Infantry Armor = %d", numSCV + 1);
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 1));			// works (31)
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons, 1));
+		
+	}
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Barracks, 1));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, numMarines + 2));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numMarines + 2));
+
+	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
+
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+
+	return goal;
 }
 
 bool StrategyManager::doAttackZergCerver4PoolRush()

@@ -17,7 +17,7 @@
 #include "ActionInProgress.hpp"
 #include "MacroAction.hpp"
 
-static bool DEBUG_StarcraftData = false;
+static bool DEBUG_StarcraftData = true;
 
 namespace BuildOrderSearch
 {
@@ -102,6 +102,11 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_SCV, actions.size()));							// 0
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Marine, actions.size()));						// 1
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Medic, actions.size()));							// 2
+
+			// from here it works
+			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::U_238_Shells, actions.size()));						// 49
+			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Stim_Packs, actions.size()));							// 37
+
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Vulture, actions.size()));						// 3
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Firebat, actions.size()));						// 4
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Ghost, actions.size()));							// 5
@@ -156,6 +161,7 @@ class StarcraftData {
 			// Additional (forgotten...)
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Ion_Thrusters, actions.size()));						// 47
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Charon_Boosters, actions.size()));					// 48
+			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::U_238_Shells, actions.size()));						// 49
 
 
 			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Healing, actions.size()));								// xx - starting tech
@@ -485,7 +491,7 @@ public:
 		{
 			if (actions[i].isUnit() && actions[i].getUnitType() == a)
 			{
-				index = i;
+				index = i;				
 				break;
 			}
 		}
@@ -495,7 +501,7 @@ public:
 			printf("Error Incoming: %s\n", a.getName().c_str());
 		}
 
-		assert(index > -1);
+		assert(index > -1);		
 		return (Action)index;
 	}
 
@@ -581,7 +587,7 @@ public:
 	}
 
 	StarcraftAction & getStarcraftAction(BWAPI::UnitType & t)
-	{
+	{		
 		return actions[getAction(t)];
 	}
 

@@ -111,6 +111,9 @@ private:
 	int GetStrategyIdx();
 	int GenerateRandomStrategy(const int min, const int max);
 
+	// Build order goals
+	const	MetaPairVector		getTerranDoubleRaxMnMBuildOrderGoal() const;
+
 	std::vector<std::string>	zergMidgameBook;
 
 	// Attack checkers
