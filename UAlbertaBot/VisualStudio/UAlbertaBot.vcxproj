@@ -115,6 +115,7 @@
     <ClCompile Include="..\Source\extensions\BuildOrderCreator.cpp" />
     <ClCompile Include="..\Source\extensions\BuildOrderTest.cpp" />
     <ClCompile Include="..\Source\extensions\ZergBuildOrderCreator.cpp" />
+    <ClCompile Include="..\Source\micromanagement\MarineManagerExt.cpp" />
     <ClCompile Include="..\Source\MicroSearchManager.cpp" />
     <ClCompile Include="..\Source\base\BuildingData.cpp" />
     <ClCompile Include="..\Source\base\BuildingManager.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="..\Source\extensions\BuildOrderCreator.h" />
     <ClInclude Include="..\Source\extensions\BuildOrderTest.h" />
     <ClInclude Include="..\Source\extensions\ZergBuildOrderCreator.h" />
+    <ClInclude Include="..\Source\micromanagement\MarineManagerExt.h" />
     <ClInclude Include="..\Source\MicroSearchManager.h" />
     <ClInclude Include="..\Source\base\BuildingData.h" />
     <ClInclude Include="..\Source\base\BuildingManager.h" />

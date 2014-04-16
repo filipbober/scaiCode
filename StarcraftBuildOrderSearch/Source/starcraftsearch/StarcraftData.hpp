@@ -156,6 +156,7 @@ class StarcraftData {
 			// Additional (forgotten...)
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Ion_Thrusters, actions.size()));						// 47
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Charon_Boosters, actions.size()));					// 48
+			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::U_238_Shells, actions.size()));						// 49
 
 
 			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Healing, actions.size()));								// xx - starting tech
