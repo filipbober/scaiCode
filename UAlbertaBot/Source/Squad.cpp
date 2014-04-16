@@ -42,6 +42,10 @@ void Squad::update()
 
 		meleeManager.regroup(regroupPosition);
 		rangedManager.regroup(regroupPosition);
+		
+		// Extensions
+		marineManager.regroup(regroupPosition);
+		// eof ext
 	}
 	else // otherwise, execute micro
 	{
@@ -50,6 +54,10 @@ void Squad::update()
 		meleeManager.execute(order);
 		rangedManager.execute(order);
 		transportManager.execute(order);
+
+		// Extensions
+		marineManager.execute(order);
+		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
 		detectorManager.execute(order);
@@ -113,13 +121,21 @@ void Squad::setManagerUnits()
 	UnitVector detectorUnits;
 	UnitVector transportUnits;
 
+	// Extensions
+	UnitVector terranMarines;
+	// eof ext
+
 	// add units to micro managers
 	BOOST_FOREACH(BWAPI::Unit * unit, units)
 	{
 		if(unit->isCompleted() && unit->getHitPoints() > 0 && unit->exists())
 		{
+			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
+			{
+				terranMarines.push_back(unit);
+			}
 			// select detector units
-			if (unit->getType().isDetector() && !unit->getType().isBuilding())
+			else if (unit->getType().isDetector() && !unit->getType().isBuilding())
 			{
 				detectorUnits.push_back(unit);
 			}
@@ -145,6 +161,11 @@ void Squad::setManagerUnits()
 	rangedManager.setUnits(rangedUnits);
 	detectorManager.setUnits(detectorUnits);
 	transportManager.setUnits(detectorUnits);
+
+	// Extensions
+	marineManager.setUnits(terranMarines);
+	// eof ext
+
 }
 
 // calculates whether or not to regroup

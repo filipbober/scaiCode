@@ -137,7 +137,6 @@ public:
 			t.popAction();
 			++count;
 		}
-		
 		return count;
 	}
 	

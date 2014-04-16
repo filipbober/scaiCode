@@ -10,6 +10,8 @@
 #include "StrategyManager.h"
 #include "CombatSimulation.h"
 
+#include "micromanagement/MarineManagerExt.h"
+
 class ZealotManager;
 class DarkTemplarManager;
 class DragoonManager;
@@ -31,6 +33,10 @@ class Squad
 	RangedManager		rangedManager;
 	DetectorManager		detectorManager;
 	TransportManager	transportManager;
+
+	//Extensions
+	MarineManagerExt marineManager;
+	// eof ext
 
 	std::map<BWAPI::Unit *, bool>	nearEnemy;
 

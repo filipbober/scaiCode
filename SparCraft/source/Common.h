@@ -28,7 +28,8 @@ namespace SparCraft
 		const size_t Max_Units					= 100;
 
 		// max depth the search can ever handle
-		const size_t Max_Search_Depth			= 50;
+		//const size_t Max_Search_Depth			= 30;
+		const size_t Max_Search_Depth = 51;
 
 		// number of directions that units can move
 		const size_t Num_Directions				= 4;

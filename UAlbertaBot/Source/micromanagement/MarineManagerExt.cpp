@@ -14,6 +14,7 @@ MarineManagerExt::~MarineManagerExt()
 
 void MarineManagerExt::executeMicro(const UnitVector & targets)
 {
+	BWAPI::Broodwar->printf("                                           DebExt: Extension execute()");
 	// Units vector initialized by MicroManager::setUnits, called by Squad::setManagerUnits
 	const UnitVector & terranMarines = getUnits();
 	
@@ -172,15 +173,15 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * terranMarine, BWAPI::Unit 
 
 double MarineManagerExt::getGroundRange()
 {
-
+	return 0;
 }
 
 double MarineManagerExt::getAirRange()
 {
-
+	return 0;
 }
 
 double MarineManagerExt::getSpeed()
 {
-
+	return 0;
 }

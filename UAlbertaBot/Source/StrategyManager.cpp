@@ -1134,33 +1134,43 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		//goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
 	}
 
-	// If stimpacks are researched and U238 Shells are not, then do it
-	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
-		BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
-	{
-		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	}
+	//// If stimpacks are researched and U238 Shells are not, then do it
+	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
+	//	BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
+	//{
+	//	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	//}
 	
 	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
 	{
 		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Singularity_Charge, 1));
 		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-		BWAPI::Broodwar->printf("                                           DebExt: Researching Stim_Packs = %d");
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
-	else
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Academy not ready = %d");
-	}
-
-
 
 	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1)
 	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
+		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
 	}
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
+
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, numSCV + 1));
+	//BWAPI::Broodwar->printf("                                           DebExt: building SCV = %d", numSCV + 1);
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_SCV) > 1)
+	{
+		BWAPI::Broodwar->printf("                                           DebExt: building Infantry Armor = %d", numSCV + 1);
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 1));			// works (31)
+		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons, 1));
+		
+	}
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Barracks, 1));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, numMarines + 2));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numMarines + 2));
+
+	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
 
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
