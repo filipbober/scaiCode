@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\Source\starcraftsearch\ActionInProgress.hpp" />
     <ClInclude Include="..\Source\starcraftsearch\ActionSet.hpp" />
+    <ClInclude Include="..\Source\starcraftsearch\ActionSetExt.hpp" />
     <ClInclude Include="..\Source\starcraftsearch\ArmySearch.hpp" />
     <ClInclude Include="..\Source\starcraftsearch\BuildingData.hpp" />
     <ClInclude Include="..\Source\starcraftsearch\Common.h" />

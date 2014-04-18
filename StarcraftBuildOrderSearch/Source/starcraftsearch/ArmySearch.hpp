@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BWAPI.h"
 #include <boost/foreach.hpp>
 #include "assert.h"
 #include <stdio.h>

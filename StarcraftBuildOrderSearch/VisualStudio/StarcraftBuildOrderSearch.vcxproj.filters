@@ -64,6 +64,9 @@
     <ClInclude Include="..\Source\starcraftsearch\SmartArmySearch.hpp">
       <Filter>search</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\starcraftsearch\ActionSetExt.hpp">
+      <Filter>data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\starcraftsearch\test.cpp">
