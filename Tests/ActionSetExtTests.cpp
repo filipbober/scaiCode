@@ -48,9 +48,35 @@ namespace ActionSetTestUnitTests
 			}
 		}
 
-		TEST_METHOD(contains)
+		TEST_METHOD(containsBitSet)
 		{
-			// TODO
+			// BitSet a
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			bool expectedValue;
+			bool actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
+				{
+					BitSet bitset = BitSet(s);
+
+					expectedValue = actionSet.contains((BitSet)s);
+					actualValue = actionSet.contains((BitSet)s);
+
+					Assert::AreEqual(expectedValue, actualValue, L"contains", LINE_INFO());
+				}
+			}
+		}
+
+		TEST_METHOD(containsInt)
+		{
+			// int bit
+			// TODO: check if this function is called at all
 		}
 
 	};
