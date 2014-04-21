@@ -63,10 +63,8 @@ namespace ActionSetTestUnitTests
 				actionSetExt = ActionSetExt(i);
 				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
 				{
-					BitSet bitset = BitSet(s);
-
 					expectedValue = actionSet.contains((BitSet)s);
-					actualValue = actionSet.contains((BitSet)s);
+					actualValue = actionSetExt.contains((BitSetExt)s);
 
 					Assert::AreEqual(expectedValue, actualValue, L"contains", LINE_INFO());
 				}
