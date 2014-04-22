@@ -34,14 +34,20 @@
 
 //#define REVERSE_ACTION_ITERATOR
 
-namespace BuildOrderSearch
-{
+// For testing purposes
+//namespace ActionSetTestUnitTests
+//{
+//	class ActionSetExtTest;
+//}
+// eof testing
 
+namespace BuildOrderSearch
+{	
 	typedef unsigned char ActionExt;
 
 	class BitSetExt
 	{
-
+		//friend class ActionSetTestUnitTests::ActionSetExtTest;
 		unsigned long long set;							// 64 bit unsigned int to represent set
 
 	public:
