@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "Common.h"
 
+#include <bitset>
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // BitSet
@@ -43,12 +45,15 @@
 
 namespace BuildOrderSearch
 {	
-	typedef unsigned char ActionExt;
+	typedef unsigned char ActionExt;	
+	const unsigned int BITSET_SIZE = 128;
 
 	class BitSetExt
 	{
 		//friend class ActionSetTestUnitTests::ActionSetExtTest;
 		unsigned long long set;							// 64 bit unsigned int to represent set
+		
+		std::bitset<(size_t)BITSET_SIZE> setExt;
 
 	public:
 
@@ -109,14 +114,28 @@ namespace BuildOrderSearch
 
 		int countTrailingZeros(unsigned long long s) const
 		{
-			int zeros = 0;
+			//int zeros = 0;
 
-			while (!(s & __ONE))
+			//while (!(s & __ONE))
+			//{
+			//	s = __RSHIFT64(s, 1);
+			//	++zeros;
+			//}
+
+			//return zeros;
+
+			// TODO: change argument from unsigned long long to std::bitset
+			// TODO: improve efficiency
+			int zeros = 0;
+			std::bitset<BITSET_SIZE> sEx = s;
+			std::bitset<BITSET_SIZE> sOne = __ONE;
+			
+			//while ((sEx & std::bitset<BITSET_SIZE>(__ONE)) != std::bitset<BITSET_SIZE>(__ONE))
+			while ((sEx & sOne) != sOne)
 			{
-				s = __RSHIFT64(s, 1);
+				sEx = sEx >>= 1;
 				++zeros;
 			}
-
 			return zeros;
 		}
 
