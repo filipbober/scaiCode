@@ -81,11 +81,16 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (int i = INT_MAX - 1; i >= 0; i -= EXTERNAL_INT_LOOP_STEP)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
+				if (i < 0)
+				{
+					break;
+				}
+
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
-				for (int s = 0; s <= INT_MAX - 1; s += INTERNAL_INT_LOOP_STEP)
+				for (int s = 0; s < INT_MAX - 1; s += INTERNAL_INT_LOOP_STEP)
 				{
 					expectedValue = actionSet.contains((int)s);
 					actualValue = actionSetExt.contains((int)s);
@@ -167,7 +172,7 @@ namespace ActionSetTestUnitTests
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
-				for (int s = 0; s <= INT_MAX - 1; s += INTERNAL_INT_LOOP_STEP)
+				for (int s = 0; s < INT_MAX - 1; s += INTERNAL_INT_LOOP_STEP)
 				{
 					expectedValue = actionSet.getBit((int)s);
 					actualValue = actionSetExt.getBit((int)s);
@@ -234,11 +239,11 @@ namespace ActionSetTestUnitTests
 			int expectedValue;
 			int actualValue;
 
-			for (int i = INT_MAX - 1; i >= 0; i -= EXTERNAL_INT_LOOP_STEP)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
-				for (int s = 0; s <= INT_MAX / 4; s += INTERNAL_INT_LOOP_STEP)
+				for (int s = 0; s < INT_MAX / 4; s += INTERNAL_INT_LOOP_STEP)
 				{
 					actionSet.add((int)s);
 					actionSetExt.add((int)s);
@@ -341,6 +346,134 @@ namespace ActionSetTestUnitTests
 
 			}
 		}
+
+		TEST_METHOD(popAction)
+		{
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			unsigned char expectedValue;
+			unsigned char actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
+				expectedValue = actionSet.popAction();
+				actualValue = actionSetExt.popAction();
+
+				Assert::AreEqual(expectedValue, actualValue);
+			}
+		}
+
+		TEST_METHOD(nextAction)
+		{
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			unsigned char expectedValue;
+			unsigned char actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
+				expectedValue = actionSet.nextAction();
+				actualValue = actionSetExt.nextAction();
+
+				Assert::AreEqual(expectedValue, actualValue);
+			}
+		}
+
+		TEST_METHOD(countTrailingZeros)
+		{
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			int expectedValue;
+			int actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
+				expectedValue = actionSet.countTrailingZeros(i);
+				actualValue = actionSetExt.countTrailingZeros(i);
+
+				Assert::AreEqual(expectedValue, actualValue);
+			}
+		}
+
+		TEST_METHOD(countLeadingZeros)
+		{
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			int expectedValue;
+			int actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
+				expectedValue = actionSet.countLeadingZeros(i);
+				actualValue = actionSetExt.countLeadingZeros(i);
+
+				Assert::AreEqual(expectedValue, actualValue);
+			}
+		}
+
+		TEST_METHOD(numActions)
+		{
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			int expectedValue;
+			int actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
+				expectedValue = actionSet.numActions();
+				actualValue = actionSetExt.numActions();
+
+				Assert::AreEqual(expectedValue, actualValue);
+			}
+		}
+
+		TEST_METHOD(randomAction)
+		{
+			ActionSet actionSet = ActionSet(0ull);
+			ActionSetExt actionSetExt = ActionSetExt(0ull);
+
+			unsigned char expectedValue;
+			unsigned char actualValue;
+
+			for (unsigned long long int i = TEST_RANGE; i != 1; i--)
+			{
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
+				unsigned char action = actionSet.randomAction();
+				unsigned char actionExt = actionSetExt.randomAction();
+
+				actionSetExt.add(actionExt);
+				actionSet.add(action);
+
+				expectedValue = actionSet.popAction();
+				actualValue = actionSetExt.popAction();
+
+				Assert::AreEqual(expectedValue, actualValue);
+			}
+		}
+
+
 
 
 
