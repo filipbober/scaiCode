@@ -44,21 +44,24 @@
 // eof testing
 
 namespace BuildOrderSearch
-{	
-	typedef unsigned char ActionExt;	
+{
+	typedef unsigned char ActionExt;
 	const unsigned int BITSET_SIZE = 128;
+	std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
 
 	class BitSetExt
 	{
 		//friend class ActionSetTestUnitTests::ActionSetExtTest;
 		unsigned long long set;							// 64 bit unsigned int to represent set
-		
-		std::bitset<(size_t)BITSET_SIZE> setExt;
 
+		std::bitset<BITSET_SIZE> setExt;
+		//std::bitset<BITSET_SIZE> S_ONE = __ONE;
+		//std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
+
+		//setExt(std::bitset<BITSET_SIZE>(1) << (BITSET_SIZE - 1))
 	public:
-
-		BitSetExt() : set(0) {}							// default constructor sets to zero
-		BitSetExt(long long unsigned s) : set(s) {}		// constructor which takes a uint64
+		BitSetExt() : set(0), setExt(0) {}							// default constructor sets to zero
+		BitSetExt(long long unsigned s) : set(s), setExt(s) {}		// constructor which takes a uint64
 
 		// pops the next action (bit from the right)
 		ActionExt popAction()
@@ -127,13 +130,13 @@ namespace BuildOrderSearch
 			// TODO: change argument from unsigned long long to std::bitset
 			// TODO: improve efficiency
 			int zeros = 0;
-			std::bitset<BITSET_SIZE> sEx = s;
-			std::bitset<BITSET_SIZE> sOne = __ONE;
-			
+			std::bitset<BITSET_SIZE> sBs = s;
+			//std::bitset<BITSET_SIZE> sOne = __ONE;
+
 			//while ((sEx & std::bitset<BITSET_SIZE>(__ONE)) != std::bitset<BITSET_SIZE>(__ONE))
-			while ((sEx & sOne) != sOne)
+			while ((sBs & S_ONE) != S_ONE)
 			{
-				sEx = sEx >>= 1;
+				sBs = sBs >> 1;
 				++zeros;
 			}
 			return zeros;
@@ -141,14 +144,33 @@ namespace BuildOrderSearch
 
 		int countLeadingZeros(unsigned long long s) const
 		{
-			int zeros = 0;
-			unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
+			//int zeros = 0;
+			//unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
 
-			while (!(s & __L_ONE))
+			//while (!(s & __L_ONE))
+			//{
+			//	s = __LSHIFT64(s, 1);
+			//	++zeros;
+			//}
+
+			//return zeros;
+
+			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);		
+			std::bitset<BITSET_SIZE> sLeading = (S_ONE << (BITSET_SIZE - 1));
+			// BITSET_SIZE - 1 = doesn't work (only zeros)
+			// BITSET_SIZE - 110 = [18] = 1
+			// BITSET_SIZE - 100 = [28] = 1
+			// BITSET_SIZE - 97  = [31]..[63] = 1 <- ?
+			// BITSET_SIZE - 90 = doesn't work (only zeros) 
+
+			int zeros = 0;
+
+			while ((sBs & sLeading) != sLeading)	// Bug: always false
 			{
-				s = __LSHIFT64(s, 1);
-				++zeros;
+				zeros++;
+				sBs = sBs << 1;
 			}
+			
 
 			return zeros;
 		}
@@ -179,7 +201,7 @@ namespace BuildOrderSearch
 
 			ActionExt a = s.popAction();
 
-			for (int i = 0; i<r; i++)
+			for (int i = 0; i < r; i++)
 			{
 				a = s.popAction();
 			}
@@ -191,9 +213,9 @@ namespace BuildOrderSearch
 		{
 			// print the bits from left to right
 			printf("%ull\n", set);
-			for (int i = 0; i<64; ++i) { printf("%d", (63 - i) % 10); }
+			for (int i = 0; i < 64; ++i) { printf("%d", (63 - i) % 10); }
 			printf("\n");
-			for (int i = 0; i<64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
+			for (int i = 0; i < 64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
 			printf("\n");
 		}
 	};

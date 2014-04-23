@@ -13,7 +13,7 @@ namespace ActionSetTestUnitTests
 	TEST_CLASS(ActionSetExtTest)
 	{
 	private:
-		//const unsigned long long int TEST_RANGE = ULLONG_MAX;
+		//const unsigned long long int TEST_RANGE = ULLONG_MAX;			// or const unsigned long long int = ~0;
 		const unsigned long long int TEST_RANGE = 100;
 		const int EXTERNAL_INT_LOOP_STEP = 3848537;			// results 558 loops
 		const int INTERNAL_INT_LOOP_STEP = 7110873;		// results in 302 loops	
@@ -83,10 +83,10 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				if (i < 0)
-				{
-					break;
-				}
+				//if (i < 0)
+				//{
+				//	break;
+				//}
 
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
