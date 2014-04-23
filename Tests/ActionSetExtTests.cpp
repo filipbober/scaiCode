@@ -423,6 +423,11 @@ namespace ActionSetTestUnitTests
 				expectedValue = actionSet.countLeadingZeros(i);
 				actualValue = actionSetExt.countLeadingZeros(i);
 
+				std::bitset<64> setExtOne = BuildOrderSearch::S_ONE;
+
+				unsigned long long one = __LSHIFT64(__ONE, 63);
+				ActionSetExt oneSet = ActionSetExt(one);
+
 				Assert::AreEqual(expectedValue, actualValue);
 			}
 		}

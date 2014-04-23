@@ -46,7 +46,7 @@
 namespace BuildOrderSearch
 {
 	typedef unsigned char ActionExt;
-	const unsigned int BITSET_SIZE = 128;
+	const unsigned int BITSET_SIZE = 64;
 	std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
 
 	class BitSetExt
@@ -156,21 +156,44 @@ namespace BuildOrderSearch
 			//return zeros;
 
 			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);		
-			std::bitset<BITSET_SIZE> sLeading = (S_ONE << (BITSET_SIZE - 1));
-			// BITSET_SIZE - 1 = doesn't work (only zeros)
-			// BITSET_SIZE - 110 = [18] = 1
-			// BITSET_SIZE - 100 = [28] = 1
-			// BITSET_SIZE - 97  = [31]..[63] = 1 <- ?
-			// BITSET_SIZE - 90 = doesn't work (only zeros) 
+			std::bitset<BITSET_SIZE> sLeading = (S_ONE << ((BITSET_SIZE/2) - 1));		// note: BITSET_SIZE / 2
 
 			int zeros = 0;
 
-			while ((sBs & sLeading) != sLeading)	// Bug: always false
+			while ((sBs & sLeading) != sLeading)
 			{
-				zeros++;
-				sBs = sBs << 1;
+				++zeros;
+				sBs <<= 1;
 			}
 			
+
+			return zeros;
+		}
+
+		int countAllLeadingZeros(unsigned long long s) const
+		{
+			//int zeros = 0;
+			//unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
+
+			//while (!(s & __L_ONE))
+			//{
+			//	s = __LSHIFT64(s, 1);
+			//	++zeros;
+			//}
+
+			//return zeros;
+
+			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);
+			std::bitset<BITSET_SIZE> sLeading = (S_ONE << (BITSET_SIZE - 1));
+
+			int zeros = 0;
+
+			while ((sBs & sLeading) != sLeading)
+			{
+				++zeros;
+				sBs <<= 1;
+			}
+
 
 			return zeros;
 		}
