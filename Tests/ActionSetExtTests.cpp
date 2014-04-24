@@ -13,10 +13,12 @@ namespace ActionSetTestUnitTests
 	TEST_CLASS(ActionSetExtTest)
 	{
 	private:
-		//const unsigned long long int TEST_RANGE = ULLONG_MAX;
+		//const unsigned long long int TEST_RANGE = ULLONG_MAX;			// or const unsigned long long int = ~0;
 		const unsigned long long int TEST_RANGE = 100;
 		const int EXTERNAL_INT_LOOP_STEP = 3848537;			// results 558 loops
 		const int INTERNAL_INT_LOOP_STEP = 7110873;		// results in 302 loops	
+		const int MAX_DEFAULT_SET_SIZE = 32 - 1;
+		
 
 	public:
 		//TEST_MODULE_INITIALIZE(ModuleStartup)
@@ -37,7 +39,8 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			//for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
@@ -58,11 +61,11 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
-				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
+				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
 					expectedValue = actionSet.contains((BitSet)s);
 					actualValue = actionSetExt.contains((BitSetExt)s);
@@ -83,14 +86,9 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				if (i < 0)
-				{
-					break;
-				}
-
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
-				for (int s = 0; s < INT_MAX - 1; s += INTERNAL_INT_LOOP_STEP)
+				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
 					expectedValue = actionSet.contains((int)s);
 					actualValue = actionSetExt.contains((int)s);
@@ -108,8 +106,12 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
+
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+
 				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
 				{
 					expectedValue = actionSet.containsAny((BitSet)s);
@@ -128,9 +130,11 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
 					expectedValue = actionSet.containsNone((BitSet)s);
 					actualValue = actionSetExt.containsNone((BitSetExt)s);
@@ -148,9 +152,11 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
+				actionSet = ActionSet(i);
+				actionSetExt = ActionSetExt(i);
+				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
 					expectedValue = actionSet.isSubsetOf((BitSet)s);
 					actualValue = actionSetExt.isSubsetOf((BitSetExt)s);
@@ -165,14 +171,14 @@ namespace ActionSetTestUnitTests
 			ActionSet actionSet = ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
-			bool expectedValue;
-			bool actualValue;
+			int expectedValue;
+			int actualValue;
 
-			for (int i = INT_MAX - 1; i >= 0; i -= EXTERNAL_INT_LOOP_STEP)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
-				for (int s = 0; s < INT_MAX - 1; s += INTERNAL_INT_LOOP_STEP)
+				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
 					expectedValue = actionSet.getBit((int)s);
 					actualValue = actionSetExt.getBit((int)s);
@@ -187,24 +193,36 @@ namespace ActionSetTestUnitTests
 			ActionSet actionSet = ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
-			Action expectedValue;
-			ActionExt actualValue;
+			bool expectedValue;
+			bool actualValue;
 
-			for (int i = INT_MAX - 1; i >= 0; i -= EXTERNAL_INT_LOOP_STEP)
-			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
-
-				int s = i + 1;
+			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
+			{				
 				actionSet.add((int)s);
 				actionSetExt.add((int)s);
 
-
-				expectedValue = actionSet.popAction();
-				actualValue = actionSetExt.popAction();
+				expectedValue = actionSet.contains((int)s);
+				actualValue = actionSetExt.contains((int)s);
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}
+
+			//for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
+			//{
+			//	actionSet = ActionSet(i);
+			//	actionSetExt = ActionSetExt(i);
+			//	for (int s = 0; s < INT_MAX - 2; s++)
+			//	{
+			//		actionSet.add((int)s);
+			//		actionSetExt.add((int)s);
+
+
+			//		expectedValue = actionSet.popAction();
+			//		actualValue = actionSetExt.popAction();
+
+			//		Assert::AreEqual(expectedValue, actualValue);
+			//	}
+			//}
 		}
 
 		TEST_METHOD(subtractBit)
@@ -212,20 +230,16 @@ namespace ActionSetTestUnitTests
 			ActionSet actionSet = ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
-			Action expectedValue;
-			ActionExt actualValue;
+			bool expectedValue;
+			bool actualValue;
 
-			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
+			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
-
-				int s = i - 1;
 				actionSet.subtract((int)s);
 				actionSetExt.subtract((int)s);
 
-				expectedValue = actionSet.popAction();
-				actualValue = actionSetExt.popAction();
+				expectedValue = actionSet.contains((int)s);
+				actualValue = actionSetExt.contains((int)s);
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}
@@ -236,30 +250,26 @@ namespace ActionSetTestUnitTests
 			ActionSet actionSet = ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
-			int expectedValue;
-			int actualValue;
+			bool expectedValue;
+			bool actualValue;
 
-			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
+			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
-				for (int s = 0; s < INT_MAX / 4; s += INTERNAL_INT_LOOP_STEP)
-				{
-					actionSet.add((int)s);
-					actionSetExt.add((int)s);
+				actionSet.add((int)s);
+				actionSetExt.add((int)s);
 
-					actionSet.subtract((int)s);
-					actionSetExt.subtract((int)s);
+				expectedValue = actionSet.contains((int)s);
+				actualValue = actionSetExt.contains((int)s);
 
-					for (int j = 0; j < 64; j++)
-					{
-						expectedValue = actionSet[j];
-						actualValue = actionSetExt[j];
+				Assert::AreEqual(expectedValue, actualValue);
 
-						Assert::AreEqual(expectedValue, actualValue);
-					}
+				actionSet.subtract((int)s);
+				actionSetExt.subtract((int)s);
 
-				}
+				expectedValue = actionSet.contains((int)s);
+				actualValue = actionSetExt.contains((int)s);
+
+				Assert::AreEqual(expectedValue, actualValue);
 			}
 		}
 
@@ -271,22 +281,15 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE-1; i != -1; i--)
+			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
+				actionSet.add((int)s);
+				actionSetExt.add((int)s);
 
-				actionSet.add((BitSet)BitSet(i + 1));
-				actionSetExt.add((BitSetExt)BitSetExt(i + 1));
+				expectedValue = actionSet.contains((BitSet)s);
+				actualValue = actionSetExt.contains((BitSetExt)s);
 
-				for (int j = 0; j < 64; j++)
-				{
-					expectedValue = actionSet[j];
-					actualValue = actionSetExt[j];
-
-					Assert::AreEqual(expectedValue, actualValue);
-				}
-
+				Assert::AreEqual(expectedValue, actualValue);
 			}
 		}
 
@@ -298,22 +301,15 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
+				actionSet.subtract((BitSet)s);
+				actionSetExt.subtract((BitSetExt)s);
 
-				actionSet.subtract((BitSet)BitSet(i - 1));
-				actionSetExt.subtract((BitSetExt)BitSetExt(i - 1));
+				expectedValue = actionSet.contains((BitSet)s);
+				actualValue = actionSetExt.contains((BitSetExt)s);
 
-				for (int j = 0; j < 64; j++)
-				{
-					expectedValue = actionSet[j];
-					actualValue = actionSetExt[j];
-
-					Assert::AreEqual(expectedValue, actualValue);
-				}
-
+				Assert::AreEqual(expectedValue, actualValue);
 			}
 		}
 
@@ -325,25 +321,23 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
+				actionSet.add((BitSet)s);
+				actionSetExt.add((BitSetExt)s);
 
-				actionSet.add((BitSet)BitSet(i));
-				actionSetExt.add((BitSetExt)BitSetExt(i));
+				expectedValue = actionSet.contains((BitSet)s);
+				actualValue = actionSetExt.contains((BitSetExt)s);
 
-				actionSet.subtract((BitSet)BitSet(i));
-				actionSetExt.subtract((BitSetExt)BitSetExt(i));
+				Assert::AreEqual(expectedValue, actualValue);
 
-				for (int j = 0; j < 64; j++)
-				{
-					expectedValue = actionSet[j];
-					actualValue = actionSetExt[j];
+				actionSet.subtract((BitSet)s);
+				actionSetExt.subtract((BitSetExt)s);
 
-					Assert::AreEqual(expectedValue, actualValue);
-				}
+				expectedValue = actionSet.contains((BitSet)s);
+				actualValue = actionSetExt.contains((BitSetExt)s);
 
+				Assert::AreEqual(expectedValue, actualValue);
 			}
 		}
 
@@ -355,7 +349,8 @@ namespace ActionSetTestUnitTests
 			unsigned char expectedValue;
 			unsigned char actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
@@ -395,13 +390,14 @@ namespace ActionSetTestUnitTests
 			int expectedValue;
 			int actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.countTrailingZeros(i);
-				actualValue = actionSetExt.countTrailingZeros(i);
+				actualValue = actionSetExt.countTrailingZeros(i);								
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}
@@ -415,7 +411,8 @@ namespace ActionSetTestUnitTests
 			int expectedValue;
 			int actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
+			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
@@ -435,10 +432,36 @@ namespace ActionSetTestUnitTests
 			int expectedValue;
 			int actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int s = INT_MAX - 1; s > 0; s -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
-				actionSetExt = ActionSetExt(i);
+				actionSet = ActionSet(s);
+				actionSetExt = ActionSetExt(s);
+
+				///////////////// Doesn't work, because set does not change; setExt does.
+
+
+
+
+				//BitSetExt t(s);
+				//int count(0);
+
+				//while (!t.isEmpty())
+				//{
+				//	t.popAction();
+				//	// popAction
+				//	// -- doesn't delete
+				//	//int nextAction = t.countTrailingZeros(s);		// s incorrect
+				//	//t.subtract(nextAction);
+
+				//	//
+
+				//	++count;
+				//}
+				//int a = count;
+
+
+
+
 
 				expectedValue = actionSet.numActions();
 				actualValue = actionSetExt.numActions();
