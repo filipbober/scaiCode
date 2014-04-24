@@ -34,6 +34,9 @@
 #define RBIT(N) (__LSHIFT64(__ONE, N))
 #define SINGLE_BIT(N) RBIT(N)
 
+#define S_LSHIFT(VAL, N) (VAL << ((N/2)-1))
+#define S_SINGLE_BIT(N) (S_LSHIFT(BuildOrderSearch::S_ONE, N))
+
 //#define REVERSE_ACTION_ITERATOR
 
 // For testing purposes
@@ -48,6 +51,7 @@ namespace BuildOrderSearch
 	typedef unsigned char ActionExt;
 	const unsigned int BITSET_SIZE = 64;
 	std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
+	std::bitset<BITSET_SIZE> S_ZERO = std::bitset<BITSET_SIZE>(0);
 
 	class BitSetExt
 	{
@@ -103,17 +107,31 @@ namespace BuildOrderSearch
 		BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(set & a.set); }				// set intersection
 		BitSetExt 		operator ~  	()					const { return BitSetExt(~set); }					// set negation
 
-		bool 		isEmpty() 					const { return set == __ZERO; }					// the set is all zeros
-		bool 		contains(const BitSetExt a) 	const { return (set & a.set) == a.set; }			// completely contain another set
-		bool		contains(const int bit) 	const { return (set & SINGLE_BIT(bit)) != __ZERO; }// contains a bit set to 1
-		bool		containsAny(const BitSetExt a)	const { return (set & ~a.set) != set; }			// does set contain any of
-		bool		containsNone(const BitSetExt a)	const { return (set & ~a.set) == set; }			// does set contain none of 
-		bool 		isSubsetOf(const BitSetExt a) 	const { return (a.set & set) == set; }			// is a subset of another set
-		int 		getBit(const int bit)		const { return (set & SINGLE_BIT(bit)) ? 1 : 0; }	// identical to contains
-		void 		add(const int bit) { set |= SINGLE_BIT(bit); }					// sets a bit to 1
-		void 		add(const BitSetExt a) { set |= a.set; }							// sets all of input set to 1
-		void		subtract(const int bit) { set &= ~SINGLE_BIT(bit); }				// set bit to zero
-		void 		subtract(const BitSetExt a) { set &= ~a.set; }							// sets all of input set to 0
+		// old (unsigned long long)
+		//bool 		isEmpty() 					const { return set == __ZERO; }					// the set is all zeros
+		//bool 		contains(const BitSetExt a) 	const { return (set & a.set) == a.set; }			// completely contain another set
+		//bool		contains(const int bit) 	const { return (set & SINGLE_BIT(bit)) != __ZERO; }// contains a bit set to 1
+		//bool		containsAny(const BitSetExt a)	const { return (set & ~a.set) != set; }			// does set contain any of
+		//bool		containsNone(const BitSetExt a)	const { return (set & ~a.set) == set; }			// does set contain none of 
+		//bool 		isSubsetOf(const BitSetExt a) 	const { return (a.set & set) == set; }			// is a subset of another set
+		//int 		getBit(const int bit)		const { return (set & SINGLE_BIT(bit)) ? 1 : 0; }	// identical to contains
+		//void 		add(const int bit) { set |= SINGLE_BIT(bit); }					// sets a bit to 1
+		//void 		add(const BitSetExt a) { set |= a.set; }							// sets all of input set to 1
+		//void		subtract(const int bit) { set &= ~SINGLE_BIT(bit); }				// set bit to zero
+		//void 		subtract(const BitSetExt a) { set &= ~a.set; }							// sets all of input set to 0
+
+		// new (std::bitset)
+		bool 		isEmpty() 					const { return setExt == S_ZERO; }					// the set is all zeros
+		bool 		contains(const BitSetExt a) 	const { return (setExt & a.setExt) == a.setExt; }			// completely contain another set
+		bool		contains(const int bit) 	const { return setExt[bit]; }// contains a bit set to 1	
+		bool		containsAny(const BitSetExt a)	const { return (setExt & ~a.setExt) != setExt; }			// does set contain any of
+		bool		containsNone(const BitSetExt a)	const { return (setExt & ~a.setExt) == setExt; }			// does set contain none of 
+		bool 		isSubsetOf(const BitSetExt a) 	const { return (a.setExt & setExt) == setExt; }			// is a subset of another set
+		int 		getBit(const int bit)		const { return setExt[bit]; }	// identical to contains
+		void 		add(const int bit) { setExt.set(bit); }					// sets a bit to 1
+		void 		add(const BitSetExt a) { setExt |= a.setExt; }							// sets all of input set to 1
+		void		subtract(const int bit) { setExt.set(bit, 0); }				// set bit to zero
+		void 		subtract(const BitSetExt a) { setExt &= ~a.setExt; }							// sets all of input set to 0
 
 		int countTrailingZeros(unsigned long long s) const
 		{
@@ -184,7 +202,8 @@ namespace BuildOrderSearch
 			//return zeros;
 
 			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);
-			std::bitset<BITSET_SIZE> sLeading = (S_ONE << (BITSET_SIZE - 1));
+			//std::bitset<BITSET_SIZE> sLeading = (S_ONE << (BITSET_SIZE - 1));
+			std::bitset<BITSET_SIZE> sLeading = S_LSHIFT(S_ONE, (BITSET_SIZE - 1));
 
 			int zeros = 0;
 
@@ -200,6 +219,16 @@ namespace BuildOrderSearch
 
 		int numActions() const
 		{
+			//BitSetExt t(set);
+			//int count(0);
+
+			//while (!t.isEmpty())
+			//{
+			//	t.popAction();
+			//	++count;
+			//}
+			//return count;
+
 			BitSetExt t(set);
 			int count(0);
 
@@ -209,6 +238,7 @@ namespace BuildOrderSearch
 				++count;
 			}
 			return count;
+
 		}
 
 		ActionExt randomAction() const
