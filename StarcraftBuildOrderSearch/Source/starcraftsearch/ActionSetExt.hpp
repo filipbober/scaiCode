@@ -80,6 +80,7 @@ namespace BuildOrderSearch
 
 			// set that bit to a zero
 			subtract(nextAction);
+			set = setExt.to_ulong();
 
 			return (ActionExt)nextAction;
 		}
@@ -236,15 +237,19 @@ namespace BuildOrderSearch
 			//}
 			//return count;
 
-			BitSetExt t(set);
-			int count(0);
+			//BitSetExt t(set);
+			//int count(0);
 
-			while (!t.isEmpty())
-			{
-				t.popAction();
-				++count;
-			}
-			return count;
+			//while (!t.isEmpty())
+			//{
+			//	t.popAction();
+			//	++count;
+			//}
+			//return count;
+
+
+			// correct, but commented for testing purposes
+			return setExt.count();
 
 		}
 

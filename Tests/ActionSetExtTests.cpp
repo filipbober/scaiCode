@@ -442,22 +442,22 @@ namespace ActionSetTestUnitTests
 
 
 
-				BitSetExt t(s);
-				int count(0);
+				//BitSetExt t(s);
+				//int count(0);
 
-				while (!t.isEmpty())
-				{
-					t.popAction();
-					// popAction
-					// -- doesn't delete
-					//int nextAction = t.countTrailingZeros(s);		// s incorrect
-					//t.subtract(nextAction);
+				//while (!t.isEmpty())
+				//{
+				//	t.popAction();
+				//	// popAction
+				//	// -- doesn't delete
+				//	//int nextAction = t.countTrailingZeros(s);		// s incorrect
+				//	//t.subtract(nextAction);
 
-					//
+				//	//
 
-					++count;
-				}
-				int a = count;
+				//	++count;
+				//}
+				//int a = count;
 
 
 
