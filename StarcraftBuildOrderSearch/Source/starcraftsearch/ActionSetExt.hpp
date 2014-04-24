@@ -145,18 +145,20 @@ namespace BuildOrderSearch
 
 			//return zeros;
 
-			// TODO: change argument from unsigned long long to std::bitset
-			// TODO: improve efficiency
 			int zeros = 0;
-			std::bitset<BITSET_SIZE> sBs = s;
-			//std::bitset<BITSET_SIZE> sOne = __ONE;
+			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);
 
-			//while ((sEx & std::bitset<BITSET_SIZE>(__ONE)) != std::bitset<BITSET_SIZE>(__ONE))
+			if (sBs == S_ZERO)
+			{
+				return 0;
+			}
+			
 			while ((sBs & S_ONE) != S_ONE)
 			{
-				sBs = sBs >> 1;
-				++zeros;
+				zeros++;
+				sBs >>= 1;
 			}
+
 			return zeros;
 		}
 
@@ -177,6 +179,11 @@ namespace BuildOrderSearch
 			std::bitset<BITSET_SIZE> sLeading = (S_ONE << ((BITSET_SIZE/2) - 1));		// note: BITSET_SIZE / 2
 
 			int zeros = 0;
+
+			if (sBs == S_ZERO)
+			{
+				return 0;
+			}
 
 			while ((sBs & sLeading) != sLeading)
 			{

@@ -40,7 +40,7 @@ namespace ActionSetTestUnitTests
 			bool actualValue;
 
 			//for (unsigned long long int i = TEST_RANGE; i != -1; i--)
-			for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
@@ -61,7 +61,7 @@ namespace ActionSetTestUnitTests
 			bool expectedValue;
 			bool actualValue;
 
-			for (unsigned long long int i = TEST_RANGE; i != -1; i--)
+			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
@@ -171,8 +171,8 @@ namespace ActionSetTestUnitTests
 			ActionSet actionSet = ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
-			bool expectedValue;
-			bool actualValue;
+			int expectedValue;
+			int actualValue;
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
@@ -350,7 +350,7 @@ namespace ActionSetTestUnitTests
 			unsigned char actualValue;
 
 			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
-			for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
+			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
@@ -391,13 +391,13 @@ namespace ActionSetTestUnitTests
 			int actualValue;
 
 			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
-			for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
+			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.countTrailingZeros(i);
-				actualValue = actionSetExt.countTrailingZeros(i);
+				actualValue = actionSetExt.countTrailingZeros(i);								
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}
@@ -412,18 +412,13 @@ namespace ActionSetTestUnitTests
 			int actualValue;
 
 			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
-			for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
+			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
 				actionSet = ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.countLeadingZeros(i);
 				actualValue = actionSetExt.countLeadingZeros(i);
-
-				std::bitset<64> setExtOne = BuildOrderSearch::S_ONE;
-
-				unsigned long long one = __LSHIFT64(__ONE, 63);
-				ActionSetExt oneSet = ActionSetExt(one);
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}
@@ -437,10 +432,36 @@ namespace ActionSetTestUnitTests
 			int expectedValue;
 			int actualValue;
 
-			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
+			for (int s = INT_MAX - 1; s > 0; s -= EXTERNAL_INT_LOOP_STEP)
 			{
 				actionSet = ActionSet(s);
 				actionSetExt = ActionSetExt(s);
+
+				///////////////// Doesn't work, because set does not change; setExt does.
+
+
+
+
+				BitSetExt t(s);
+				int count(0);
+
+				while (!t.isEmpty())
+				{
+					t.popAction();
+					// popAction
+					// -- doesn't delete
+					//int nextAction = t.countTrailingZeros(s);		// s incorrect
+					//t.subtract(nextAction);
+
+					//
+
+					++count;
+				}
+				int a = count;
+
+
+
+
 
 				expectedValue = actionSet.numActions();
 				actualValue = actionSetExt.numActions();
