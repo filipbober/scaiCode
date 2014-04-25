@@ -33,7 +33,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(isEmpty)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -42,7 +42,7 @@ namespace ActionSetTestUnitTests
 			//for (unsigned long long int i = TEST_RANGE; i != -1; i--)
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.isEmpty();
@@ -55,7 +55,7 @@ namespace ActionSetTestUnitTests
 		TEST_METHOD(containsBitSet)
 		{
 			// BitSet a
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -63,11 +63,11 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
-					expectedValue = actionSet.contains((BitSet)s);
+					expectedValue = actionSet.contains((BuildOrderSearchDeprecated::BitSet)s);
 					actualValue = actionSetExt.contains((BitSetExt)s);
 
 					Assert::AreEqual(expectedValue, actualValue, L"contains", LINE_INFO());
@@ -78,7 +78,7 @@ namespace ActionSetTestUnitTests
 		TEST_METHOD(containsInt)
 		{
 			// int bit
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -86,7 +86,7 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
@@ -100,7 +100,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(containsAny)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -109,12 +109,12 @@ namespace ActionSetTestUnitTests
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
 
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				for (unsigned long long int s = TEST_RANGE; s != -1; s--)
 				{
-					expectedValue = actionSet.containsAny((BitSet)s);
+					expectedValue = actionSet.containsAny((BuildOrderSearchDeprecated::BitSet)s);
 					actualValue = actionSetExt.containsAny((BitSetExt)s);
 
 					Assert::AreEqual(expectedValue, actualValue, L"contains", LINE_INFO());
@@ -124,7 +124,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(containsNone)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -132,11 +132,11 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
-					expectedValue = actionSet.containsNone((BitSet)s);
+					expectedValue = actionSet.containsNone((BuildOrderSearchDeprecated::BitSet)s);
 					actualValue = actionSetExt.containsNone((BitSetExt)s);
 
 					Assert::AreEqual(expectedValue, actualValue, L"contains", LINE_INFO());
@@ -146,7 +146,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(isSubsetOf)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -154,11 +154,11 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
-					expectedValue = actionSet.isSubsetOf((BitSet)s);
+					expectedValue = actionSet.isSubsetOf((BuildOrderSearchDeprecated::BitSet)s);
 					actualValue = actionSetExt.isSubsetOf((BitSetExt)s);
 
 					Assert::AreEqual(expectedValue, actualValue, L"contains", LINE_INFO());
@@ -168,7 +168,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(getBit)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			int expectedValue;
@@ -176,7 +176,7 @@ namespace ActionSetTestUnitTests
 
 			for (int i = INT_MAX - 1; i > 0; i -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 				for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 				{
@@ -190,7 +190,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(addBit)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -209,7 +209,7 @@ namespace ActionSetTestUnitTests
 
 			//for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
 			//{
-			//	actionSet = ActionSet(i);
+			//	actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 			//	actionSetExt = ActionSetExt(i);
 			//	for (int s = 0; s < INT_MAX - 2; s++)
 			//	{
@@ -227,7 +227,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(subtractBit)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -247,7 +247,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(addSubtractBit)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -275,7 +275,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(addBitSet)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -286,7 +286,7 @@ namespace ActionSetTestUnitTests
 				actionSet.add((int)s);
 				actionSetExt.add((int)s);
 
-				expectedValue = actionSet.contains((BitSet)s);
+				expectedValue = actionSet.contains((BuildOrderSearchDeprecated::BitSet)s);
 				actualValue = actionSetExt.contains((BitSetExt)s);
 
 				Assert::AreEqual(expectedValue, actualValue);
@@ -295,7 +295,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(subtactBitSet)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -303,10 +303,10 @@ namespace ActionSetTestUnitTests
 
 			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet.subtract((BitSet)s);
+				actionSet.subtract((BuildOrderSearchDeprecated::BitSet)s);
 				actionSetExt.subtract((BitSetExt)s);
 
-				expectedValue = actionSet.contains((BitSet)s);
+				expectedValue = actionSet.contains((BuildOrderSearchDeprecated::BitSet)s);
 				actualValue = actionSetExt.contains((BitSetExt)s);
 
 				Assert::AreEqual(expectedValue, actualValue);
@@ -315,7 +315,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(addSubtractBitSet)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			bool expectedValue;
@@ -323,18 +323,18 @@ namespace ActionSetTestUnitTests
 
 			for (int s = 0; s < MAX_DEFAULT_SET_SIZE; s++)
 			{
-				actionSet.add((BitSet)s);
+				actionSet.add((BuildOrderSearchDeprecated::BitSet)s);
 				actionSetExt.add((BitSetExt)s);
 
-				expectedValue = actionSet.contains((BitSet)s);
+				expectedValue = actionSet.contains((BuildOrderSearchDeprecated::BitSet)s);
 				actualValue = actionSetExt.contains((BitSetExt)s);
 
 				Assert::AreEqual(expectedValue, actualValue);
 
-				actionSet.subtract((BitSet)s);
+				actionSet.subtract((BuildOrderSearchDeprecated::BitSet)s);
 				actionSetExt.subtract((BitSetExt)s);
 
-				expectedValue = actionSet.contains((BitSet)s);
+				expectedValue = actionSet.contains((BuildOrderSearchDeprecated::BitSet)s);
 				actualValue = actionSetExt.contains((BitSetExt)s);
 
 				Assert::AreEqual(expectedValue, actualValue);
@@ -343,7 +343,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(popAction)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			unsigned char expectedValue;
@@ -352,7 +352,7 @@ namespace ActionSetTestUnitTests
 			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
 			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.popAction();
@@ -364,7 +364,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(nextAction)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			unsigned char expectedValue;
@@ -372,7 +372,7 @@ namespace ActionSetTestUnitTests
 
 			for (unsigned long long int i = TEST_RANGE; i != 0; i--)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.nextAction();
@@ -384,7 +384,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(countTrailingZeros)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			int expectedValue;
@@ -393,7 +393,7 @@ namespace ActionSetTestUnitTests
 			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
 			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.countTrailingZeros(i);
@@ -405,7 +405,9 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(countLeadingZeros)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			// BITSET_SIZE must be set to 64 for test to pass (otherwise there are more leading zeros
+			// due to larger bitset size
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			int expectedValue;
@@ -414,7 +416,7 @@ namespace ActionSetTestUnitTests
 			//for (unsigned long long int i = TEST_RANGE; i != 0; i--)
 			for (int i = 1; i < MAX_DEFAULT_SET_SIZE; i++)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.countLeadingZeros(i);
@@ -426,7 +428,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(numActions)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			int expectedValue;
@@ -434,7 +436,7 @@ namespace ActionSetTestUnitTests
 
 			for (int s = INT_MAX - 1; s > 0; s -= EXTERNAL_INT_LOOP_STEP)
 			{
-				actionSet = ActionSet(s);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(s);
 				actionSetExt = ActionSetExt(s);
 
 				///////////////// Doesn't work, because set does not change; setExt does.
@@ -472,7 +474,7 @@ namespace ActionSetTestUnitTests
 
 		TEST_METHOD(randomAction)
 		{
-			ActionSet actionSet = ActionSet(0ull);
+			BuildOrderSearchDeprecated::ActionSet actionSet = BuildOrderSearchDeprecated::ActionSet(0ull);
 			ActionSetExt actionSetExt = ActionSetExt(0ull);
 
 			unsigned char expectedValue;
@@ -480,7 +482,7 @@ namespace ActionSetTestUnitTests
 
 			for (unsigned long long int i = TEST_RANGE; i != 1; i--)
 			{
-				actionSet = ActionSet(i);
+				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
 				unsigned char action = actionSet.randomAction();

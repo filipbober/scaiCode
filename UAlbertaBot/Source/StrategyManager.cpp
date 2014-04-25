@@ -751,9 +751,13 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int vulturesWanted;
 	int firebatsWanted;
 
-	scvsWanted += 60;
+	scvsWanted = numSCV + 3;
+	marinesWanted = numMarines + 3;
 
+
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 

@@ -43,7 +43,7 @@
 // eof testing
 // eof ext
 
-namespace BuildOrderSearch
+namespace BuildOrderSearchDeprecated
 {
 
 typedef unsigned char Action;

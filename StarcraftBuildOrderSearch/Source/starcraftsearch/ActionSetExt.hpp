@@ -34,6 +34,9 @@
 #define RBIT(N) (__LSHIFT64(__ONE, N))
 #define SINGLE_BIT(N) RBIT(N)
 
+
+#define S_ONE std::bitset<BITSET_SIZE>(1)
+#define S_ZERO std::bitset<BITSET_SIZE>(0)
 #define S_LSHIFT(VAL, N) (VAL << ((N/2)-1))
 #define S_SINGLE_BIT(N) (S_LSHIFT(BuildOrderSearch::S_ONE, N))
 
@@ -48,10 +51,11 @@
 
 namespace BuildOrderSearch
 {
-	typedef unsigned char ActionExt;
+	typedef unsigned char Action;
 	const unsigned int BITSET_SIZE = 64;
-	std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
-	std::bitset<BITSET_SIZE> S_ZERO = std::bitset<BITSET_SIZE>(0);
+
+	//std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
+	//std::bitset<BITSET_SIZE> S_ZERO = std::bitset<BITSET_SIZE>(0);
 
 	class BitSetExt
 	{
@@ -68,7 +72,7 @@ namespace BuildOrderSearch
 		BitSetExt(long long unsigned s) : set(s), setExt(s) {}		// constructor which takes a uint64
 
 		// pops the next action (bit from the right)
-		ActionExt popAction()
+		Action popAction()
 		{
 #ifdef REVERSE_ACTION_ITERATOR
 			// get the number of trailing zeros
@@ -82,7 +86,7 @@ namespace BuildOrderSearch
 			subtract(nextAction);
 			set = setExt.to_ulong();
 
-			return (ActionExt)nextAction;
+			return (Action)nextAction;
 		}
 
 		// peeks at the next action
@@ -253,7 +257,7 @@ namespace BuildOrderSearch
 
 		}
 
-		ActionExt randomAction() const
+		Action randomAction() const
 		{
 			BitSetExt s(set);
 			int num = s.numActions();
@@ -264,7 +268,7 @@ namespace BuildOrderSearch
 
 			int r = (rand() % (s.numActions() - 1));
 
-			ActionExt a = s.popAction();
+			Action a = s.popAction();
 
 			for (int i = 0; i < r; i++)
 			{
@@ -286,5 +290,6 @@ namespace BuildOrderSearch
 	};
 
 	typedef BitSetExt ActionSetExt;
+	typedef BitSetExt ActionSet;
 
 }
