@@ -37,8 +37,8 @@
 
 #define S_ONE std::bitset<BITSET_SIZE>(1)
 #define S_ZERO std::bitset<BITSET_SIZE>(0)
-#define S_LSHIFT(VAL, N) (VAL << ((N/2)-1))
-#define S_SINGLE_BIT(N) (S_LSHIFT(BuildOrderSearch::S_ONE, N))
+#define S_LSHIFT(VAL, N) ((VAL) << ((N/2)-1))
+#define S_SINGLE_BIT(N) (S_LSHIFT(S_ONE, N))
 
 //#define REVERSE_ACTION_ITERATOR
 
@@ -70,6 +70,7 @@ namespace BuildOrderSearch
 	public:
 		BitSetExt() : set(0), setExt(0) {}							// default constructor sets to zero
 		BitSetExt(long long unsigned s) : set(s), setExt(s) {}		// constructor which takes a uint64
+		BitSetExt(std::bitset<BITSET_SIZE> s) : set(s.to_ulong()), setExt(s) {}
 
 		// pops the next action (bit from the right)
 		Action popAction()
@@ -103,14 +104,15 @@ namespace BuildOrderSearch
 			return nextAction;
 		}
 
-		int  		operator [] 	(const int bit) 	const { return set & SINGLE_BIT(bit) ? 1 : 0; }	// get the bit at i
-		BitSetExt 		operator +  	(const int bit) 	const { return BitSetExt(set | SINGLE_BIT(bit)); }	// member addition
-		BitSetExt 		operator -  	(const int bit) 	const { return BitSetExt(set & ~SINGLE_BIT(bit)); }	// member subtraction
-		BitSetExt 		operator |  	(const BitSetExt & a) 	const { return BitSetExt(set | a.set); }				// set union
-		BitSetExt 		operator +  	(const BitSetExt & a)	const { return BitSetExt(set | a.set); }				// set union
-		BitSetExt 		operator -  	(const BitSetExt & a)	const { return BitSetExt(set & ~a.set); }			// set subtraction
-		BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(set & a.set); }				// set intersection
-		BitSetExt 		operator ~  	()					const { return BitSetExt(~set); }					// set negation
+		// old (but working for bitset <mostly>)
+		//int  		operator [] 	(const int bit) 	const { return set & SINGLE_BIT(bit) ? 1 : 0; }	// get the bit at i
+		//BitSetExt 		operator +  	(const int bit) 	const { return BitSetExt(set | SINGLE_BIT(bit)); }	// member addition
+		//BitSetExt 		operator -  	(const int bit) 	const { return BitSetExt(set & ~SINGLE_BIT(bit)); }	// member subtraction
+		//BitSetExt 		operator |  	(const BitSetExt & a) 	const { return BitSetExt(set | a.set); }				// set union
+		//BitSetExt 		operator +  	(const BitSetExt & a)	const { return BitSetExt(set | a.set); }				// set union
+		//BitSetExt 		operator -  	(const BitSetExt & a)	const { return BitSetExt(set & ~a.set); }			// set subtraction
+		//BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(set & a.set); }				// set intersection
+		//BitSetExt 		operator ~  	()					const { return BitSetExt(~set); }					// set negation
 
 		// old (unsigned long long)
 		//bool 		isEmpty() 					const { return set == __ZERO; }					// the set is all zeros
@@ -124,6 +126,16 @@ namespace BuildOrderSearch
 		//void 		add(const BitSetExt a) { set |= a.set; }							// sets all of input set to 1
 		//void		subtract(const int bit) { set &= ~SINGLE_BIT(bit); }				// set bit to zero
 		//void 		subtract(const BitSetExt a) { set &= ~a.set; }							// sets all of input set to 0
+
+		// new 
+		int  		operator [] 	(const int bit) 	const { return setExt[bit]; }	// get the bit at i
+		BitSetExt 		operator +  	(const int bit) 	const { return BitSetExt(setExt | S_SINGLE_BIT(bit)); }	// member addition // setExt | std::bitset<BITSET_SIZE>(bit)  
+		BitSetExt 		operator -  	(const int bit) 	const { return BitSetExt(setExt & ~S_SINGLE_BIT(bit)); }	// member subtraction
+		BitSetExt 		operator |  	(const BitSetExt & a) 	const { return BitSetExt(setExt | a.setExt); }				// set union
+		BitSetExt 		operator +  	(const BitSetExt & a)	const { return BitSetExt(setExt | a.setExt); }				// set union
+		BitSetExt 		operator -  	(const BitSetExt & a)	const { return BitSetExt(setExt & ~a.setExt); }			// set subtraction
+		BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(setExt & a.setExt); }				// set intersection
+		BitSetExt 		operator ~  	()					const { return BitSetExt(~setExt); }					// set negation
 
 		// new (std::bitset)
 		bool 		isEmpty() 					const { return setExt == S_ZERO; }					// the set is all zeros
