@@ -756,8 +756,11 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	
+	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + 3));
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 
@@ -1169,6 +1172,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	}
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Barracks, 1));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, numMarines + 2));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + 3));
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numMarines + 2));
 
 	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));

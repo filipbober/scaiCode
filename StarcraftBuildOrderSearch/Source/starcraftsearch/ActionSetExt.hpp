@@ -11,34 +11,37 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef WIN32
-#include <intrin.h>
-#pragma intrinsic(__ll_lshift)
-#pragma intrinsic(__ll_rshift)
+//#ifdef WIN32
+//#include <intrin.h>
+//#pragma intrinsic(__ll_lshift)
+//#pragma intrinsic(__ll_rshift)
 #define __lz(a) countLeadingZeros(a)
 #define __tz(a) countTrailingZeros(a)
-#define __ONE 1ull
-#define __ZERO 0ull
-#define __LSHIFT64(VAL, N) __ll_lshift(VAL, N)
-#define __RSHIFT64(VAL, N) __ll_rshift(VAL, N)
-#else
-#define __lz(a) __builtin_clzll(a)
-#define __tz(a) __builtin_ctzll(a)
-#define __ONE 1LLU
-#define __ZERO 0LLU
-#define __LSHIFT64(VAL, N) VAL << N
-#define __RSHIFT64(VAL, N) VAL >> N
-#endif
-
-#define LBIT(N) (__LSHIFT64(__ONE, (63-N)))
-#define RBIT(N) (__LSHIFT64(__ONE, N))
-#define SINGLE_BIT(N) RBIT(N)
+//#define __ONE 1ull
+//#define __ZERO 0ull
+//#define __LSHIFT64(VAL, N) __ll_lshift(VAL, N)
+//#define __RSHIFT64(VAL, N) __ll_rshift(VAL, N)
+//#else
+//#define __lz(a) __builtin_clzll(a)
+//#define __tz(a) __builtin_ctzll(a)
+//#define __ONE 1LLU
+//#define __ZERO 0LLU
+//#define __LSHIFT64(VAL, N) VAL << N
+//#define __RSHIFT64(VAL, N) VAL >> N
+//#endif
+//
+//#define LBIT(N) (__LSHIFT64(__ONE, (63-N)))
+//#define RBIT(N) (__LSHIFT64(__ONE, N))
+//#define SINGLE_BIT(N) RBIT(N)
 
 
 #define S_ONE std::bitset<BITSET_SIZE>(1)
 #define S_ZERO std::bitset<BITSET_SIZE>(0)
 #define S_LSHIFT(VAL, N) ((VAL) << ((N/2)-1))
 #define S_SINGLE_BIT(N) (S_LSHIFT(S_ONE, N))
+
+#define __ONE S_ONE
+#define __ZERO S_ZERO
 
 //#define REVERSE_ACTION_ITERATOR
 
@@ -77,7 +80,7 @@ namespace BuildOrderSearch
 		{
 #ifdef REVERSE_ACTION_ITERATOR
 			// get the number of trailing zeros
-			int nextAction = 63 - __lz(set);
+			int nextAction = (BITSET_SIZE - 1) - __lz(set);
 #else
 			// get the number of trailing zeros
 			int nextAction = __tz(set);
@@ -95,7 +98,7 @@ namespace BuildOrderSearch
 		{
 #ifdef REVERSE_ACTION_ITERATOR
 			// get the number of trailing zeros
-			int nextAction = 63 - __lz(set);
+			int nextAction = (BITSET_SIZE - 1) - __lz(set);
 #else
 			// get the number of trailing zeros
 			int nextAction = __tz(set);
@@ -292,12 +295,12 @@ namespace BuildOrderSearch
 
 		void print() const
 		{
-			// print the bits from left to right
-			printf("%ull\n", set);
-			for (int i = 0; i < 64; ++i) { printf("%d", (63 - i) % 10); }
-			printf("\n");
-			for (int i = 0; i < 64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
-			printf("\n");
+			//// print the bits from left to right
+			//printf("%ull\n", set);
+			//for (int i = 0; i < 64; ++i) { printf("%d", (63 - i) % 10); }
+			//printf("\n");
+			//for (int i = 0; i < 64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
+			//printf("\n");
 		}
 	};
 
