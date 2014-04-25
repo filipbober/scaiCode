@@ -13,7 +13,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include "BWAPI.h"
-#include "ActionSet.hpp"
+#include "ActionSetExt.hpp"
 #include <assert.h>
 #include <sstream>
 #include "Common.h"

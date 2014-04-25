@@ -11,31 +11,37 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef WIN32
-#include <intrin.h>
-#pragma intrinsic(__ll_lshift)
-#pragma intrinsic(__ll_rshift)
+//#ifdef WIN32
+//#include <intrin.h>
+//#pragma intrinsic(__ll_lshift)
+//#pragma intrinsic(__ll_rshift)
 #define __lz(a) countLeadingZeros(a)
 #define __tz(a) countTrailingZeros(a)
-#define __ONE 1ull
-#define __ZERO 0ull
-#define __LSHIFT64(VAL, N) __ll_lshift(VAL, N)
-#define __RSHIFT64(VAL, N) __ll_rshift(VAL, N)
-#else
-#define __lz(a) __builtin_clzll(a)
-#define __tz(a) __builtin_ctzll(a)
-#define __ONE 1LLU
-#define __ZERO 0LLU
-#define __LSHIFT64(VAL, N) VAL << N
-#define __RSHIFT64(VAL, N) VAL >> N
-#endif
+//#define __ONE 1ull
+//#define __ZERO 0ull
+//#define __LSHIFT64(VAL, N) __ll_lshift(VAL, N)
+//#define __RSHIFT64(VAL, N) __ll_rshift(VAL, N)
+//#else
+//#define __lz(a) __builtin_clzll(a)
+//#define __tz(a) __builtin_ctzll(a)
+//#define __ONE 1LLU
+//#define __ZERO 0LLU
+//#define __LSHIFT64(VAL, N) VAL << N
+//#define __RSHIFT64(VAL, N) VAL >> N
+//#endif
+//
+//#define LBIT(N) (__LSHIFT64(__ONE, (63-N)))
+//#define RBIT(N) (__LSHIFT64(__ONE, N))
+//#define SINGLE_BIT(N) RBIT(N)
 
-#define LBIT(N) (__LSHIFT64(__ONE, (63-N)))
-#define RBIT(N) (__LSHIFT64(__ONE, N))
-#define SINGLE_BIT(N) RBIT(N)
 
-#define S_LSHIFT(VAL, N) (VAL << ((N/2)-1))
-#define S_SINGLE_BIT(N) (S_LSHIFT(BuildOrderSearch::S_ONE, N))
+#define S_ONE std::bitset<BITSET_SIZE>(1)
+#define S_ZERO std::bitset<BITSET_SIZE>(0)
+#define S_LSHIFT(VAL, N) ((VAL) << ((N/2)-1))
+#define S_SINGLE_BIT(N) (S_LSHIFT(S_ONE, N))
+
+#define __ONE S_ONE
+#define __ZERO S_ZERO
 
 //#define REVERSE_ACTION_ITERATOR
 
@@ -48,10 +54,11 @@
 
 namespace BuildOrderSearch
 {
-	typedef unsigned char ActionExt;
+	typedef unsigned char Action;
 	const unsigned int BITSET_SIZE = 64;
-	std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
-	std::bitset<BITSET_SIZE> S_ZERO = std::bitset<BITSET_SIZE>(0);
+
+	//std::bitset<BITSET_SIZE> S_ONE = std::bitset<BITSET_SIZE>(1);
+	//std::bitset<BITSET_SIZE> S_ZERO = std::bitset<BITSET_SIZE>(0);
 
 	class BitSetExt
 	{
@@ -66,13 +73,14 @@ namespace BuildOrderSearch
 	public:
 		BitSetExt() : set(0), setExt(0) {}							// default constructor sets to zero
 		BitSetExt(long long unsigned s) : set(s), setExt(s) {}		// constructor which takes a uint64
+		BitSetExt(std::bitset<BITSET_SIZE> s) : set(s.to_ulong()), setExt(s) {}
 
 		// pops the next action (bit from the right)
-		ActionExt popAction()
+		Action popAction()
 		{
 #ifdef REVERSE_ACTION_ITERATOR
 			// get the number of trailing zeros
-			int nextAction = 63 - __lz(set);
+			int nextAction = (BITSET_SIZE - 1) - __lz(set);
 #else
 			// get the number of trailing zeros
 			int nextAction = __tz(set);
@@ -82,7 +90,7 @@ namespace BuildOrderSearch
 			subtract(nextAction);
 			set = setExt.to_ulong();
 
-			return (ActionExt)nextAction;
+			return (Action)nextAction;
 		}
 
 		// peeks at the next action
@@ -90,7 +98,7 @@ namespace BuildOrderSearch
 		{
 #ifdef REVERSE_ACTION_ITERATOR
 			// get the number of trailing zeros
-			int nextAction = 63 - __lz(set);
+			int nextAction = (BITSET_SIZE - 1) - __lz(set);
 #else
 			// get the number of trailing zeros
 			int nextAction = __tz(set);
@@ -99,14 +107,15 @@ namespace BuildOrderSearch
 			return nextAction;
 		}
 
-		int  		operator [] 	(const int bit) 	const { return set & SINGLE_BIT(bit) ? 1 : 0; }	// get the bit at i
-		BitSetExt 		operator +  	(const int bit) 	const { return BitSetExt(set | SINGLE_BIT(bit)); }	// member addition
-		BitSetExt 		operator -  	(const int bit) 	const { return BitSetExt(set & ~SINGLE_BIT(bit)); }	// member subtraction
-		BitSetExt 		operator |  	(const BitSetExt & a) 	const { return BitSetExt(set | a.set); }				// set union
-		BitSetExt 		operator +  	(const BitSetExt & a)	const { return BitSetExt(set | a.set); }				// set union
-		BitSetExt 		operator -  	(const BitSetExt & a)	const { return BitSetExt(set & ~a.set); }			// set subtraction
-		BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(set & a.set); }				// set intersection
-		BitSetExt 		operator ~  	()					const { return BitSetExt(~set); }					// set negation
+		// old (but working for bitset <mostly>)
+		//int  		operator [] 	(const int bit) 	const { return set & SINGLE_BIT(bit) ? 1 : 0; }	// get the bit at i
+		//BitSetExt 		operator +  	(const int bit) 	const { return BitSetExt(set | SINGLE_BIT(bit)); }	// member addition
+		//BitSetExt 		operator -  	(const int bit) 	const { return BitSetExt(set & ~SINGLE_BIT(bit)); }	// member subtraction
+		//BitSetExt 		operator |  	(const BitSetExt & a) 	const { return BitSetExt(set | a.set); }				// set union
+		//BitSetExt 		operator +  	(const BitSetExt & a)	const { return BitSetExt(set | a.set); }				// set union
+		//BitSetExt 		operator -  	(const BitSetExt & a)	const { return BitSetExt(set & ~a.set); }			// set subtraction
+		//BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(set & a.set); }				// set intersection
+		//BitSetExt 		operator ~  	()					const { return BitSetExt(~set); }					// set negation
 
 		// old (unsigned long long)
 		//bool 		isEmpty() 					const { return set == __ZERO; }					// the set is all zeros
@@ -120,6 +129,16 @@ namespace BuildOrderSearch
 		//void 		add(const BitSetExt a) { set |= a.set; }							// sets all of input set to 1
 		//void		subtract(const int bit) { set &= ~SINGLE_BIT(bit); }				// set bit to zero
 		//void 		subtract(const BitSetExt a) { set &= ~a.set; }							// sets all of input set to 0
+
+		// new 
+		int  		operator [] 	(const int bit) 	const { return setExt[bit]; }	// get the bit at i
+		BitSetExt 		operator +  	(const int bit) 	const { return BitSetExt(setExt | S_SINGLE_BIT(bit)); }	// member addition // setExt | std::bitset<BITSET_SIZE>(bit)  
+		BitSetExt 		operator -  	(const int bit) 	const { return BitSetExt(setExt & ~S_SINGLE_BIT(bit)); }	// member subtraction
+		BitSetExt 		operator |  	(const BitSetExt & a) 	const { return BitSetExt(setExt | a.setExt); }				// set union
+		BitSetExt 		operator +  	(const BitSetExt & a)	const { return BitSetExt(setExt | a.setExt); }				// set union
+		BitSetExt 		operator -  	(const BitSetExt & a)	const { return BitSetExt(setExt & ~a.setExt); }			// set subtraction
+		BitSetExt 		operator &  	(const BitSetExt & a)	const { return BitSetExt(setExt & a.setExt); }				// set intersection
+		BitSetExt 		operator ~  	()					const { return BitSetExt(~setExt); }					// set negation
 
 		// new (std::bitset)
 		bool 		isEmpty() 					const { return setExt == S_ZERO; }					// the set is all zeros
@@ -253,7 +272,7 @@ namespace BuildOrderSearch
 
 		}
 
-		ActionExt randomAction() const
+		Action randomAction() const
 		{
 			BitSetExt s(set);
 			int num = s.numActions();
@@ -264,7 +283,7 @@ namespace BuildOrderSearch
 
 			int r = (rand() % (s.numActions() - 1));
 
-			ActionExt a = s.popAction();
+			Action a = s.popAction();
 
 			for (int i = 0; i < r; i++)
 			{
@@ -276,15 +295,16 @@ namespace BuildOrderSearch
 
 		void print() const
 		{
-			// print the bits from left to right
-			printf("%ull\n", set);
-			for (int i = 0; i < 64; ++i) { printf("%d", (63 - i) % 10); }
-			printf("\n");
-			for (int i = 0; i < 64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
-			printf("\n");
+			//// print the bits from left to right
+			//printf("%ull\n", set);
+			//for (int i = 0; i < 64; ++i) { printf("%d", (63 - i) % 10); }
+			//printf("\n");
+			//for (int i = 0; i < 64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
+			//printf("\n");
 		}
 	};
 
 	typedef BitSetExt ActionSetExt;
+	typedef BitSetExt ActionSet;
 
 }

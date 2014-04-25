@@ -2,7 +2,7 @@
 #define DEPENDENCY_GRAPH
 
 #include <vector>
-#include "ActionSet.hpp"
+#include "ActionSetExt.hpp"
 
 #define NO_STRICT_DEPENDENCY -1
 
