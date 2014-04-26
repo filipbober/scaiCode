@@ -1172,6 +1172,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	}
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Barracks, 1));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, numMarines + 2));
+	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + 3));
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numMarines + 2));
 

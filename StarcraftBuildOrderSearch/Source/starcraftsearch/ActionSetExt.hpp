@@ -63,7 +63,7 @@ namespace BuildOrderSearch
 	class BitSetExt
 	{
 		//friend class ActionSetTestUnitTests::ActionSetExtTest;
-		unsigned long long set;							// 64 bit unsigned int to represent set
+		//unsigned long long set;							// 64 bit unsigned int to represent set
 
 		std::bitset<BITSET_SIZE> setExt;
 		//std::bitset<BITSET_SIZE> S_ONE = __ONE;
@@ -71,9 +71,9 @@ namespace BuildOrderSearch
 
 		//setExt(std::bitset<BITSET_SIZE>(1) << (BITSET_SIZE - 1))
 	public:
-		BitSetExt() : set(0), setExt(0) {}							// default constructor sets to zero
-		BitSetExt(long long unsigned s) : set(s), setExt(s) {}		// constructor which takes a uint64
-		BitSetExt(std::bitset<BITSET_SIZE> s) : set(s.to_ulong()), setExt(s) {}
+		BitSetExt() : setExt(0) {}							// default constructor sets to zero
+		//BitSetExt(long long unsigned s) : setExt(s) {}		// constructor which takes a uint64
+		BitSetExt(std::bitset<BITSET_SIZE> s) : setExt(s) {}
 
 		// pops the next action (bit from the right)
 		Action popAction()
@@ -83,12 +83,12 @@ namespace BuildOrderSearch
 			int nextAction = (BITSET_SIZE - 1) - __lz(set);
 #else
 			// get the number of trailing zeros
-			int nextAction = __tz(set);
+			int nextAction = __tz(setExt);
 #endif
 
 			// set that bit to a zero
 			subtract(nextAction);
-			set = setExt.to_ulong();
+			//set = setExt.to_ulong();
 
 			return (Action)nextAction;
 		}
@@ -101,7 +101,7 @@ namespace BuildOrderSearch
 			int nextAction = (BITSET_SIZE - 1) - __lz(set);
 #else
 			// get the number of trailing zeros
-			int nextAction = __tz(set);
+			int nextAction = __tz(setExt);
 #endif
 
 			return nextAction;
@@ -153,7 +153,7 @@ namespace BuildOrderSearch
 		void		subtract(const int bit) { setExt.set(bit, 0); }				// set bit to zero
 		void 		subtract(const BitSetExt a) { setExt &= ~a.setExt; }							// sets all of input set to 0
 
-		int countTrailingZeros(unsigned long long s) const
+		int countTrailingZeros(std::bitset<BITSET_SIZE> s) const
 		{
 			//int zeros = 0;
 
@@ -182,7 +182,7 @@ namespace BuildOrderSearch
 			return zeros;
 		}
 
-		int countLeadingZeros(unsigned long long s) const
+		int countLeadingZeros(std::bitset<BITSET_SIZE> s) const
 		{
 			//int zeros = 0;
 			//unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
@@ -215,7 +215,7 @@ namespace BuildOrderSearch
 			return zeros;
 		}
 
-		int countAllLeadingZeros(unsigned long long s) const
+		int countAllLeadingZeros(std::bitset<BITSET_SIZE> s) const
 		{
 			//int zeros = 0;
 			//unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
@@ -274,7 +274,7 @@ namespace BuildOrderSearch
 
 		Action randomAction() const
 		{
-			BitSetExt s(set);
+			BitSetExt s(setExt);
 			int num = s.numActions();
 			if (num == 1)
 			{

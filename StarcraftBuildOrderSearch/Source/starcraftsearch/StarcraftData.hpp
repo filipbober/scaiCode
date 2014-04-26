@@ -12,7 +12,7 @@
 #include <sstream>
 
 #include "DependencyGraph.hpp"
-#include "ActionSet.hpp"
+#include "ActionSetExt.hpp"
 #include "StarcraftAction.hpp"
 #include "ActionInProgress.hpp"
 #include "MacroAction.hpp"
