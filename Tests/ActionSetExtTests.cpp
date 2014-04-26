@@ -14,10 +14,10 @@ namespace ActionSetTestUnitTests
 	{
 	private:
 		//const unsigned long long int TEST_RANGE = ULLONG_MAX;			// or const unsigned long long int = ~0;
-		const unsigned long long int TEST_RANGE = 100;
-		const int EXTERNAL_INT_LOOP_STEP = 3848537;			// results 558 loops
-		const int INTERNAL_INT_LOOP_STEP = 7110873;		// results in 302 loops	
-		const int MAX_DEFAULT_SET_SIZE = 32 - 1;
+		static const unsigned long long int TEST_RANGE = 100;
+		static const int EXTERNAL_INT_LOOP_STEP = 3848537;			// results 558 loops
+		static const int INTERNAL_INT_LOOP_STEP = 7110873;		// results in 302 loops	
+		static const int MAX_DEFAULT_SET_SIZE = 32 - 1;
 		
 
 	public:
