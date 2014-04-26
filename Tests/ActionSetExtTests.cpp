@@ -375,6 +375,9 @@ namespace ActionSetTestUnitTests
 				actionSet = BuildOrderSearchDeprecated::ActionSet(i);
 				actionSetExt = ActionSetExt(i);
 
+				int trailingZerosExt = actionSetExt.countTrailingZeros(i);
+				int trailingZerosD = actionSet.countTrailingZeros(i);
+
 				expectedValue = actionSet.nextAction();
 				actualValue = actionSetExt.nextAction();
 

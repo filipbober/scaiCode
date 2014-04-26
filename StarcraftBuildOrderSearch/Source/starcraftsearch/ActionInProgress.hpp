@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "BWAPI.h"
-#include "ActionSet.hpp"
+#include "ActionSetExt.hpp"
 #include "StarcraftAction.hpp"
 #include "StarcraftData.hpp"
 #include <math.h>

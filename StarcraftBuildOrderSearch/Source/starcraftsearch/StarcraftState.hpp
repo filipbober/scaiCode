@@ -8,7 +8,7 @@
 
 #include "BWAPI.h"
 #include <limits.h>
-#include "ActionSet.hpp"
+#include "ActionSetExt.hpp"
 #include "StarcraftAction.hpp"
 #include "StarcraftData.hpp"
 #include "ActionInProgress.hpp"
@@ -1715,7 +1715,7 @@ public:
 	void setUnitMask() 
 	{
 		// reset the bits
-		completedUnitSet = 0;
+		completedUnitSet = std::bitset<BITSET_SIZE>(0);
 
 		// for each possible action
 		for (Action a(0); a<DATA.size(); ++a) 
