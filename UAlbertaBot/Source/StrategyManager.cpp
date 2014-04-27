@@ -55,7 +55,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0";
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";
@@ -1128,14 +1128,14 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	medicsWanted = marinesWanted / 5;
 
 	// If stimpacks are not researched and are not being researched, do it
-	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
+	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
 		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
 	{
-		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
 	}
 
 	// If stimpacks are not researched and are not being researched, do it
-	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
+	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
 		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep))
 	{
 		//goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
@@ -1165,14 +1165,17 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	//BWAPI::Broodwar->printf("                                           DebExt: building SCV = %d", numSCV + 1);
 	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_SCV) > 1)
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: building Infantry Armor = %d", numSCV + 1);
+		//BWAPI::Broodwar->printf("                                           DebExt: building Infantry Armor = %d", numSCV + 1);
 		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 1));			// works (31)
 		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons, 1));
 		
 	}
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, numSCV + 2));
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Barracks, 1));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, numMarines + 2));
-	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, numMedics + 1));
+	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
 	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + 3));
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numMarines + 2));
 
