@@ -34,22 +34,12 @@
 
 //#define REVERSE_ACTION_ITERATOR
 
-// Extension
-// For testing purposes
-//namespace ActionSetTestUnitTests
-//{
-//	class ActionSetExtTest;
-//}
-// eof testing
-// eof ext
-
 namespace BuildOrderSearchDeprecated
 {
 
 typedef unsigned char Action;
 
 class BitSet {
-	//friend class ActionSetTestUnitTests::ActionSetExtTest;		// ext
 	unsigned long long set;							// 64 bit unsigned int to represent set
 
 public:

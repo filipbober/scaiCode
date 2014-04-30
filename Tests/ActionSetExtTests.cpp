@@ -1,3 +1,8 @@
+// Tests for UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// ActionSet and ActionSetExt classes
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
@@ -21,11 +26,6 @@ namespace ActionSetTestUnitTests
 		
 
 	public:
-		//TEST_MODULE_INITIALIZE(ModuleStartup)
-		//{
-		//	Logger::WriteMessage("The test is starting");
-		//}
-
 		TEST_METHOD(TestMethod1)
 		{
 			// TODO: Your test code here
@@ -206,23 +206,6 @@ namespace ActionSetTestUnitTests
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}
-
-			//for (int i = 0; i < MAX_DEFAULT_SET_SIZE; i++)
-			//{
-			//	actionSet = BuildOrderSearchDeprecated::ActionSet(i);
-			//	actionSetExt = ActionSetExt(i);
-			//	for (int s = 0; s < INT_MAX - 2; s++)
-			//	{
-			//		actionSet.add((int)s);
-			//		actionSetExt.add((int)s);
-
-
-			//		expectedValue = actionSet.popAction();
-			//		actualValue = actionSetExt.popAction();
-
-			//		Assert::AreEqual(expectedValue, actualValue);
-			//	}
-			//}
 		}
 
 		TEST_METHOD(subtractBit)
@@ -423,7 +406,8 @@ namespace ActionSetTestUnitTests
 				actionSetExt = ActionSetExt(i);
 
 				expectedValue = actionSet.countLeadingZeros(i);
-				actualValue = actionSetExt.countLeadingZeros(i);
+				//actualValue = actionSetExt.countLeadingZeros(i);
+				actualValue = actionSetExt.countLeadingZerosLegacy(i);
 
 				Assert::AreEqual(expectedValue, actualValue);
 			}

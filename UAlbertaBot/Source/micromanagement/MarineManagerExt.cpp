@@ -1,3 +1,7 @@
+// Extension to UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "Common.h"
 #include "MarineManagerExt.h"
 #include "MicroManager.h"
@@ -14,7 +18,7 @@ MarineManagerExt::~MarineManagerExt()
 
 void MarineManagerExt::executeMicro(const UnitVector & targets)
 {
-	BWAPI::Broodwar->printf("                                           DebExt: Extension execute()");
+	//BWAPI::Broodwar->printf("                                           DebExt: Extension execute()");
 	// Units vector initialized by MicroManager::setUnits, called by Squad::setManagerUnits
 	const UnitVector & terranMarines = getUnits();
 	
