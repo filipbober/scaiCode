@@ -93,7 +93,7 @@ void ProductionManager::update()
 	}
 
 	// if nothing is currently building, get a new goal from the strategy manager
-	if ((queue.size() < 2) && (BWAPI::Broodwar->getFrameCount() > 10) && !Options::Modules::USING_BUILD_ORDER_DEMO)
+	if ((queue.size() == 0) && (BWAPI::Broodwar->getFrameCount() > 10) && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
 		if (!StrategyManager::Instance().isMidGame)
 		{

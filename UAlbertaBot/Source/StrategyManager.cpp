@@ -517,8 +517,10 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 		{
 			return getTerranDoubleRaxMnMBuildOrderGoal();
 		}
-
-		return getTerranBuildOrderGoal();
+		else
+		{
+			return getTerranBuildOrderGoal();
+		}
 	}
 	else
 	{
@@ -756,6 +758,45 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	medicsWanted = marinesWanted / 5;
 	firebatsWanted = numMarines / 3;
 
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4 &&
+		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1)
+	{
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Academy, 1));
+	}
+
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
+	{
+		// If stimpacks are not researched and are not being researched, do it
+		if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
+			!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
+		{
+			goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+		}
+
+		// If U238 Shells are not researched and are not being researched, do it
+		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 0)
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+		}
+	}
+
+	// Research weapons and armor for bio
+	int currentWeaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
+	int currentArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 10)
+	{
+		if (currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
+		}
+
+		if (currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
+		}
+
+	}
+
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
@@ -971,8 +1012,13 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	medicsWanted = marinesWanted / 5;
 
 	
+	if(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4 &&
+		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1)
+	{
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Academy, 1));
+	}
 
-	// If stimpacks are not researched and are not being researched, do it
+	// If scanner is not researched and is not being researched, do it
 	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
 		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep))
 	{
@@ -989,7 +1035,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		}
 
 		// If U238 Shells are not researched and are not being researched, do it
-		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 0)
+		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 		}
@@ -998,16 +1044,21 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	// Research weapons and armor for bio
 	int currentWeaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
 	int currentArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
-	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
+	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 10 &&
+		BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
 	{
-		if (currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+		if (!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)) &&
+			!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor)))
 		{
-			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
-		}
+			if (currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+			{
+				goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
+			}
 
-		if (currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
-		{
-			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
+			if (currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
+			{
+				goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
+			}
 		}
 
 	}
