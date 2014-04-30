@@ -93,7 +93,7 @@ void ProductionManager::update()
 	}
 
 	// if nothing is currently building, get a new goal from the strategy manager
-	if ((queue.size() == 0) && (BWAPI::Broodwar->getFrameCount() > 10) && !Options::Modules::USING_BUILD_ORDER_DEMO)
+	if ((queue.size() < 2) && (BWAPI::Broodwar->getFrameCount() > 10) && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
 		if (!StrategyManager::Instance().isMidGame)
 		{
@@ -114,8 +114,9 @@ void ProductionManager::update()
 		queue.queueAsHighestPriority(MetaType(BWAPI::Broodwar->self()->getRace().getSupplyProvider()), true);
 	}
 
-	// if they have cloaked units get a new goal asap
-	if (!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
+	// if they have cloaked units get a new goal asap (for Protoss)
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss &&
+		!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
 	{
 		if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) < 2)
 		{

@@ -1,3 +1,7 @@
+// Extension to UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #pragma once
 
 #include <stdio.h>
@@ -17,7 +21,6 @@
 
 #define S_ONE std::bitset<BITSET_SIZE>(1)
 #define S_ZERO std::bitset<BITSET_SIZE>(0)
-#define S_LSHIFT_LEGACY(VAL, N) ((VAL) << ((N/2)-1))			// incorrect code, compatibile with 32 int and defautl ActionSet
 #define S_LSHIFT(VAL, N) ((VAL) << ((N-1)))
 #define S_SINGLE_BIT(N) (S_LSHIFT(S_ONE, N))
 
@@ -94,16 +97,6 @@ namespace BuildOrderSearch
 
 		int countTrailingZeros(std::bitset<BITSET_SIZE> s) const
 		{
-			//int zeros = 0;
-
-			//while (!(s & __ONE))
-			//{
-			//	s = __RSHIFT64(s, 1);
-			//	++zeros;
-			//}
-
-			//return zeros;
-
 			int zeros = 0;
 			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);
 
@@ -123,21 +116,8 @@ namespace BuildOrderSearch
 
 		int countLeadingZerosLegacy(std::bitset<BITSET_SIZE> s) const
 		{
-			//int zeros = 0;
-			//unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
-
-			//while (!(s & __L_ONE))
-			//{
-			//	s = __LSHIFT64(s, 1);
-			//	++zeros;
-			//}
-
-			//return zeros;
-
 			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);		
-			//std::bitset<BITSET_SIZE> sLeading = (S_ONE << ((BITSET_SIZE/2) - 1));		// note: BITSET_SIZE / 2
-			//std::bitset<BITSET_SIZE> sLeading = S_LSHIFT(S_ONE, (BITSET_SIZE/2 ));
-			std::bitset<BITSET_SIZE> sLeading = S_LSHIFT_LEGACY(S_ONE, (BITSET_SIZE));
+			std::bitset<BITSET_SIZE> sLeading = S_LSHIFT(S_ONE, (BITSET_SIZE/2));
 
 			int zeros = 0;
 
@@ -158,20 +138,8 @@ namespace BuildOrderSearch
 
 		int countLeadingZeros(std::bitset<BITSET_SIZE> s) const
 		{
-			//int zeros = 0;
-			//unsigned long long __L_ONE = __LSHIFT64(__ONE, 63);
-
-			//while (!(s & __L_ONE))
-			//{
-			//	s = __LSHIFT64(s, 1);
-			//	++zeros;
-			//}
-
-			//return zeros;
-
 			std::bitset<BITSET_SIZE> sBs = std::bitset<BITSET_SIZE>(s);
 			std::bitset<BITSET_SIZE> sLeading = (S_ONE << (BITSET_SIZE - 1));
-			//std::bitset<BITSET_SIZE> sLeading = S_LSHIFT(S_ONE, (BITSET_SIZE - 1));
 
 			int zeros = 0;
 
@@ -213,14 +181,11 @@ namespace BuildOrderSearch
 
 		void print() const
 		{
-			//// print the bits from left to right
-			//printf("%ull\n", set);
-			//for (int i = 0; i < 64; ++i) { printf("%d", (63 - i) % 10); }
-			//printf("\n");
-			//for (int i = 0; i < 64; ++i) { printf("%d", (set & (__LSHIFT64(__ONE, (63 - i))) ? 1 : 0)); }
-			//printf("\n");
+			// not fully implemented
+			for (int i = 0; i < BITSET_SIZE; i++) { printf("%d", (BITSET_SIZE - i) % 10); }
+			printf("\n");
+			for (int i = 0; i < BITSET_SIZE; i++) { printf("%d", (setExt[(BITSET_SIZE - i)])); }
 
-			printf("Print is not implemented\n");
 		}
 	};
 

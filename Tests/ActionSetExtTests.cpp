@@ -1,3 +1,8 @@
+// Tests for UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// ActionSet and ActionSetExt classes
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "stdafx.h"
 #include "CppUnitTest.h"
 

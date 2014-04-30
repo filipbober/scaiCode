@@ -1,3 +1,7 @@
+// Modification to UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "Common.h"
 #include "StrategyManager.h"
 
@@ -28,17 +32,14 @@ void StrategyManager::addStrategies()
 
 	zergMidgameBook = std::vector<std::string>(NumZergMid);
 
-	//protossOpeningBook[ProtossZealotRush]	= "0 0 0 0 1 0 0 3 0 0 3 0 1 3 0 4 4 4 4 4 1 0 4 4 4";
 	protossOpeningBook[ProtossZealotRush] = "0 0 0 0 1 0 3 3 0 0 4 1 4 4 0 4 4 0 1 4 3 0 1 0 4 0 4 4 4 4 1 0 4 4 4";
-	//protossOpeningBook[ProtossZealotRush]	= "0";
-	//protossOpeningBook[ProtossDarkTemplar]	= "0 0 0 0 1 3 0 7 5 0 0 12 3 13 0 22 22 22 22 0 1 0";
 	protossOpeningBook[ProtossDarkTemplar] = "0 0 0 0 1 0 3 0 7 0 5 0 12 0 13 3 22 22 1 22 22 0 1 0";
 	protossOpeningBook[ProtossDragoons] = "0 0 0 0 1 0 0 3 0 7 0 0 5 0 0 3 8 6 1 6 6 0 3 1 0 6 6 6";
 	
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 17 0 3 47 3 23 0 17 0 22 38";		// <- Preferred build order
@@ -55,7 +56,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0";
+	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0";
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";
@@ -737,104 +738,34 @@ const MetaPairVector StrategyManager::getProtossZealotRushBuildOrderGoal() const
 
 const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 {
-	std::vector< std::pair<MetaType, UnitCountType> > goal;	
+	// Default buildOrder
+	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	int numVultures = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
 	int numFirebats = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
 
 	int scvsWanted;
 	int marinesWanted;
-	int medicsWanted;
-	int vulturesWanted;
+	int medicsWanted;		// marine/medic ratio: 5:1
 	int firebatsWanted;
 
-	scvsWanted = numSCV + 3;
+	scvsWanted = numSCV + 2;
 	marinesWanted = numMarines + 3;
+	medicsWanted = marinesWanted / 5;
+	firebatsWanted = numMarines / 3;
 
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Firebat, firebatsWanted));
 
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvsWanted)));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	
-	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + 3));
-
-	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
-
-	//// the goal to return
-	//std::vector< std::pair<MetaType, UnitCountType> > goal;
-
-	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	//int numWraith = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-
-	//int marinesWanted = numMarines + 12;
-	//int medicsWanted = numMedics + 2;
-	//int wraithsWanted = numWraith + 4;
-
-	////goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-
-	//int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	//int scvWanted = numSCV + 50;
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvWanted)));
-
-	//return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
-
-	//// the goal to return
-	//std::vector< std::pair<MetaType, UnitCountType> > goal;
-
-	//int numScv = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-
-	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	//int numWraith = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-
-	//int marinesWanted = numMarines + 12;
-	//int medicsWanted = numMedics + 2;
-	//int wraithsWanted = numWraith + 4;
-
-	//int scvWanted = numScv;
-
-	////goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-
-	//// ext
-
-	//// This is working
-	////int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	////int scvWanted = numSCV + 500;
-	////goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvWanted)));
-
-	//scvWanted = numScv + 1;
-	//marinesWanted = numMarines + 6;
-
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, 10));
-	////goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(90, scvWanted)));
-	////goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	////goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-
-	//// eof ext
-
-	//return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
+	return goal;
 }
 
 const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 {
-	//// the goal to return
-	//std::vector< std::pair<MetaType, UnitCountType> > goal;		// ext
-
-	//int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);		// ext
-	//int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);		// ext
-
-	//int mutasWanted = numMutas + 6;		// ext
-	//int hydrasWanted = numHydras + 6;		// ext
-
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 4));		// ext
-
-	//Extension
 	MetaPairVector goal;
 
 	int overlordsNo = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Overlord);
@@ -848,8 +779,6 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 	int mutasWanted = mutasNo;
 	int hydrasWanted = hydrasNo + 6;
 	int zerglingsWanted = zerglingsNo;
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Zergling, 90));
 
 	// If enemy is Protoss
 	if (enemyRace == BWAPI::Races::Protoss)
@@ -872,7 +801,6 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 			zerglingsWanted = zerglingsWanted + 6;
 		}
 
-		BWAPI::Broodwar->printf("                                           DebExt: Zealots = %d", enemyZealotsNo);
 
 		if (mutasWanted > 0)
 		{
@@ -880,7 +808,6 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Flyer_Attacks, 1));
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Flyer_Carapace, 1));
 		}
-		BWAPI::Broodwar->printf("                                           DebExt: mutasWanted = %d", mutasWanted);
 
 		if (zerglingsWanted > 0)
 		{
@@ -914,94 +841,7 @@ const MetaPairVector StrategyManager::getZergBuildOrderGoal() const
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Zerg_Carapace, 1));
 	}
 
-
-
-
-	// Drones goal always active
-	//dronesWanted += 2;
-	//if (dronesNo < dronesWanted)
-	//{
-	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
-	//}
-
-	// Works if drones to build number is less than 15
-	//dronesWanted = std::max(dronesWanted, 6);
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
-
-
-	
-
-	// this works for at least 30 drones
-	//dronesWanted = dronesNo + 1;
-
-	// This works only once. After first 15 drones are built, searching fails
-	//dronesWanted = dronesNo + 15;
-
-
-	
-	// Terran Mirror---------------------------------------------
-	//zerglingsWanted += 6;
-	//dronesWanted = dronesNo + 1;
-	// Constraint maximum Drones with value of 90
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Zerg_Drone, std::min(90, dronesWanted)));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Zerg_Zergling, zerglingsWanted));
-	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Metabolic_Boost, 1));
-	// ----------------------------------------------------------
-	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Zerg_Melee_Attacks, 1));
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 30));
-
-
-	// This works for infinite drones and overlords (tested on two loops
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, dronesNo + 4));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Overlord, overlordsNo + 1));
-	// ----------
-
 	return goal;
-
-	// eof Extension
-
-
-
-
-
-
-	////////////////////////////////////////////////////////////////
-
-	//std::vector< std::pair<MetaType, UnitCountType> > goal;
-
-	//int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
-	//int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
-
-	//int mutasWanted = numMutas + 6;
-	//int hydrasWanted = numHydras + 6;
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, 4));
-
-	//return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
-
-	////////////////////////////////////////////////////////////////
-	//MetaPairVector goal;
-
-	//int numMutas = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Mutalisk);
-	//int numHydras = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Zerg_Hydralisk);
-
-	//int mutasWanted = numMutas + 6;
-	//int hydrasWanted = numHydras + 6;
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Hydralisk, 4));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Zerg_Drone, 4));
-
-	//return goal;
-
-	////////////////////////////////////////////////////////////////
-
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Stim_Packs,	1));
-
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic,		medicsWanted));
-
-	//return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;			// ext
 }
 
 const int StrategyManager::getCurrentStrategy()
@@ -1086,9 +926,8 @@ int StrategyManager::GetStrategyIdx()
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
-		//strategyNo = NumTerranStrategies;
-		//chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
-		chosenStrategy = TerranDoubleRaxMnM;			// for testing purposes
+		chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
+		//chosenStrategy = TerranDoubleRaxMnM;			// for testing purposes
 
 	}
 
@@ -1115,78 +954,77 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 {
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
+	int numSupplyDepots = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
+	int supplyDepotsWanted;
 	int scvsWanted;
 	int marinesWanted;
 	int medicsWanted;		// marine/medic ratio: 5:1
 
+	
+	supplyDepotsWanted = numSupplyDepots + 1;
 	scvsWanted = numSCV + 4;
-	marinesWanted = numMarines + 5;
+	marinesWanted = numMarines + 8;
 	medicsWanted = marinesWanted / 5;
 
-	// If stimpacks are not researched and are not being researched, do it
-	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
-		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
-	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	}
+	
 
 	// If stimpacks are not researched and are not being researched, do it
 	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
 		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep))
 	{
-		//goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
+		goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
 	}
-
-	//// If stimpacks are researched and U238 Shells are not, then do it
-	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
-	//	BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
-	//{
-	//	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	//}
 	
 	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
 	{
-		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Singularity_Charge, 1));
-		//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+		// If stimpacks are not researched and are not being researched, do it
+		if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
+			!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
+		{
+			goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+		}
+
+		// If U238 Shells are not researched and are not being researched, do it
+		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 0)
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+		}
 	}
 
+	// Research weapons and armor for bio
+	int currentWeaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
+	int currentArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
+	{
+		if (currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
+		}
+
+		if (currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
+		}
+
+	}
+	
 	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1)
 	{
-		//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
 	}
 
-
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, numSCV + 1));
-	//BWAPI::Broodwar->printf("                                           DebExt: building SCV = %d", numSCV + 1);
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_SCV) > 1)
+	// Push goals
+	if (numSCV < 72)
 	{
-		//BWAPI::Broodwar->printf("                                           DebExt: building Infantry Armor = %d", numSCV + 1);
-		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 1));			// works (31)
-		//goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons, 1));
-		
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	}
-
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, numSCV + 2));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Barracks, 1));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, numMarines + 2));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, numMedics + 1));
-	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + 3));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numMarines + 2));
-
-	//goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	//goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
-
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Supply_Depot, supplyDepotsWanted));
 
 	return goal;
 }
