@@ -774,7 +774,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		}
 
 		// If U238 Shells are not researched and are not being researched, do it
-		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 0)
+		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 		}
