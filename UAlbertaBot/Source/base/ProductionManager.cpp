@@ -187,6 +187,12 @@ void ProductionManager::manageBuildOrderQueue()
 			queue.removeCurrentHighestPriorityItem();
 			break;
 		}
+		
+		if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
+			(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+		{
+			queue.removeCurrentHighestPriorityItem();
+		}
 
 		// if the next item in the list is a building and we can't yet make it
 		if (currentItem.metaType.isBuilding() && !(producer && canMake))

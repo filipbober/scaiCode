@@ -60,7 +60,7 @@ BuildOrderSearch::SearchResults StarcraftBuildOrderSearchManager::search(const s
 	}
 	else
 	{
-		BWAPI::Broodwar->printf("                                          No solution found!");
+		//BWAPI::Broodwar->printf("                                          No solution found!");
 		//BWAPI::Broodwar->printf("%12d%12d%12d%14llu", result.upperBound, result.lowerBound, 0, result.nodesExpanded);
 	}
 
