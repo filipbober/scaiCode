@@ -102,11 +102,6 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_SCV, actions.size()));							// 0
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Marine, actions.size()));						// 1
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Medic, actions.size()));							// 2
-
-			// from here it works
-			//actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::U_238_Shells, actions.size()));						// 49
-			//actions.push_back(StarcraftAction(BWAPI::TechTypes::Stim_Packs, actions.size()));							// 37
-
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Vulture, actions.size()));						// 3
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Firebat, actions.size()));						// 4
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Ghost, actions.size()));							// 5
@@ -162,6 +157,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Ion_Thrusters, actions.size()));						// 47
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Charon_Boosters, actions.size()));					// 48
 			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::U_238_Shells, actions.size()));						// 49
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Comsat_Station, actions.size()));				// 50
 
 			//actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Supply_Depot, actions.size()));					// 17
 
