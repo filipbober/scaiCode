@@ -56,7 +56,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0";			// For testing purposes
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 18 1 0 1 20 15 15 15 15 15 15 15 15 15 15 15";			// For testing purposes
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";

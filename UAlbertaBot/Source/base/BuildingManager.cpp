@@ -173,7 +173,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 		else
 		{
 			// set the building padding specifically
-			int distance = b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon ? 0 : 1;
+			int distance = b.type == (BWAPI::UnitTypes::Protoss_Photon_Cannon || BWAPI::UnitTypes::Terran_Missile_Turret) ? 0 : 1;
 
 			// whether or not we want the distance to be horizontal only
             bool horizontalOnly = b.type == BWAPI::UnitTypes::Protoss_Citadel_of_Adun ? true : false;
@@ -203,9 +203,12 @@ void BuildingManager::constructAssignedBuildings()
 		// get a handy reference to the worker
 		Building & b = buildingData.getNextBuilding(ConstructionData::Assigned);
 
+		BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 1");
+
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 
 		{
+			BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 2");
 			// if we haven't explored the build position, go there
 			if (!isBuildingPositionExplored(b))
 			{
@@ -216,6 +219,7 @@ void BuildingManager::constructAssignedBuildings()
 			// it must be the case that something was in the way of building
 			else if (b.buildCommandGiven) 
 			{
+				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 3");
 				//BWAPI::Broodwar->printf("A builder got stuck");
 				// tell worker manager the unit we had is not needed now, since we might not be able
 				// to get a valid location soon enough
@@ -238,6 +242,7 @@ void BuildingManager::constructAssignedBuildings()
 			}
 			else
 			{
+				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 4");
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
 				// issue the build order!
