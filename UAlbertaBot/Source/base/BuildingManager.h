@@ -38,6 +38,10 @@ class BuildingManager {
 	void						checkForDeadTerranBuilders();			// STEP 5
 	void						checkForCompletedBuildings();			// STEP 6
 
+	// Ext
+	BWAPI::Unit* findAddonBuilding(const Building &b);
+	// eof ext
+
 	// functions for performing tedious vector tasks
 	void						removeBuildingFromVector(BWAPI::Unit * buildingUnit, std::vector<Building> & vec);
 	void						removeBuildingFromVector(Building & b, std::vector<Building> & vec);

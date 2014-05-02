@@ -251,26 +251,27 @@ void BuildingManager::constructAssignedBuildings()
 
 				if (b.type.isAddon())
 				{
-					BWAPI::Unit * chosenBuilding;
+					//BWAPI::Unit * chosenBuilding;
 
-					// Find building to apply addon
-					BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
-					{
-						// If it is Command Center addon (Comsat Station or Nuclear Silo)
-						if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
-							b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
-						{
-							if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
-								(unit->getAddon() == false))
-							{
-								//chosenBuilding = unit;
-								b.builderUnit = unit;
-							}
-						}
-					}
+					//// Find building to apply addon
+					//BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+					//{
+					//	// If it is Command Center addon (Comsat Station or Nuclear Silo)
+					//	if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
+					//		b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+					//	{
+					//		if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
+					//			(unit->getAddon() == false))
+					//		{
+					//			//chosenBuilding = unit;
+					//			b.builderUnit = unit;
+					//		}
+					//	}
+					//}
 
-					//return chosenBuilding;
+					////return chosenBuilding;
 
+					b.builderUnit = findAddonBuilding(b);
 					b.builderUnit->buildAddon(b.type);
 				}
 				else
@@ -285,6 +286,28 @@ void BuildingManager::constructAssignedBuildings()
 			}
 		}
 	}
+}
+
+BWAPI::Unit* BuildingManager::findAddonBuilding(const Building &b)
+{
+	BWAPI::Unit * chosenBuilding;
+
+	// Find building to apply addon
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		// If it is Command Center addon (Comsat Station or Nuclear Silo)
+		if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
+			b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
+				(unit->getAddon() == false))
+			{
+				chosenBuilding = unit;
+			}
+		}
+	}
+
+	return chosenBuilding;
 }
 
 // STEP 4: UPDATE DATA STRUCTURES FOR BUILDINGS STARTING CONSTRUCTION
