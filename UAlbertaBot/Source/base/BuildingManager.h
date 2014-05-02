@@ -39,7 +39,7 @@ class BuildingManager {
 	void						checkForCompletedBuildings();			// STEP 6
 
 	// Ext
-	BWAPI::Unit* findAddonBuilding(const Building &b);
+	void setAddonBuilding(Building &b);
 	// eof ext
 
 	// functions for performing tedious vector tasks

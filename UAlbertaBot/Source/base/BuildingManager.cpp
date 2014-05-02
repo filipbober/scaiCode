@@ -207,12 +207,9 @@ void BuildingManager::constructAssignedBuildings()
 		// get a handy reference to the worker
 		Building & b = buildingData.getNextBuilding(ConstructionData::Assigned);
 
-		BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 1");
-
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 
 		{
-			BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 2");
 			// if we haven't explored the build position, go there
 			if (!isBuildingPositionExplored(b))
 			{
@@ -223,7 +220,6 @@ void BuildingManager::constructAssignedBuildings()
 			// it must be the case that something was in the way of building
 			else if (b.buildCommandGiven) 
 			{
-				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 3");
 				//BWAPI::Broodwar->printf("A builder got stuck");
 				// tell worker manager the unit we had is not needed now, since we might not be able
 				// to get a valid location soon enough
@@ -246,7 +242,6 @@ void BuildingManager::constructAssignedBuildings()
 			}
 			else
 			{
-				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 4");
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
 				if (b.type.isAddon())
@@ -271,7 +266,7 @@ void BuildingManager::constructAssignedBuildings()
 
 					////return chosenBuilding;
 
-					b.builderUnit = findAddonBuilding(b);
+					setAddonBuilding(b);
 					b.builderUnit->buildAddon(b.type);
 				}
 				else
@@ -288,9 +283,9 @@ void BuildingManager::constructAssignedBuildings()
 	}
 }
 
-BWAPI::Unit* BuildingManager::findAddonBuilding(const Building &b)
+void BuildingManager::setAddonBuilding(Building &b)
 {
-	BWAPI::Unit * chosenBuilding;
+	BWAPI::Unit * chosenBuilding = NULL;
 
 	// Find building to apply addon
 	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
@@ -302,12 +297,12 @@ BWAPI::Unit* BuildingManager::findAddonBuilding(const Building &b)
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
 				(unit->getAddon() == false))
 			{
-				chosenBuilding = unit;
+				b.builderUnit = unit;
+				//break;
 			}
 		}
 	}
 
-	return chosenBuilding;
 }
 
 // STEP 4: UPDATE DATA STRUCTURES FOR BUILDINGS STARTING CONSTRUCTION
