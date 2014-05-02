@@ -304,45 +304,69 @@ BWAPI::Unit * WorkerManager::getBuilder(Building & b, bool setJobAsBuilder)
 	double closestMovingWorkerDistance = 0;
 	double closestMiningWorkerDistance = 0;
 
-	// look through each worker that had moved there first
-	BOOST_FOREACH (BWAPI::Unit * unit, workerData.getWorkers())
-	{
-		// mining worker check
-		if (unit->isCompleted() && (workerData.getWorkerJob(unit) == WorkerData::Minerals))
+	//if (b.type.isAddon())
+	//{
+		//BWAPI::Unit * chosenBuilding;
+
+		//// Find building to apply addon
+		//BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+		//{
+		//		// If it is Command Center addon (Comsat Station or Nuclear Silo)
+		//		if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
+		//			b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+		//		{					
+		//			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) && 
+		//				(unit->getAddon() == false))
+		//			{
+		//				chosenBuilding = unit;
+		//			}
+		//		}			
+		//}
+
+		//return chosenBuilding;
+	//}
+	//else
+	//{
+		// look through each worker that had moved there first
+		BOOST_FOREACH(BWAPI::Unit * unit, workerData.getWorkers())
 		{
-			// if it is a new closest distance, set the pointer
-			double distance = unit->getDistance(BWAPI::Position(b.finalPosition));
-			if (!closestMiningWorker || distance < closestMiningWorkerDistance)
+			// mining worker check
+			if (unit->isCompleted() && (workerData.getWorkerJob(unit) == WorkerData::Minerals))
 			{
-				closestMiningWorker = unit;
-				closestMiningWorkerDistance = distance;
+				// if it is a new closest distance, set the pointer
+				double distance = unit->getDistance(BWAPI::Position(b.finalPosition));
+				if (!closestMiningWorker || distance < closestMiningWorkerDistance)
+				{
+					closestMiningWorker = unit;
+					closestMiningWorkerDistance = distance;
+				}
+			}
+
+			// moving worker check
+			if (unit->isCompleted() && (workerData.getWorkerJob(unit) == WorkerData::Move))
+			{
+				// if it is a new closest distance, set the pointer
+				double distance = unit->getDistance(BWAPI::Position(b.finalPosition));
+				if (!closestMovingWorker || distance < closestMovingWorkerDistance)
+				{
+					closestMovingWorker = unit;
+					closestMovingWorkerDistance = distance;
+				}
 			}
 		}
 
-		// moving worker check
-		if (unit->isCompleted() && (workerData.getWorkerJob(unit) == WorkerData::Move))
+		// if we found a moving worker, use it, otherwise using a mining worker
+		BWAPI::Unit * chosenWorker = closestMovingWorker ? closestMovingWorker : closestMiningWorker;
+
+		// if the worker exists (one may not have been found in rare cases)
+		if (chosenWorker && setJobAsBuilder)
 		{
-			// if it is a new closest distance, set the pointer
-			double distance = unit->getDistance(BWAPI::Position(b.finalPosition));
-			if (!closestMovingWorker || distance < closestMovingWorkerDistance)
-			{
-				closestMovingWorker = unit;
-				closestMovingWorkerDistance = distance;
-			}
+			workerData.setWorkerJob(chosenWorker, WorkerData::Build, b.type);
 		}
-	}
 
-	// if we found a moving worker, use it, otherwise using a mining worker
-	BWAPI::Unit * chosenWorker = closestMovingWorker ? closestMovingWorker : closestMiningWorker;
-
-	// if the worker exists (one may not have been found in rare cases)
-	if (chosenWorker && setJobAsBuilder)
-	{
-		workerData.setWorkerJob(chosenWorker, WorkerData::Build, b.type);
-	}
-
-	// return the worker
-	return chosenWorker;
+		// return the worker
+		return chosenWorker;
+	//}	
 }
 
 // sets a worker as a scout

@@ -97,7 +97,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 		b.finalPosition = testLocation;
 
 		// grab a worker unit from WorkerManager which is closest to this final position
-		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);
+		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);		
 
 		// if the worker exists
 		if (workerToAssign) {
@@ -245,8 +245,42 @@ void BuildingManager::constructAssignedBuildings()
 				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 4");
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
-				// issue the build order!
-				b.builderUnit->build(b.finalPosition, b.type);
+				//// issue the build order!								// ext
+				//b.builderUnit->build(b.finalPosition, b.type);		// ext
+
+				// Ext - addons
+				// bool build(TilePosition target, UnitType type); 
+				// bool buildAddon( UnitType type);
+				if (b.type.isAddon())
+				{
+					BWAPI::Unit * chosenBuilding;
+
+					// Find building to apply addon
+					BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+					{
+						// If it is Command Center addon (Comsat Station or Nuclear Silo)
+						if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
+							b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+						{
+							if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
+								(unit->getAddon() == false))
+							{
+								//chosenBuilding = unit;
+								b.builderUnit = unit;
+							}
+						}
+					}
+
+					//return chosenBuilding;
+
+					b.builderUnit->buildAddon(b.type);
+				}
+				else
+				{
+					// issue the build order!
+					b.builderUnit->build(b.finalPosition, b.type);
+				}
+				// eof ext
 
 				// set the flag to true
 				b.buildCommandGiven = true;
