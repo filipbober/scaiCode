@@ -1,3 +1,7 @@
+// Modification to UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "Common.h"
 #include "BuildingManager.h"
 
@@ -245,12 +249,6 @@ void BuildingManager::constructAssignedBuildings()
 				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 4");
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
-				//// issue the build order!								// ext
-				//b.builderUnit->build(b.finalPosition, b.type);		// ext
-
-				// Ext - addons
-				// bool build(TilePosition target, UnitType type); 
-				// bool buildAddon( UnitType type);
 				if (b.type.isAddon())
 				{
 					BWAPI::Unit * chosenBuilding;
