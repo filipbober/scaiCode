@@ -305,7 +305,7 @@ BWAPI::Unit * WorkerManager::getBuilder(Building & b, bool setJobAsBuilder)
 	double closestMiningWorkerDistance = 0;
 
 	// look through each worker that had moved there first
-	BOOST_FOREACH (BWAPI::Unit * unit, workerData.getWorkers())
+	BOOST_FOREACH(BWAPI::Unit * unit, workerData.getWorkers())
 	{
 		// mining worker check
 		if (unit->isCompleted() && (workerData.getWorkerJob(unit) == WorkerData::Minerals))

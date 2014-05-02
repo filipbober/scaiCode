@@ -1,3 +1,7 @@
+// Modification to UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "Common.h"
 #include "BuildingManager.h"
 
@@ -97,7 +101,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 		b.finalPosition = testLocation;
 
 		// grab a worker unit from WorkerManager which is closest to this final position
-		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);
+		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);		
 
 		// if the worker exists
 		if (workerToAssign) {
@@ -108,7 +112,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 			//		 skip the buildingsAssigned step and push it back into buildingsUnderConstruction
 			
 			// set the worker we have assigned
-			b.builderUnit = workerToAssign;
+			b.builderUnit = workerToAssign; 
 
 			// re-search for a building location with the builder unit ignored for space
 			testLocation = getBuildingLocation(b);
@@ -203,23 +207,19 @@ void BuildingManager::constructAssignedBuildings()
 		// get a handy reference to the worker
 		Building & b = buildingData.getNextBuilding(ConstructionData::Assigned);
 
-		BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 1");
-
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 
 		{
-			BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 2");
 			// if we haven't explored the build position, go there
 			if (!isBuildingPositionExplored(b))
 			{
-				b.builderUnit->move(BWAPI::Position(b.finalPosition));
+				b.builderUnit->move(BWAPI::Position(b.finalPosition));	
 				//BWAPI::Broodwar->printf("Can't see build position, walking there");
 			}
 			// if this is not the first time we've sent this guy to build this
 			// it must be the case that something was in the way of building
 			else if (b.buildCommandGiven) 
 			{
-				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 3");
 				//BWAPI::Broodwar->printf("A builder got stuck");
 				// tell worker manager the unit we had is not needed now, since we might not be able
 				// to get a valid location soon enough
@@ -242,17 +242,67 @@ void BuildingManager::constructAssignedBuildings()
 			}
 			else
 			{
-				BWAPI::Broodwar->printf("                                          DebExt: Constructing Building 4");
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
-				// issue the build order!
-				b.builderUnit->build(b.finalPosition, b.type);
+				if (b.type.isAddon())
+				{
+					//BWAPI::Unit * chosenBuilding;
+
+					//// Find building to apply addon
+					//BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+					//{
+					//	// If it is Command Center addon (Comsat Station or Nuclear Silo)
+					//	if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
+					//		b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+					//	{
+					//		if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
+					//			(unit->getAddon() == false))
+					//		{
+					//			//chosenBuilding = unit;
+					//			b.builderUnit = unit;
+					//		}
+					//	}
+					//}
+
+					////return chosenBuilding;
+					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+					setAddonBuilding(b);		
+					b.builderUnit->buildAddon(b.type);
+				}
+				else
+				{
+					// issue the build order!
+					b.builderUnit->build(b.finalPosition, b.type);
+				}
+				// eof ext
 
 				// set the flag to true
 				b.buildCommandGiven = true;
 			}
 		}
 	}
+}
+
+void BuildingManager::setAddonBuilding(Building &b)
+{
+	BWAPI::Unit * chosenBuilding = NULL;
+
+	// Find building to apply addon
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		// If it is Command Center addon (Comsat Station or Nuclear Silo)
+		if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
+			b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
+				(unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				//break;
+			}
+		}
+	}
+
 }
 
 // STEP 4: UPDATE DATA STRUCTURES FOR BUILDINGS STARTING CONSTRUCTION
@@ -331,7 +381,10 @@ void BuildingManager::checkForCompletedBuildings() {
 			// if we are terran, give the worker back to worker manager
 			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 			{
-				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+				if (!b.type.isAddon())
+				{
+					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+				}
 			}
 
 			// remove this unit from the under construction vector
