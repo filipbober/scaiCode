@@ -112,7 +112,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 			//		 skip the buildingsAssigned step and push it back into buildingsUnderConstruction
 			
 			// set the worker we have assigned
-			b.builderUnit = workerToAssign;
+			b.builderUnit = workerToAssign; 
 
 			// re-search for a building location with the builder unit ignored for space
 			testLocation = getBuildingLocation(b);
@@ -213,7 +213,7 @@ void BuildingManager::constructAssignedBuildings()
 			// if we haven't explored the build position, go there
 			if (!isBuildingPositionExplored(b))
 			{
-				b.builderUnit->move(BWAPI::Position(b.finalPosition));
+				b.builderUnit->move(BWAPI::Position(b.finalPosition));	
 				//BWAPI::Broodwar->printf("Can't see build position, walking there");
 			}
 			// if this is not the first time we've sent this guy to build this
@@ -265,8 +265,8 @@ void BuildingManager::constructAssignedBuildings()
 					//}
 
 					////return chosenBuilding;
-
-					setAddonBuilding(b);
+					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+					setAddonBuilding(b);		
 					b.builderUnit->buildAddon(b.type);
 				}
 				else
@@ -381,7 +381,10 @@ void BuildingManager::checkForCompletedBuildings() {
 			// if we are terran, give the worker back to worker manager
 			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 			{
-				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+				if (!b.type.isAddon())
+				{
+					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+				}
 			}
 
 			// remove this unit from the under construction vector
