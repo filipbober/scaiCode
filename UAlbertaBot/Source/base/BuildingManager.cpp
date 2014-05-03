@@ -209,7 +209,7 @@ void BuildingManager::constructAssignedBuildings()
 
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 
-		{
+		{			
 			// if we haven't explored the build position, go there
 			if (!isBuildingPositionExplored(b))
 			{
@@ -246,28 +246,12 @@ void BuildingManager::constructAssignedBuildings()
 
 				if (b.type.isAddon())
 				{
-					//BWAPI::Unit * chosenBuilding;
-
-					//// Find building to apply addon
-					//BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
-					//{
-					//	// If it is Command Center addon (Comsat Station or Nuclear Silo)
-					//	if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
-					//		b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
-					//	{
-					//		if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
-					//			(unit->getAddon() == false))
-					//		{
-					//			//chosenBuilding = unit;
-					//			b.builderUnit = unit;
-					//		}
-					//	}
-					//}
-
-					////return chosenBuilding;
 					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
-					setAddonBuilding(b);		
-					b.builderUnit->buildAddon(b.type);
+					WorkerManager::Instance().handleIdleWorkers();
+					if (setAddonBuilding(b))
+					{
+						b.builderUnit->buildAddon(b.type);
+					}
 				}
 				else
 				{
@@ -283,26 +267,56 @@ void BuildingManager::constructAssignedBuildings()
 	}
 }
 
-void BuildingManager::setAddonBuilding(Building &b)
+bool BuildingManager::setAddonBuilding(Building &b)
 {
-	BWAPI::Unit * chosenBuilding = NULL;
-
+	bool hasFound = false;
 	// Find building to apply addon
 	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
 	{
-		// If it is Command Center addon (Comsat Station or Nuclear Silo)
-		if (b.type == BWAPI::UnitTypes::Terran_Comsat_Station ||
-			b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo)
+		if ((b.type == BWAPI::UnitTypes::Terran_Comsat_Station)
+			|| (b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo))
 		{
-			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) &&
-				(unit->getAddon() == false))
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) 
+				&& (unit->getAddon() == false))
 			{
 				b.builderUnit = unit;
-				//break;
+				hasFound = true;
+				break;
+			}
+		}
+		else if (b.type == BWAPI::UnitTypes::Terran_Machine_Shop)
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Factory)
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
+			}
+		}
+		else if (b.type == BWAPI::UnitTypes::Terran_Control_Tower)
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Starport)
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
+			}
+		}
+		else if ((b.type == BWAPI::UnitTypes::Terran_Physics_Lab)
+			|| (b.type == BWAPI::UnitTypes::Terran_Covert_Ops))
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Science_Facility)
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
 			}
 		}
 	}
-
+	return hasFound;
 }
 
 // STEP 4: UPDATE DATA STRUCTURES FOR BUILDINGS STARTING CONSTRUCTION
@@ -379,12 +393,11 @@ void BuildingManager::checkForCompletedBuildings() {
 			if (debugMode) { BWAPI::Broodwar->printf("Construction Completed: %s", b.type.getName().c_str()); }
 
 			// if we are terran, give the worker back to worker manager
-			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+			// if it is an addon, it was already returned
+			if ((BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+				&& (!b.type.isAddon()))
 			{
-				if (!b.type.isAddon())
-				{
-					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
-				}
+				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
 			}
 
 			// remove this unit from the under construction vector

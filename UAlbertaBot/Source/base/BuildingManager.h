@@ -39,7 +39,7 @@ class BuildingManager {
 	void						checkForCompletedBuildings();			// STEP 6
 
 	// Ext
-	void setAddonBuilding(Building &b);
+	bool setAddonBuilding(Building &b);
 	// eof ext
 
 	// functions for performing tedious vector tasks

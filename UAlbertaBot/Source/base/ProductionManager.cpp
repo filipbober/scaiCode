@@ -293,6 +293,11 @@ bool ProductionManager::detectBuildOrderDeadlock()
 // This function is here as it needs to access prodction manager's reserved resources info
 void ProductionManager::predictWorkerMovement(const Building & b)
 {
+	if (b.type.isAddon())
+	{
+		return;
+	}
+
 	// get a possible building location for the building
 	if (!haveLocationForThisBuilding)
 	{

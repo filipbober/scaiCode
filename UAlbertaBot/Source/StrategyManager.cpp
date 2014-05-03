@@ -40,7 +40,7 @@ void StrategyManager::addStrategies()
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
 	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
-	//terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
+	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 17 0 3 47 3 23 0 17 0 22 38";		// <- Preferred build order
 	terranOpeningBook[TerranGundamRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 1 22 0 1 0 1 22 1 0 23 17 1 0 7 3 38 0 1 17 43";				// hard to implement, check if tanks are build
@@ -56,7 +56,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 18 1 0 1 20 15 15 15 15 15 15 15 15 15 15 15";			// For testing purposes
+	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 18 1 0 1 1 0 0 22 23";			// For testing purposes
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";
@@ -758,13 +758,13 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	medicsWanted = marinesWanted / 5;
 	firebatsWanted = numMarines / 3;
 
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4 &&
-		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1)
+	if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4) 
+		&& (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1))
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Academy, 1));
 	}
 
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
+	if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0))
 	{
 		// If stimpacks are not researched and are not being researched, do it
 		if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
@@ -774,7 +774,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		}
 
 		// If U238 Shells are not researched and are not being researched, do it
-		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
+		if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1))
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 		}
@@ -783,14 +783,14 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	// Research weapons and armor for bio
 	int currentWeaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
 	int currentArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 10)
+	if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 10))
 	{
-		if (currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+		if ((currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)))
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
 		}
 
-		if (currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
+		if ((currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)))
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
 		}
@@ -967,8 +967,8 @@ int StrategyManager::GetStrategyIdx()
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
-		//chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
-		chosenStrategy = TerranDoubleRaxMnM;			// for testing purposes
+		chosenStrategy = GenerateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
+		//chosenStrategy = TerranDoubleRaxMnM;			// for testing purposes
 
 	}
 
@@ -1015,21 +1015,21 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	ghostsWanted = numGhosts;		// don't build Ghosts by default
 
 	
-	if(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4 &&
-		BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1)
+	if((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4) &&
+		(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1))
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Academy, 1));
 	}
 
 	// If scanner is not researched and is not being researched, do it
-	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) &&
-		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep))
+	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) 
+		&& (!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep)))
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 		goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
 	}
 	
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0)
+	if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0))
 	{
 		// If stimpacks are not researched and are not being researched, do it
 		if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
@@ -1039,7 +1039,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		}
 
 		// If U238 Shells are not researched and are not being researched, do it
-		if (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
+		if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1))
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 		}
@@ -1050,16 +1050,16 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	int currentArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
 	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
 	{
-		if (!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)) &&
-			!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor)))
+		if (!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+			&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor)))
 		{
-			if ((currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)) &&
-				(currentWeaponLevel <= (currentArmorLevel + 1)))
+			if ((currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)) 
+				&& (currentWeaponLevel <= (currentArmorLevel + 1)))
 			{
 				goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
 			}
-			else if ((currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)) &&
-				(currentArmorLevel < currentWeaponLevel + 1))
+			else if ((currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
+				&& (currentArmorLevel < currentWeaponLevel + 1))
 			{
 				goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
 			}
@@ -1067,14 +1067,14 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 
 	}
 
-	if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor) >= 2) &&
-		(BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons) >= 2))
+	if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor) >= 2) 
+		&& (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons) >= 2))
 	{
 		ghostsWanted = ghostsWanted + 3;
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Ghost, ghostsWanted));
 	}
 	
-	if (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1)
+	if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1))
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
 	}
