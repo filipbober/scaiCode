@@ -49,6 +49,9 @@
     <Filter Include="game\macro\Extensions">
       <UniqueIdentifier>{fb496d7a-9bfd-4c7f-b259-06f89d7dc81d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\combat\micro\specific">
+      <UniqueIdentifier>{ab9d9e17-ce47-4c19-bd89-52dcfc8afa9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\CombatCommander.cpp">
@@ -176,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\extensions\ZergBuildOrderCreator.cpp">
       <Filter>game\macro\Extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\micromanagement\MarineManagerExt.cpp">
+      <Filter>game\combat\micro\specific</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\extensions\ZergBuildOrderCreator.h">
       <Filter>game\macro\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\micromanagement\MarineManagerExt.h">
+      <Filter>game\combat\micro\specific</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

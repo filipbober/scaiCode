@@ -12,7 +12,7 @@
 #define DATA 				(BuildOrderSearch::getStarcraftDataInstance())
 
 // maximum number of actions allowed in StarcraftData
-#define MAX_ACTIONS 		30
+#define MAX_ACTIONS 		64
 
 // maximum number of actions in progress allowed
 #define MAX_PROGRESS 		30
@@ -42,6 +42,7 @@
 static bool GSN_DEBUG 		= false;
 static bool PROTOSS_DEBUG 	= false;
 static bool TERRAN_DEBUG 	= false;
+static bool	EXTENSIONS_ENABLED = true;
 
 // type definitions for storing data
 typedef		int				ResourceCountType;

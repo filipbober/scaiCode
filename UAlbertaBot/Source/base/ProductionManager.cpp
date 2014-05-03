@@ -114,8 +114,9 @@ void ProductionManager::update()
 		queue.queueAsHighestPriority(MetaType(BWAPI::Broodwar->self()->getRace().getSupplyProvider()), true);
 	}
 
-	// if they have cloaked units get a new goal asap
-	if (!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
+	// if they have cloaked units get a new goal asap (for Protoss)
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss &&
+		!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
 	{
 		if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) < 2)
 		{
@@ -185,6 +186,12 @@ void ProductionManager::manageBuildOrderQueue()
 		{
 			queue.removeCurrentHighestPriorityItem();
 			break;
+		}
+		
+		if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
+			(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+		{
+			queue.removeCurrentHighestPriorityItem();
 		}
 
 		// if the next item in the list is a building and we can't yet make it
@@ -286,6 +293,11 @@ bool ProductionManager::detectBuildOrderDeadlock()
 // This function is here as it needs to access prodction manager's reserved resources info
 void ProductionManager::predictWorkerMovement(const Building & b)
 {
+	if (b.type.isAddon())
+	{
+		return;
+	}
+
 	// get a possible building location for the building
 	if (!haveLocationForThisBuilding)
 	{

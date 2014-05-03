@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UAlbertaBot", "UAlbertaBot.vcxproj", "{2E63AE74-758A-4607-9DE4-D28E814A6E13}"
 	ProjectSection(ProjectDependencies) = postProject
 		{66236439-5968-4756-B2E7-8A29BEA99078} = {66236439-5968-4756-B2E7-8A29BEA99078}
@@ -10,6 +12,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StarcraftBuildOrderSearch", "..\..\StarcraftBuildOrderSearch\VisualStudio\StarcraftBuildOrderSearch.vcxproj", "{9F8709E3-AC4F-45F2-8105-4A99D8E2A127}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SparCraft", "..\..\SparCraft\VisualStudio\SparCraft.vcxproj", "{66236439-5968-4756-B2E7-8A29BEA99078}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tests", "..\..\Tests\Tests.vcxproj", "{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,14 @@ Global
 		{66236439-5968-4756-B2E7-8A29BEA99078}.Release|Win32.Build.0 = Release|Win32
 		{66236439-5968-4756-B2E7-8A29BEA99078}.Release|x64.ActiveCfg = Release|x64
 		{66236439-5968-4756-B2E7-8A29BEA99078}.Release|x64.Build.0 = Release|x64
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Debug|Win32.Build.0 = Debug|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Debug|x64.ActiveCfg = Debug|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Release|Itanium.ActiveCfg = Release|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Release|Win32.ActiveCfg = Release|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Release|Win32.Build.0 = Release|Win32
+		{1BE59EB6-60D3-42D0-B0B6-B37BBC22B855}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

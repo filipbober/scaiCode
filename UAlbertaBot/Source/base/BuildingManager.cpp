@@ -1,3 +1,7 @@
+// Modification to UAlbertaBot (University of Alberta - AIIDE StarCraft Competition)
+// by David Churchill <dave.churchill@gmail.com>  
+// Author: Filip C. Bober <filip.bober@gmail.com>
+
 #include "Common.h"
 #include "BuildingManager.h"
 
@@ -97,7 +101,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 		b.finalPosition = testLocation;
 
 		// grab a worker unit from WorkerManager which is closest to this final position
-		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);
+		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);		
 
 		// if the worker exists
 		if (workerToAssign) {
@@ -108,7 +112,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 			//		 skip the buildingsAssigned step and push it back into buildingsUnderConstruction
 			
 			// set the worker we have assigned
-			b.builderUnit = workerToAssign;
+			b.builderUnit = workerToAssign; 
 
 			// re-search for a building location with the builder unit ignored for space
 			testLocation = getBuildingLocation(b);
@@ -173,7 +177,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 		else
 		{
 			// set the building padding specifically
-			int distance = b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon ? 0 : 1;
+			int distance = b.type == (BWAPI::UnitTypes::Protoss_Photon_Cannon || BWAPI::UnitTypes::Terran_Missile_Turret) ? 0 : 1;
 
 			// whether or not we want the distance to be horizontal only
             bool horizontalOnly = b.type == BWAPI::UnitTypes::Protoss_Citadel_of_Adun ? true : false;
@@ -205,11 +209,11 @@ void BuildingManager::constructAssignedBuildings()
 
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 
-		{
+		{			
 			// if we haven't explored the build position, go there
 			if (!isBuildingPositionExplored(b))
 			{
-				b.builderUnit->move(BWAPI::Position(b.finalPosition));
+				b.builderUnit->move(BWAPI::Position(b.finalPosition));	
 				//BWAPI::Broodwar->printf("Can't see build position, walking there");
 			}
 			// if this is not the first time we've sent this guy to build this
@@ -240,14 +244,79 @@ void BuildingManager::constructAssignedBuildings()
 			{
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
-				// issue the build order!
-				b.builderUnit->build(b.finalPosition, b.type);
+				if (b.type.isAddon())
+				{
+					WorkerManager::Instance().finishedWithWorker(b.builderUnit);
+					WorkerManager::Instance().handleIdleWorkers();
+					if (setAddonBuilding(b))
+					{
+						b.builderUnit->buildAddon(b.type);
+					}
+				}
+				else
+				{
+					// issue the build order!
+					b.builderUnit->build(b.finalPosition, b.type);
+				}
+				// eof ext
 
 				// set the flag to true
 				b.buildCommandGiven = true;
 			}
 		}
 	}
+}
+
+bool BuildingManager::setAddonBuilding(Building &b)
+{
+	bool hasFound = false;
+	// Find building to apply addon
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if ((b.type == BWAPI::UnitTypes::Terran_Comsat_Station)
+			|| (b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo))
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) 
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
+			}
+		}
+		else if (b.type == BWAPI::UnitTypes::Terran_Machine_Shop)
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Factory)
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
+			}
+		}
+		else if (b.type == BWAPI::UnitTypes::Terran_Control_Tower)
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Starport)
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
+			}
+		}
+		else if ((b.type == BWAPI::UnitTypes::Terran_Physics_Lab)
+			|| (b.type == BWAPI::UnitTypes::Terran_Covert_Ops))
+		{
+			if ((unit->getType() == BWAPI::UnitTypes::Terran_Science_Facility)
+				&& (unit->getAddon() == false))
+			{
+				b.builderUnit = unit;
+				hasFound = true;
+				break;
+			}
+		}
+	}
+	return hasFound;
 }
 
 // STEP 4: UPDATE DATA STRUCTURES FOR BUILDINGS STARTING CONSTRUCTION
@@ -324,7 +393,9 @@ void BuildingManager::checkForCompletedBuildings() {
 			if (debugMode) { BWAPI::Broodwar->printf("Construction Completed: %s", b.type.getName().c_str()); }
 
 			// if we are terran, give the worker back to worker manager
-			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+			// if it is an addon, it was already returned
+			if ((BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+				&& (!b.type.isAddon()))
 			{
 				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
 			}

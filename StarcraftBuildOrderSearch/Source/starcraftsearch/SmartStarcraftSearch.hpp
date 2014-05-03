@@ -246,7 +246,7 @@ class SmartStarcraftSearch
 		// for each action
 		for (Action a = 0; a < DATA.size(); ++a)
 		{
-			// if if want 4 or more of something that isn't supply providing
+			// if want 4 or more of something that isn't supply providing
 			if (!DATA[a].isSupplyProvider() && goal[a] >= 5)
 			{
 				// set the repetitions to half of the value

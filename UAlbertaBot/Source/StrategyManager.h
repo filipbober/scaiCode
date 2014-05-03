@@ -66,7 +66,17 @@ class StrategyManager
 public:
 
 	enum { ProtossZealotRush=0, ProtossDarkTemplar=1, ProtossDragoons=2, NumProtossStrategies=3 };
-	enum { TerranMarineRush=0, NumTerranStrategies=1 };
+	enum
+	{
+		TerranMarineRush = 0, TerranDoubleRaxMnM = 1,
+		TerranTriRaxMnMRush = 2, TerranProxyRaxMarineRush = 3,
+		Terran3FactoryVultureRush = 4, TerranGundamRush = 5,
+		Terran1FastExpoDef = 6, Terran1FastExpoNoDef = 7,
+		Terran2FactMechBuild = 8,
+		TerranGoliathBuild = 9, TerranGoliathDrop = 10,
+		Terran1FastPortBuild = 11, TerranWraithRush1Port = 12, 
+		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,	
+		NumTerranStrategies=15 };
 	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
 	
 	enum { ZergCerver4PoolRush = 0, Zerg9PoolHatch = 1, Zerg7PoolRush = 2,
@@ -96,8 +106,13 @@ private:
 	//int _usableStrategiesNo;			// Number of strategies to be chosen from	
 
 	void CreateZergUsableStrategies();
+	void CreateTerranUsableStrategies();
+
 	int GetStrategyIdx();
 	int GenerateRandomStrategy(const int min, const int max);
+
+	// Build order goals
+	const	MetaPairVector		getTerranDoubleRaxMnMBuildOrderGoal() const;
 
 	std::vector<std::string>	zergMidgameBook;
 
