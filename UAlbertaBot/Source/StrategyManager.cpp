@@ -953,7 +953,7 @@ void StrategyManager::createTerranUsableStrategies()
 	if (enemyRace == BWAPI::Races::Protoss)
 	{
 		usableStrategies.push_back(TerranTriRaxMnMRush);
-		usableStrategies.push_back(TerranProxyRaxMarineRush);
+		//usableStrategies.push_back(TerranProxyRaxMarineRush);			// Hard to implement
 		usableStrategies.push_back(Terran3FactoryVultureRush);
 		usableStrategies.push_back(TerranGundamRush);
 		usableStrategies.push_back(Terran1FastExpoDef);			// better against protoss
@@ -967,12 +967,11 @@ void StrategyManager::createTerranUsableStrategies()
 	}
 	else if (enemyRace == BWAPI::Races::Terran)
 	{
-		usableStrategies.push_back(TerranProxyRaxMarineRush);
+		//usableStrategies.push_back(TerranProxyRaxMarineRush);		// 8Hard to implement
 		usableStrategies.push_back(Terran1FastExpoNoDef);
 		usableStrategies.push_back(Terran2FactMechBuild);
 		usableStrategies.push_back(TerranGoliathBuild);
-		usableStrategies.push_back(TerranGoliathDrop);
-		usableStrategies.push_back(Terran1FastPortBuild);
+		//usableStrategies.push_back(TerranGoliathDrop);	// Hard to implement
 		usableStrategies.push_back(Terran1FastPortBuild);
 		usableStrategies.push_back(TerranWraithRush2PortsTvT);
 
@@ -985,7 +984,7 @@ void StrategyManager::createTerranUsableStrategies()
 	{
 		usableStrategies.push_back(TerranDoubleRaxMnM);
 		usableStrategies.push_back(TerranTriRaxMnMRush);
-		usableStrategies.push_back(TerranProxyRaxMarineRush);
+		//usableStrategies.push_back(TerranProxyRaxMarineRush);		// Hard to implement
 		usableStrategies.push_back(Terran1FastPortBuild);
 		usableStrategies.push_back(TerranWraithRush1Port);
 		usableStrategies.push_back(TerranWraithRush2PortsTvZ);
@@ -1016,8 +1015,8 @@ int StrategyManager::getStrategyIdx()
 
 	if (selfRace == BWAPI::Races::Terran)
 	{
-		chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
-		//chosenStrategy = TerranDoubleRaxMnM;			// for testing purposes
+		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
+		chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
 
 	}
 
@@ -1146,15 +1145,20 @@ const MetaPairVector StrategyManager::getTerranTriRaxMnMRush() const
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
 	int scvsWanted;
 	int marinesWanted;
+	int medicsWanted;
 
 	scvsWanted = numSCV + 3;
-	marinesWanted = numMarines + 3;
+	marinesWanted = numMarines + 4;
+	medicsWanted = numMarines / 4;
 
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+
 
 	return goal;
 }
@@ -1172,7 +1176,7 @@ const MetaPairVector StrategyManager::getTerranProxyRaxMarineRush() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1184,15 +1188,108 @@ const MetaPairVector StrategyManager::getTerran3FactoryVultureRush() const
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numVultures = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numTanks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
+		+ BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numTurrets = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
+	int numGoliaths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Goliath);
+	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
 
-	int scvsWanted;
-	int marinesWanted;
+	int currentVehicleWeaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons);
+	int currentVehicleArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Plating);
 
-	scvsWanted = numSCV + 3;
-	marinesWanted = numMarines + 3;
+	int scvsWanted = 0;
+	int marinesWanted = 0;
+	int vulturesWanted = 0;
+	int tanksWanted = 0;
+	int turretsWanted = 0;
+	int goliathsWanted = 0;
+	int scienceVesselsWanted = 0;
 
+	if (numSCV < 72)
+	{
+		scvsWanted = numSCV + 3;
+	}
+
+	int frame = BWAPI::Broodwar->getFrameCount();
+
+	if (numTurrets < 2)
+	{
+		turretsWanted = numTurrets + 1;
+	}
+
+	// Since ~6min
+	if (frame > 9000)
+	{
+		// Upgrade vehicles
+		if (!(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode)))
+		{
+			goal.push_back(MetaPair(BWAPI::TechTypes::Tank_Siege_Mode, 1));
+		}
+		else if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Charon_Boosters) < 1))
+		{
+			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Charon_Boosters, 1));
+		}
+		else
+		{
+			if (!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons))
+				&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Vehicle_Plating)))
+			{
+				if ((currentVehicleWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons))
+					&& (currentVehicleWeaponLevel <= (currentVehicleArmorLevel + 1)))
+				{
+					goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons, currentVehicleWeaponLevel + 1));
+				}
+				else if ((currentVehicleArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Vehicle_Plating))
+					&& (currentVehicleArmorLevel < currentVehicleWeaponLevel + 1))
+				{
+					goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Vehicle_Plating, currentVehicleArmorLevel + 1));
+				}
+			}
+		}
+
+		// Build science vessels for detector
+		if (frame > 11000)
+		{
+			if (numScienceVessels < 3)
+			{
+				scienceVesselsWanted = numScienceVessels + 1;
+			}
+		}
+
+		// Build tanks and goliaths for aa
+		if ((currentVehicleArmorLevel > 0) && (currentVehicleWeaponLevel > 0))
+		{
+			tanksWanted = numTanks + 3;
+			goliathsWanted = numGoliaths + 2;
+		}
+		else
+		{
+			tanksWanted = numTanks + 1;		
+			goliathsWanted = numGoliaths + 1;			
+		}		
+
+		vulturesWanted = numVultures + 1;
+	}
+	else
+	{
+		vulturesWanted = numVultures + 6;				
+	}
+
+	// Research scanner
+	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep)
+		&& (!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep)))
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
+		goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
+	}
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Vulture, vulturesWanted));	
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, tanksWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Goliath, goliathsWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Vessel, scienceVesselsWanted));
 
 	return goal;
 }
@@ -1210,7 +1307,7 @@ const MetaPairVector StrategyManager::getTerranGundamRush() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1229,7 +1326,7 @@ const MetaPairVector StrategyManager::getTerran1FastExpoDef() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1248,7 +1345,7 @@ const MetaPairVector StrategyManager::getTerran1FastExpoNoDef() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1267,7 +1364,7 @@ const MetaPairVector StrategyManager::getTerran2FactMechBuild() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1286,7 +1383,7 @@ const MetaPairVector StrategyManager::getTerranGoliathBuild() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1305,7 +1402,7 @@ const MetaPairVector StrategyManager::getTerranGoliathDrop() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1324,7 +1421,7 @@ const MetaPairVector StrategyManager::getTerran1FastPortBuild() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1342,7 +1439,7 @@ const MetaPairVector StrategyManager::getTerranWraithRush1Port() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1361,7 +1458,7 @@ const MetaPairVector StrategyManager::getTerranWraithRush2PortsTvZ() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
@@ -1380,7 +1477,7 @@ const MetaPairVector StrategyManager::getTerranWraithRush2PortsTvT() const
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
 	return goal;
