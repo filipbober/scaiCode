@@ -221,11 +221,22 @@ bool Squad::needsToRegroup()
 	
 	if (retreat)
 	{
-		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat");
+		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat, score: %d", score);
 	}
 	else
 	{
-		regroupStatus = std::string("\x04 Attack - simulation predicts success");
+		regroupStatus = std::string("\x04 Attack - simulation predicts success, score: %d: ", score);
+	}
+
+
+	if ((score > -500)
+		&& score < 0)
+	{
+		retreat = true;
+	}
+	else
+	{
+		retreat = false;
 	}
 
 	return retreat;

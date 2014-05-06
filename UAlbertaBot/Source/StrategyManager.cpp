@@ -424,6 +424,92 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 			doAttack = false;
 		}
 	}
+	else if (selfRace == BWAPI::Races::Terran)
+	{
+
+
+	//	TerranMarineRush = 0, TerranDoubleRaxMnM = 1,
+	//		TerranTriRaxMnMRush = 2, TerranProxyRaxMarineRush = 3,
+	//		Terran3FactoryVultureRush = 4, TerranGundamRush = 5,
+	//		Terran1FastExpoDef = 6, Terran1FastExpoNoDef = 7,
+	//		Terran2FactMechBuild = 8,
+	//		TerranGoliathBuild = 9, TerranGoliathDrop = 10,
+	//		Terran1FastPortBuild = 11, TerranWraithRush1Port = 12,
+	//		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,
+	//		NumTerranStrategies = 15
+	//};
+
+		if (currentStrategy == TerranDoubleRaxMnM)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranTriRaxMnMRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranProxyRaxMarineRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran3FactoryVultureRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return doAttackTerran3FactoryVultureRush();
+		}
+		else if (currentStrategy == TerranGundamRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran1FastExpoDef)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran1FastExpoNoDef)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran2FactMechBuild)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranGoliathBuild)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranGoliathDrop)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran1FastPortBuild)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranWraithRush1Port)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranWraithRush2PortsTvZ)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranWraithRush2PortsTvT)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+	}
 
 	// eof Extension
 
@@ -1538,4 +1624,16 @@ bool StrategyManager::doAttackZerg9PoolSpeedlingsRush()
 bool StrategyManager::doAttackZergMidgame()
 {
 	return true;
+}
+
+bool StrategyManager::doAttackTerran3FactoryVultureRush()
+{
+	if (!isMidGame)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

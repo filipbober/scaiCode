@@ -137,5 +137,7 @@ private:
 	bool doAttackZerg9PoolSpeedlingsRush();
 	bool doAttackZergMidgame();
 
+	bool doAttackTerran3FactoryVultureRush();
+
 
 };
