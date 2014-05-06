@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "Squad.h"
+#include <boost\lexical_cast.hpp>
 
 int  Squad::lastRetreatSwitch = 0;
 bool Squad::lastRetreatSwitchVal = false;
@@ -221,16 +222,16 @@ bool Squad::needsToRegroup()
 	
 	if (retreat)
 	{
-		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat, score: %d", score);
+		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat, score: " + boost::lexical_cast<std::string>(score));
 	}
 	else
 	{
-		regroupStatus = std::string("\x04 Attack - simulation predicts success, score: %d: ", score);
+		regroupStatus = std::string("\x04 Attack - simulation predicts success, score:  " + boost::lexical_cast<std::string>(score));
 	}
 
 
 	if ((score > -500)
-		&& score < 0)
+		&& (score < 0))
 	{
 		retreat = true;
 	}
