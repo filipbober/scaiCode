@@ -1628,12 +1628,16 @@ bool StrategyManager::doAttackZergMidgame()
 
 bool StrategyManager::doAttackTerran3FactoryVultureRush()
 {
-	if (!isMidGame)
+	if (isMidGame)
 	{
-		return false;
+		return true;
+	}
+	else if ((!isMidGame) && (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture >= 4)))
+	{
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }
