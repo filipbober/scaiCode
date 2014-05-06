@@ -105,14 +105,28 @@ public:
 private:
 	//int _usableStrategiesNo;			// Number of strategies to be chosen from	
 
-	void CreateZergUsableStrategies();
-	void CreateTerranUsableStrategies();
+	void createZergUsableStrategies();
+	void createTerranUsableStrategies();
 
-	int GetStrategyIdx();
-	int GenerateRandomStrategy(const int min, const int max);
+	int getStrategyIdx();
+	int generateRandomStrategy(const int min, const int max);
 
 	// Build order goals
-	const	MetaPairVector		getTerranDoubleRaxMnMBuildOrderGoal() const;
+	const MetaPairVector getTerranDoubleRaxMnMBuildOrderGoal() const;
+	const MetaPairVector getTerranTriRaxMnMRush() const;
+	const MetaPairVector getTerranProxyRaxMarineRush() const;
+	const MetaPairVector getTerran3FactoryVultureRush() const;
+	const MetaPairVector getTerranGundamRush() const;
+	const MetaPairVector getTerran1FastExpoDef() const;
+	const MetaPairVector getTerran1FastExpoNoDef() const;
+	const MetaPairVector getTerran2FactMechBuild() const;
+	const MetaPairVector getTerranGoliathBuild() const;
+	const MetaPairVector getTerranGoliathDrop() const;
+	const MetaPairVector getTerran1FastPortBuild() const;
+	const MetaPairVector getTerranWraithRush1Port() const;
+	const MetaPairVector getTerranWraithRush2PortsTvZ() const;
+	const MetaPairVector getTerranWraithRush2PortsTvT() const;
+
 
 	std::vector<std::string>	zergMidgameBook;
 
