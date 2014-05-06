@@ -63,6 +63,32 @@ void ProductionManager::performBuildOrderSearch(const std::vector< std::pair<Met
 {	
 	std::vector<MetaType> buildOrder = StarcraftBuildOrderSearchManager::Instance().findBuildOrder(goal);
 
+	// Ext
+	// Terran specific constraints
+	for (int i = 0; i < buildOrder.size(); i++)
+	{
+		if ((buildOrder[i].isBuilding()))
+		{
+			if ((buildOrder[i].type == (buildOrder[i].type == BWAPI::UnitTypes::Terran_Barracks))
+				|| (buildOrder[i].type == (buildOrder[i].type == BWAPI::UnitTypes::Terran_Factory))
+				|| (buildOrder[i].type == (buildOrder[i].type == BWAPI::UnitTypes::Terran_Starport))
+				)
+			{
+
+				// If there are already 3 buildings of the same type
+				// remove them from queue
+				if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 2))
+				{
+					buildOrder.erase(buildOrder.begin() + i);
+				}
+			}
+
+			int numBuildings = BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type);
+		}
+	}
+
+	// eof Ext
+
 	// set the build order
 	setBuildOrder(buildOrder);
 }
