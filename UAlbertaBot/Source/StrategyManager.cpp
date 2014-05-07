@@ -1632,7 +1632,7 @@ bool StrategyManager::doAttackTerran3FactoryVultureRush()
 	{
 		return true;
 	}
-	else if ((!isMidGame) && (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture >= 4)))
+	else if ((!isMidGame) && (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture >= 3)))
 	{
 		return true;
 	}
