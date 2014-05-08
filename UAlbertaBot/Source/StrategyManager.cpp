@@ -42,7 +42,7 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
-	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 17 0 3 47 3 23 0 17 0 22 38";		// <- Preferred build order
+	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order
 	terranOpeningBook[TerranGundamRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 1 22 0 1 0 1 22 1 0 23 17 1 0 7 3 38 0 1 17 43";				// hard to implement, check if tanks are build
 	terranOpeningBook[Terran1FastExpoDef] =		"0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 0 1 0 1 23 1 0 17 7 43 14";							// check if command center is build in a proper rotation
 	terranOpeningBook[Terran1FastExpoNoDef] =	"0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 0 23 0 0 38 0 7 17 0 43 7 21";
@@ -422,6 +422,92 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 		{
 			// Error - don't attack for the error to be seen (change later to default true)
 			doAttack = false;
+		}
+	}
+	else if (selfRace == BWAPI::Races::Terran)
+	{
+
+
+	//	TerranMarineRush = 0, TerranDoubleRaxMnM = 1,
+	//		TerranTriRaxMnMRush = 2, TerranProxyRaxMarineRush = 3,
+	//		Terran3FactoryVultureRush = 4, TerranGundamRush = 5,
+	//		Terran1FastExpoDef = 6, Terran1FastExpoNoDef = 7,
+	//		Terran2FactMechBuild = 8,
+	//		TerranGoliathBuild = 9, TerranGoliathDrop = 10,
+	//		Terran1FastPortBuild = 11, TerranWraithRush1Port = 12,
+	//		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,
+	//		NumTerranStrategies = 15
+	//};
+
+		if (currentStrategy == TerranDoubleRaxMnM)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranTriRaxMnMRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranProxyRaxMarineRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran3FactoryVultureRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return doAttackTerran3FactoryVultureRush();
+		}
+		else if (currentStrategy == TerranGundamRush)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran1FastExpoDef)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran1FastExpoNoDef)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran2FactMechBuild)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranGoliathBuild)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranGoliathDrop)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == Terran1FastPortBuild)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranWraithRush1Port)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranWraithRush2PortsTvZ)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
+		}
+		else if (currentStrategy == TerranWraithRush2PortsTvT)
+		{
+			// TODO: implement doAttack for the current strategy
+			return true;
 		}
 	}
 
@@ -1016,7 +1102,8 @@ int StrategyManager::getStrategyIdx()
 	if (selfRace == BWAPI::Races::Terran)
 	{
 		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
-		chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
+		//chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
+		chosenStrategy = TerranDoubleRaxMnM;
 
 	}
 
@@ -1538,4 +1625,20 @@ bool StrategyManager::doAttackZerg9PoolSpeedlingsRush()
 bool StrategyManager::doAttackZergMidgame()
 {
 	return true;
+}
+
+bool StrategyManager::doAttackTerran3FactoryVultureRush()
+{
+	if (isMidGame)
+	{
+		return true;
+	}
+	else if ((!isMidGame) && (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture >= 3)))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

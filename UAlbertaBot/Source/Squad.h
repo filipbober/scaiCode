@@ -11,6 +11,7 @@
 #include "CombatSimulation.h"
 
 #include "micromanagement/MarineManagerExt.h"
+#include "micromanagement/VultureManagerExt.h"
 
 class ZealotManager;
 class DarkTemplarManager;
@@ -35,7 +36,9 @@ class Squad
 	TransportManager	transportManager;
 
 	//Extensions
-	MarineManagerExt marineManager;
+	//MarineManagerExt marineManager;
+	VultureManagerExt marineManager;	// For testing
+	VultureManagerExt vultureManager;
 	// eof ext
 
 	std::map<BWAPI::Unit *, bool>	nearEnemy;

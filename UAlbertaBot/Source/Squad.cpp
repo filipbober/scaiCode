@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "Squad.h"
+#include <boost\lexical_cast.hpp>
 
 int  Squad::lastRetreatSwitch = 0;
 bool Squad::lastRetreatSwitchVal = false;
@@ -45,6 +46,7 @@ void Squad::update()
 		
 		// Extensions
 		marineManager.regroup(regroupPosition);
+		vultureManager.regroup(regroupPosition);
 		// eof ext
 	}
 	else // otherwise, execute micro
@@ -57,6 +59,7 @@ void Squad::update()
 
 		// Extensions
 		marineManager.execute(order);
+		vultureManager.execute(order);
 		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
@@ -123,6 +126,7 @@ void Squad::setManagerUnits()
 
 	// Extensions
 	UnitVector terranMarines;
+	UnitVector terranVultures;
 	// eof ext
 
 	// add units to micro managers
@@ -130,9 +134,14 @@ void Squad::setManagerUnits()
 	{
 		if(unit->isCompleted() && unit->getHitPoints() > 0 && unit->exists())
 		{
+			// Select Terran Marines
 			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
 			{
 				terranMarines.push_back(unit);
+			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+			{
+				terranVultures.push_back(unit);
 			}
 			// select detector units
 			else if (unit->getType().isDetector() && !unit->getType().isBuilding())
@@ -164,6 +173,7 @@ void Squad::setManagerUnits()
 
 	// Extensions
 	marineManager.setUnits(terranMarines);
+	vultureManager.setUnits(terranVultures);
 	// eof ext
 
 }
@@ -221,11 +231,22 @@ bool Squad::needsToRegroup()
 	
 	if (retreat)
 	{
-		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat");
+		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat, score: " + boost::lexical_cast<std::string>(score));
 	}
 	else
 	{
-		regroupStatus = std::string("\x04 Attack - simulation predicts success");
+		regroupStatus = std::string("\x04 Attack - simulation predicts success, score:  " + boost::lexical_cast<std::string>(score));
+	}
+
+
+	if ((score > -500)
+		&& (score < 0))
+	{
+		retreat = true;
+	}
+	else
+	{
+		retreat = false;
 	}
 
 	return retreat;
