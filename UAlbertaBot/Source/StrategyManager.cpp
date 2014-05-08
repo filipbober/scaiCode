@@ -39,7 +39,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1";
+	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order
@@ -56,7 +56,7 @@ void StrategyManager::addStrategies()
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
-	//terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 18 1 0 1 1 0 0 22 23";			// For testing purposes
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0";			// For testing purposes
 	//terranOpeningBook[TerranTriRaxMnMRush] = "0";
 	//terranOpeningBook[TerranProxyRaxMarineRush] = "0";
 	//terranOpeningBook[Terran3FactoryVultureRush] = "0";
@@ -1116,7 +1116,7 @@ int StrategyManager::getStrategyIdx()
 
 	}
 
-	BWAPI::Broodwar->printf("Chosen strategy: %d", chosenStrategy);
+	BWAPI::Broodwar->printf("                                                        Chosen strategy: %d", chosenStrategy);
 	return chosenStrategy;
 }
 
@@ -1136,11 +1136,11 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 	int numGhosts = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
 
-	int supplyDepotsWanted;
-	int scvsWanted;
-	int marinesWanted;
-	int medicsWanted;		// marine/medic ratio: 5:1
-	int ghostsWanted;
+	int supplyDepotsWanted = 0;
+	int scvsWanted = 0;
+	int marinesWanted = 0;
+	int medicsWanted = 0;		// marine/medic ratio: 5:1
+	int ghostsWanted = 0;
 
 	
 	supplyDepotsWanted = numSupplyDepots + 1;
