@@ -26,6 +26,9 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 		}
 	}
 
+	setAverageEnemyPosition(vultureUnitTargets);
+
+
 	// For each Vulture
 	BOOST_FOREACH(BWAPI::Unit * vultureUnit, vultureUnits)
 	{
@@ -158,7 +161,7 @@ BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * vultureUnit, UnitVector 
 }
 
 void VultureManagerExt::kiteTarget(BWAPI::Unit * vultureUnit, BWAPI::Unit * target)
-{
+{	
 	double vultureRange(vultureUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());
 
@@ -180,6 +183,81 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * vultureUnit, BWAPI::Unit * targ
 		speed = 24;	
 	}
 
+	int vultureWeaponCooldown = vultureUnit->getGroundWeaponCooldown();
+	int meleeRange = 15;
 
+	// If we are going to be out of range (melee range added just to ensure we are still in range)
+	// or if weapon is ready then attack
+	if ((vultureWeaponCooldown == 0)
+		|| (dist >= (vultureRange - meleeRange)))
+	{
+		smartAttackUnit(vultureUnit, target);
+		return;
+	}
+	else
+	{
+		// Run in the opposite direction to the enemy
+		//BWAPI::Position fleePosition(vultureUnit->getPosition() - target->getPosition() + vultureUnit->getPosition());
 
+		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 1");
+		BWAPI::Position fleePosition(vultureUnit->getPosition() - _averageEnemyPosition + vultureUnit->getPosition());
+		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 2");
+
+		BWAPI::Broodwar->drawLineMap(vultureUnit->getPosition().x(), vultureUnit->getPosition().y(),
+			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);		
+
+		putMine(vultureUnit);
+
+		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 3");
+		smartMove(vultureUnit, fleePosition);
+		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 4");
+	}
+
+}
+
+void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
+{
+	// If there are no valid targets, return opposite direction than start location,
+	// so the Vulture will run straight to base
+	BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos()");
+	if (targets.empty())
+	{
+		//_averageEnemyPosition.x = (BWAPI::Broodwar->self()->getStartLocation().x());
+		//_averageEnemyPosition.y = (BWAPI::Broodwar->self()->getStartLocation().y());
+		BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 1");
+		BWAPI::Position avgPos((-BWAPI::Broodwar->self()->getStartLocation().x()), (-BWAPI::Broodwar->self()->getStartLocation().y()));
+		_averageEnemyPosition = avgPos;
+		BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 2");
+		return;
+	}
+
+	//BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 3");
+	BWAPI::Position sumPos(targets[0]->getPosition());
+	for (int i = 1; i < targets.size(); i++)
+	{
+		sumPos += targets[i]->getPosition();
+	}
+
+	////int xPos = (sumPos.x() / targets.size());
+	////int yPos = (sumPos.y() / targets.size());
+
+	////BWAPI::Position avgPos(xPos, yPos);
+	////_averageEnemyPosition = avgPos;
+
+	_averageEnemyPosition = sumPos;
+	//BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 4");
+	//_averageEnemyPosition.x = (sumPos.x / targets.size());
+	//_averageEnemyPosition.y = (sumPos.y / targets.size());
+}
+
+void VultureManagerExt::putMine(BWAPI::Unit * vultureUnit)
+{
+	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines))
+	{
+		vultureUnit->useTech(BWAPI::TechTypes::Spider_Mines, vultureUnit->getPosition());
+	}
+	else
+	{
+		return;
+	}
 }
