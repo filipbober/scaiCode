@@ -1102,7 +1102,8 @@ int StrategyManager::getStrategyIdx()
 	if (selfRace == BWAPI::Races::Terran)
 	{
 		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
-		chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
+		//chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
+		chosenStrategy = TerranDoubleRaxMnM;
 
 	}
 

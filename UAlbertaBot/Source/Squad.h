@@ -36,7 +36,8 @@ class Squad
 	TransportManager	transportManager;
 
 	//Extensions
-	MarineManagerExt marineManager;
+	//MarineManagerExt marineManager;
+	VultureManagerExt marineManager;	// For testing
 	VultureManagerExt vultureManager;
 	// eof ext
 
