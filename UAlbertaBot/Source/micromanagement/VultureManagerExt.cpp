@@ -199,18 +199,14 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * vultureUnit, BWAPI::Unit * targ
 		// Run in the opposite direction to the enemy
 		//BWAPI::Position fleePosition(vultureUnit->getPosition() - target->getPosition() + vultureUnit->getPosition());
 
-		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 1");
 		BWAPI::Position fleePosition(vultureUnit->getPosition() - _averageEnemyPosition + vultureUnit->getPosition());
-		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 2");
 
 		BWAPI::Broodwar->drawLineMap(vultureUnit->getPosition().x(), vultureUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);		
 
 		putMine(vultureUnit);
 
-		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 3");
 		smartMove(vultureUnit, fleePosition);
-		BWAPI::Broodwar->printf("                                           DebExt: kiteTarget 4");
 	}
 
 }
@@ -219,19 +215,15 @@ void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 {
 	// If there are no valid targets, return opposite direction than start location,
 	// so the Vulture will run straight to base
-	BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos()");
 	if (targets.empty())
 	{
 		//_averageEnemyPosition.x = (BWAPI::Broodwar->self()->getStartLocation().x());
 		//_averageEnemyPosition.y = (BWAPI::Broodwar->self()->getStartLocation().y());
-		BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 1");
 		BWAPI::Position avgPos((-BWAPI::Broodwar->self()->getStartLocation().x()), (-BWAPI::Broodwar->self()->getStartLocation().y()));
 		_averageEnemyPosition = avgPos;
-		BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 2");
 		return;
 	}
 
-	//BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 3");
 	BWAPI::Position sumPos(targets[0]->getPosition());
 	for (int i = 1; i < targets.size(); i++)
 	{
@@ -245,7 +237,6 @@ void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	////_averageEnemyPosition = avgPos;
 
 	_averageEnemyPosition = sumPos;
-	//BWAPI::Broodwar->printf("                                           DebExt: setAverageEnemyPos 4");
 	//_averageEnemyPosition.x = (sumPos.x / targets.size());
 	//_averageEnemyPosition.y = (sumPos.y / targets.size());
 }
