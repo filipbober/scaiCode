@@ -39,7 +39,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order

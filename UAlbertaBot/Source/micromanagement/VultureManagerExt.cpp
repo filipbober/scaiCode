@@ -237,6 +237,11 @@ void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	////_averageEnemyPosition = avgPos;
 
 	_averageEnemyPosition = sumPos;
+
+	if (!_averageEnemyPosition.isValid())
+	{
+		_averageEnemyPosition.makeValid();
+	}
 	//_averageEnemyPosition.x = (sumPos.x / targets.size());
 	//_averageEnemyPosition.y = (sumPos.y / targets.size());
 }
