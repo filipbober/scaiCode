@@ -92,37 +92,38 @@ void VultureManagerExt::vultureAdvanceToPosition(BWAPI::Unit * terranMarine, Uni
 
 int VultureManagerExt::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit * target)
 {
-	BWAPI::UnitType vultureUnitType = rangedUnit->getType();
-	BWAPI::UnitType targetType = target->getType();
+	//BWAPI::UnitType vultureUnitType = rangedUnit->getType();
+	//BWAPI::UnitType targetType = target->getType();
 
-	bool canAttackUs = targetType.groundWeapon() != BWAPI::WeaponTypes::None;
-	int vultureWeaponRange = vultureUnitType.groundWeapon().maxRange();		// 160, Concussive
-	int targetWeaponRange = targetType.groundWeapon().maxRange();
+	//bool canAttackUs = targetType.groundWeapon() != BWAPI::WeaponTypes::None;
+	//int vultureWeaponRange = vultureUnitType.groundWeapon().maxRange();		// 160, Concussive
+	//int targetWeaponRange = targetType.groundWeapon().maxRange();
 
-	// Vulture cannot attack flyers
-	if (targetType.isFlyer())
-	{
-		return 0;
-	}
-	// Faster than Vulture
-	else if ((targetType.topSpeed() >= vultureUnitType.topSpeed())
-		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot) 
-			&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
-	{
-		return vultureWeaponRange;		// return 160
-	}
-	// Slower than Vulture
-	else
-	{
-		int priority = vultureWeaponRange - targetWeaponRange;
-		if (priority < 0)
-		{
-			priority = 0;
-		}
+	//// Vulture cannot attack flyers
+	//if (targetType.isFlyer())
+	//{
+	//	return 0;
+	//}
+	//// Faster than Vulture
+	//else if ((targetType.topSpeed() >= vultureUnitType.topSpeed())
+	//	|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot) 
+	//		&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
+	//{
+	//	return vultureWeaponRange;		// return 160
+	//}
+	//// Slower than Vulture
+	//else
+	//{
+	//	int priority = vultureWeaponRange - targetWeaponRange;
+	//	if (priority < 0)
+	//	{
+	//		priority = 0;
+	//	}
 
-		return priority;
-	}
+	//	return priority;
+	//}
 
+	return 1;
 }
 
 BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * vultureUnit, UnitVector & targets)

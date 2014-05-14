@@ -13,7 +13,6 @@ Squad::Squad(const UnitVector & units, SquadOrder order)
 
 void Squad::update()
 {
-	BWAPI::Broodwar->printf("                                           DebExt: SquadUpdate 0");
 	// update all necessary unit information within this squad
 	updateUnits();
 
@@ -32,11 +31,9 @@ void Squad::update()
 		}
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: SquadUpdate 1");
 	// if we do need to regroup, do it
 	if (needToRegroup)
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: SquadUpdate 2");
 		InformationManager::Instance().lastFrameRegroup = 1;
 
 		const BWAPI::Position regroupPosition(calcRegroupPosition());
@@ -54,7 +51,6 @@ void Squad::update()
 	}
 	else // otherwise, execute micro
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: SquadUpdate 3");
 		InformationManager::Instance().lastFrameRegroup = 1;
 
 		meleeManager.execute(order);
@@ -69,7 +65,6 @@ void Squad::update()
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
 		detectorManager.execute(order);
 	}
-	BWAPI::Broodwar->printf("                                           DebExt: SquadUpdate 4");
 }
 
 void Squad::updateUnits()

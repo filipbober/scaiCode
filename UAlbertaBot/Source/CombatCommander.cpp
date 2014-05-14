@@ -18,27 +18,22 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 {
 	if(squadUpdateFrame())
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: CombatCommander 0");
 		// clear all squad data
 		squadData.clearSquadData();
 
-		BWAPI::Broodwar->printf("                                           DebExt: CombatCommander 1");
 
 		// give back combat workers to worker manager
 		WorkerManager::Instance().finishedWithCombatWorkers();
         
-		BWAPI::Broodwar->printf("                                           DebExt: CombatCommander 2");
 		// Assign defense and attack squads
         assignScoutDefenseSquads();
 		assignDefenseSquads(unitsToAssign);
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);
 
-		BWAPI::Broodwar->printf("                                           DebExt: CombatCommander 3");
 	}
 
 	squadData.update();
-	BWAPI::Broodwar->printf("                                           DebExt: CombatCommander 4");
 }
 
 void CombatCommander::assignIdleSquads(std::set<BWAPI::Unit *> & unitsToAssign)

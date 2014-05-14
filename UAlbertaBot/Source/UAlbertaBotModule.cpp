@@ -92,31 +92,26 @@ void UAlbertaBotModule::onEnd(bool isWinner)
 
 void UAlbertaBotModule::onFrame()
 {
-	BWAPI::Broodwar->printf("                                           DebExt: UAlbertaBot 0");
 	if (Options::Modules::USING_UNIT_COMMAND_MGR)
 	{
 		UnitCommandManager::Instance().update();
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: UAlbertaBot 1");
 	if (Options::Modules::USING_GAMECOMMANDER) 
 	{ 
 		gameCommander.update(); 
 	}
 	
-	BWAPI::Broodwar->printf("                                           DebExt: UAlbertaBot 2");
 	if (Options::Modules::USING_ENHANCED_INTERFACE)
 	{
 		eui.update();
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: UAlbertaBot 3");
 	if (Options::Modules::USING_MICRO_SEARCH)
 	{
 		//micro.update();
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: UAlbertaBot 4");
 	if (Options::Modules::USING_REPLAY_VISUALIZER)
 	{
 		BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->getAllUnits())
@@ -129,7 +124,6 @@ void UAlbertaBotModule::onFrame()
 			}
 		}
 	}
-	BWAPI::Broodwar->printf("                                           DebExt: UAlbertaBot 5");
 }
 
 void UAlbertaBotModule::onUnitDestroy(BWAPI::Unit * unit)
