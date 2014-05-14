@@ -43,6 +43,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 				// attack it
 				kiteTarget(selectedUnit, target);
+				
 			}
 			// if there are no targets
 			else
@@ -178,7 +179,7 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	double targetRange(target->getType().groundWeapon().maxRange());
 
 	// determine whether the target can be kited
-	if (selectedUnitRange <= target->getType().groundWeapon().maxRange())
+	if (selectedUnitRange <= targetRange)
 	{
 		// if we can't kite it, there's no point to do so
 		smartAttackUnit(selectedUnit, target);
@@ -198,7 +199,6 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 		|| (dist >= (selectedUnitRange - meleeRange)))
 	{
 		smartAttackUnit(selectedUnit, target);
-		return;
 	}
 	else
 	{
@@ -207,7 +207,14 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
 
-		smartMove(selectedUnit, fleePosition);
+		if (target->getType().canAttack())
+		{
+			smartMove(selectedUnit, fleePosition);
+		}
+		else
+		{
+			smartAttackMove(selectedUnit, target->getPosition());
+		}
 	}
 
 }
