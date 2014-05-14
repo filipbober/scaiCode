@@ -80,6 +80,8 @@ void VultureManagerExt::vultureAdvanceToPosition(BWAPI::Unit * terranMarine, Uni
 
 }
 
+/// Returns target attack priority.
+/// Returned value must be greater than 0
 int VultureManagerExt::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit * target)
 {
 	BWAPI::UnitType vultureUnitType = rangedUnit->getType();
