@@ -11,7 +11,6 @@ void GameCommander::update()
 {
 	timerManager.startTimer(TimerManager::All);
 	
-
 	// economy and base managers
 	timerManager.startTimer(TimerManager::Worker);
 	// populate the unit vectors we will pass into various managers
@@ -27,6 +26,7 @@ void GameCommander::update()
 	BuildingManager::Instance().update();
 	timerManager.stopTimer(TimerManager::Building);
 
+	
 	// combat and scouting managers
 	timerManager.startTimer(TimerManager::Combat);
 	if (Options::Modules::USING_COMBATCOMMANDER)
@@ -34,14 +34,12 @@ void GameCommander::update()
 		combatCommander.update(combatUnits);
 	}
 	timerManager.stopTimer(TimerManager::Combat);
-
 	timerManager.startTimer(TimerManager::Scout);
 	if (Options::Modules::USING_SCOUTMANAGER)
 	{
 		scoutManager.update(scoutUnits);
 	}
 	timerManager.stopTimer(TimerManager::Scout);
-
 	// utility managers
 	timerManager.startTimer(TimerManager::InformationManager);
 	InformationManager::Instance().update();
@@ -60,7 +58,6 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Search);
 		
 	timerManager.stopTimer(TimerManager::All);
-
 	drawDebugInterface();
 }
 

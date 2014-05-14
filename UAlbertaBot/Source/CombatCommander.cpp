@@ -21,6 +21,7 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		// clear all squad data
 		squadData.clearSquadData();
 
+
 		// give back combat workers to worker manager
 		WorkerManager::Instance().finishedWithCombatWorkers();
         
@@ -29,6 +30,7 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		assignDefenseSquads(unitsToAssign);
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);
+
 	}
 
 	squadData.update();

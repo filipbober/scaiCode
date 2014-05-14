@@ -112,7 +112,6 @@ void UAlbertaBotModule::onFrame()
 		//micro.update();
 	}
 
-
 	if (Options::Modules::USING_REPLAY_VISUALIZER)
 	{
 		BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->getAllUnits())

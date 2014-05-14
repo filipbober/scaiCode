@@ -15,6 +15,7 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 {
 	const UnitVector & vultureUnits = getUnits();
 
+
 	// figure out targets
 	UnitVector vultureUnitTargets;
 	for (size_t i(0); i<targets.size(); i++)
@@ -27,7 +28,6 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 	}
 
 	setAverageEnemyPosition(vultureUnitTargets);
-
 
 	// For each Vulture
 	BOOST_FOREACH(BWAPI::Unit * vultureUnit, vultureUnits)
@@ -80,6 +80,8 @@ void VultureManagerExt::vultureAdvanceToPosition(BWAPI::Unit * terranMarine, Uni
 
 }
 
+/// Returns target attack priority.
+/// Returned value must be greater than 0
 int VultureManagerExt::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit * target)
 {
 	BWAPI::UnitType vultureUnitType = rangedUnit->getType();
@@ -89,10 +91,11 @@ int VultureManagerExt::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit *
 	int vultureWeaponRange = vultureUnitType.groundWeapon().maxRange();		// 160, Concussive
 	int targetWeaponRange = targetType.groundWeapon().maxRange();
 
+
 	// Vulture cannot attack flyers
 	if (targetType.isFlyer())
 	{
-		return 0;
+		return 1;
 	}
 	// Faster than Vulture
 	else if ((targetType.topSpeed() >= vultureUnitType.topSpeed())
@@ -105,9 +108,9 @@ int VultureManagerExt::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit *
 	else
 	{
 		int priority = vultureWeaponRange - targetWeaponRange;
-		if (priority < 0)
+		if (priority <= 0)
 		{
-			priority = 0;
+			priority = 1;
 		}
 
 		return priority;
