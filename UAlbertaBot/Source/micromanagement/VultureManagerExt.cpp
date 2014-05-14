@@ -13,6 +13,7 @@ VultureManagerExt::~VultureManagerExt()
 
 void VultureManagerExt::executeMicro(const UnitVector & targets)
 {
+	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 0");
 	const UnitVector & vultureUnits = getUnits();
 
 	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 1");

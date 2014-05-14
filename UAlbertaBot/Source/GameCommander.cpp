@@ -11,7 +11,7 @@ void GameCommander::update()
 {
 	timerManager.startTimer(TimerManager::All);
 	
-
+	BWAPI::Broodwar->printf("                                           DebExt: GameCommander 0");
 	// economy and base managers
 	timerManager.startTimer(TimerManager::Worker);
 	// populate the unit vectors we will pass into various managers
@@ -27,6 +27,8 @@ void GameCommander::update()
 	BuildingManager::Instance().update();
 	timerManager.stopTimer(TimerManager::Building);
 
+	BWAPI::Broodwar->printf("                                           DebExt: GameCommander 1");
+	
 	// combat and scouting managers
 	timerManager.startTimer(TimerManager::Combat);
 	if (Options::Modules::USING_COMBATCOMMANDER)
@@ -34,14 +36,14 @@ void GameCommander::update()
 		combatCommander.update(combatUnits);
 	}
 	timerManager.stopTimer(TimerManager::Combat);
-
+	BWAPI::Broodwar->printf("                                           DebExt: GameCommander 2");
 	timerManager.startTimer(TimerManager::Scout);
 	if (Options::Modules::USING_SCOUTMANAGER)
 	{
 		scoutManager.update(scoutUnits);
 	}
 	timerManager.stopTimer(TimerManager::Scout);
-
+	BWAPI::Broodwar->printf("                                           DebExt: GameCommander 3");
 	// utility managers
 	timerManager.startTimer(TimerManager::InformationManager);
 	InformationManager::Instance().update();
@@ -60,8 +62,9 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Search);
 		
 	timerManager.stopTimer(TimerManager::All);
-
+	BWAPI::Broodwar->printf("                                           DebExt: GameCommander 4");
 	drawDebugInterface();
+	BWAPI::Broodwar->printf("                                           DebExt: GameCommander 5");
 }
 
 void GameCommander::drawDebugInterface()
