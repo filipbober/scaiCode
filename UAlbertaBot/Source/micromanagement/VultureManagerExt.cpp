@@ -15,6 +15,8 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 {
 	const UnitVector & vultureUnits = getUnits();
 
+	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 1");
+
 	// figure out targets
 	UnitVector vultureUnitTargets;
 	for (size_t i(0); i<targets.size(); i++)
@@ -26,8 +28,9 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 		}
 	}
 
+	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 2");
 	setAverageEnemyPosition(vultureUnitTargets);
-
+	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 3");
 
 	// For each Vulture
 	BOOST_FOREACH(BWAPI::Unit * vultureUnit, vultureUnits)
@@ -35,12 +38,15 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 		// if the order is to attack or defend
 		if (order.type == order.Attack || order.type == order.Defend)
 		{
+			BWAPI::Broodwar->printf("                                           DebExt: executeMicro 4");
 			// if there are targets
 			if (!vultureUnitTargets.empty())
 			{
+				BWAPI::Broodwar->printf("                                           DebExt: executeMicro 5");
 				// find the best target for this Vulture
 				BWAPI::Unit * target = getTarget(vultureUnit, vultureUnitTargets);
 
+				BWAPI::Broodwar->printf("                                           DebExt: executeMicro 6");
 				// attack it
 				kiteTarget(vultureUnit, target);
 			}
@@ -48,9 +54,11 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 			else
 			{
 				// if we're not near the order position
+				BWAPI::Broodwar->printf("                                           DebExt: executeMicro 7");
 				if (vultureUnit->getDistance(order.position) > 100)
 				{
 					// move to it
+					BWAPI::Broodwar->printf("                                           DebExt: executeMicro 8");
 					smartAttackMove(vultureUnit, order.position);
 				}
 			}
@@ -62,6 +70,7 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 				vultureUnit->getTargetPosition().x(), vultureUnit->getTargetPosition().y(), Options::Debug::COLOR_LINE_TARGET);
 		}
 	}
+	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 9");
 
 }
 
