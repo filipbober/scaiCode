@@ -37,7 +37,7 @@ class Squad
 
 	//Extensions
 	//MarineManagerExt marineManager;
-	VultureManagerExt marineManager;	// For testing
+	MarineManagerExt marineManager;	// For testing
 	VultureManagerExt vultureManager;
 	// eof ext
 

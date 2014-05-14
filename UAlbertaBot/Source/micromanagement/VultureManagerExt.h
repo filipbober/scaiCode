@@ -12,16 +12,16 @@ public:
 	void executeMicro(const UnitVector & targets);
 
 private:	
-	void vultureAttack(BWAPI::Unit* vultureUnit, UnitVector& vultureTargets);
-	void vultureDefend(BWAPI::Unit* vultureUnit, UnitVector& vultureTargets);
-	void vultureAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets);
+	void executeAttack(BWAPI::Unit* selectedUnit, UnitVector& targets);
+	void executeDefend(BWAPI::Unit* vultureUnit, UnitVector& targets);
+	void executeAdvanceToPosition(BWAPI::Unit* selectedUnit, UnitVector& targets);
 
-	int getAttackPriority(BWAPI::Unit * vultureUnit, BWAPI::Unit * target);
-	BWAPI::Unit * getTarget(BWAPI::Unit * vultureUnit, UnitVector & targets);
-	void kiteTarget(BWAPI::Unit * rangedUnit, BWAPI::Unit * target);
+	int getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
+	BWAPI::Unit * getTarget(BWAPI::Unit * selectedUnit, UnitVector& targets);
+	void kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
 
 	void setAverageEnemyPosition(const UnitVector& targets);
-	void putMine(BWAPI::Unit * vultureUnit);
+	void putMine(BWAPI::Unit * selectedUnit);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
