@@ -13,10 +13,8 @@ VultureManagerExt::~VultureManagerExt()
 
 void VultureManagerExt::executeMicro(const UnitVector & targets)
 {
-	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 0");
 	const UnitVector & vultureUnits = getUnits();
 
-	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 1");
 
 	// figure out targets
 	UnitVector vultureUnitTargets;
@@ -29,9 +27,7 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 		}
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 2");
 	setAverageEnemyPosition(vultureUnitTargets);
-	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 3");
 
 	// For each Vulture
 	BOOST_FOREACH(BWAPI::Unit * vultureUnit, vultureUnits)
@@ -39,15 +35,12 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 		// if the order is to attack or defend
 		if (order.type == order.Attack || order.type == order.Defend)
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: executeMicro 4");
 			// if there are targets
 			if (!vultureUnitTargets.empty())
 			{
-				BWAPI::Broodwar->printf("                                           DebExt: executeMicro 5");
 				// find the best target for this Vulture
 				BWAPI::Unit * target = getTarget(vultureUnit, vultureUnitTargets);
 
-				BWAPI::Broodwar->printf("                                           DebExt: executeMicro 6");
 				// attack it
 				kiteTarget(vultureUnit, target);
 			}
@@ -55,11 +48,9 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 			else
 			{
 				// if we're not near the order position
-				BWAPI::Broodwar->printf("                                           DebExt: executeMicro 7");
 				if (vultureUnit->getDistance(order.position) > 100)
 				{
 					// move to it
-					BWAPI::Broodwar->printf("                                           DebExt: executeMicro 8");
 					smartAttackMove(vultureUnit, order.position);
 				}
 			}
@@ -71,7 +62,6 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 				vultureUnit->getTargetPosition().x(), vultureUnit->getTargetPosition().y(), Options::Debug::COLOR_LINE_TARGET);
 		}
 	}
-	BWAPI::Broodwar->printf("                                           DebExt: executeMicro 9");
 
 }
 
@@ -92,38 +82,38 @@ void VultureManagerExt::vultureAdvanceToPosition(BWAPI::Unit * terranMarine, Uni
 
 int VultureManagerExt::getAttackPriority(BWAPI::Unit * rangedUnit, BWAPI::Unit * target)
 {
-	//BWAPI::UnitType vultureUnitType = rangedUnit->getType();
-	//BWAPI::UnitType targetType = target->getType();
+	BWAPI::UnitType vultureUnitType = rangedUnit->getType();
+	BWAPI::UnitType targetType = target->getType();
 
-	//bool canAttackUs = targetType.groundWeapon() != BWAPI::WeaponTypes::None;
-	//int vultureWeaponRange = vultureUnitType.groundWeapon().maxRange();		// 160, Concussive
-	//int targetWeaponRange = targetType.groundWeapon().maxRange();
+	bool canAttackUs = targetType.groundWeapon() != BWAPI::WeaponTypes::None;
+	int vultureWeaponRange = vultureUnitType.groundWeapon().maxRange();		// 160, Concussive
+	int targetWeaponRange = targetType.groundWeapon().maxRange();
 
-	//// Vulture cannot attack flyers
-	//if (targetType.isFlyer())
-	//{
-	//	return 0;
-	//}
-	//// Faster than Vulture
-	//else if ((targetType.topSpeed() >= vultureUnitType.topSpeed())
-	//	|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot) 
-	//		&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
-	//{
-	//	return vultureWeaponRange;		// return 160
-	//}
-	//// Slower than Vulture
-	//else
-	//{
-	//	int priority = vultureWeaponRange - targetWeaponRange;
-	//	if (priority < 0)
-	//	{
-	//		priority = 0;
-	//	}
 
-	//	return priority;
-	//}
+	// Vulture cannot attack flyers
+	if (targetType.isFlyer())
+	{
+		return 1;
+	}
+	// Faster than Vulture
+	else if ((targetType.topSpeed() >= vultureUnitType.topSpeed())
+		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot) 
+			&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
+	{
+		return vultureWeaponRange;		// return 160
+	}
+	// Slower than Vulture
+	else
+	{
+		int priority = vultureWeaponRange - targetWeaponRange;
+		if (priority <= 0)
+		{
+			priority = 1;
+		}
 
-	return 1;
+		return priority;
+	}
+
 }
 
 BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * vultureUnit, UnitVector & targets)
