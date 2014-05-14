@@ -219,24 +219,26 @@ void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	{
 		//_averageEnemyPosition.x = (BWAPI::Broodwar->self()->getStartLocation().x());
 		//_averageEnemyPosition.y = (BWAPI::Broodwar->self()->getStartLocation().y());
-		BWAPI::Position avgPos((-BWAPI::Broodwar->self()->getStartLocation().x()), (-BWAPI::Broodwar->self()->getStartLocation().y()));
-		_averageEnemyPosition = avgPos;
+		//BWAPI::Position avgPos((-BWAPI::Broodwar->self()->getStartLocation().x()), (-BWAPI::Broodwar->self()->getStartLocation().y()));
+		//_averageEnemyPosition = avgPos;
 		return;
 	}
 
-	BWAPI::Position sumPos(targets[0]->getPosition());
-	for (int i = 1; i < targets.size(); i++)
+	BWAPI::Position sumPos(0, 0);
+	for (int i = 0; i < targets.size(); i++)
 	{
+		if (targets[i]->getPosition().isValid()){
 		sumPos += targets[i]->getPosition();
+		}
 	}
 
-	////int xPos = (sumPos.x() / targets.size());
-	////int yPos = (sumPos.y() / targets.size());
+	int xPos = (sumPos.x() / targets.size());
+	int yPos = (sumPos.y() / targets.size());
 
-	////BWAPI::Position avgPos(xPos, yPos);
-	////_averageEnemyPosition = avgPos;
+	BWAPI::Position avgPos(xPos, yPos);
+	_averageEnemyPosition = avgPos;
 
-	_averageEnemyPosition = sumPos;
+	//_averageEnemyPosition = sumPos;
 
 	if (!_averageEnemyPosition.isValid())
 	{
