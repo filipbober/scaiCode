@@ -29,7 +29,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 	setAverageEnemyPosition(selectedUnitTargets);
 
-	// For each Vulture
+	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
 		// if the order is to attack or defend
@@ -41,7 +41,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 				// find the best target for this Vulture
 				BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
-				// attack it
+				// attack it				
 				kiteTarget(selectedUnit, target);
 				
 			}
@@ -178,6 +178,13 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());
 
+	BWAPI::UnitType targetType = target->getType();
+	if ((targetType.canAttack())
+		&& (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
+	{
+		useStimpack(selectedUnit);
+	}
+
 	// determine whether the target can be kited
 	if (selectedUnitRange <= targetRange)
 	{
@@ -190,12 +197,12 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	double		dist(selectedUnit->getDistance(target));
 	double		speed(selectedUnit->getType().topSpeed());
 
-	int vultureWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
+	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	int meleeRange = 15;
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
-	if ((vultureWeaponCooldown == 0)
+	if ((selectedUnitWeaponCooldown == 0)
 		|| (dist >= (selectedUnitRange - meleeRange)))
 	{
 		smartAttackUnit(selectedUnit, target);
@@ -249,5 +256,14 @@ void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 
 void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
 {
-	// TODO
+	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
+		&& (selectedUnit->getHitPoints() >= 11)
+		&& (selectedUnit->getStimTimer() == 0))
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines);
+	}
+	else
+	{
+		return;
+	}
 }
