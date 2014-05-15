@@ -1229,7 +1229,10 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	
 	int numCommandCentersAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	int numTerranAcademyAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int numTerranEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
 	int scvsWanted = 0;
 	int marinesWanted = 0;
@@ -1254,95 +1257,101 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	bool isShellsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) == 1);
 	bool isShellsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::U_238_Shells));
 
-	int currentInfantryWeaponsUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
-	bool isInfantryWeaponsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
-	bool isInfantryWeaponsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)
-		== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	//int currentInfantryWeaponsUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
+	//bool isInfantryWeaponsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	//bool isInfantryWeaponsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)
+	//	== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
 
-	int currentInfantryArmorUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
-	bool isInfantryArmorUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
-	bool isInfantryArmorUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)
-		== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+	//int currentInfantryArmorUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+	//bool isInfantryArmorUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+	//bool isInfantryArmorUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)
+	//	== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
 
 	scvsWanted = numSCV + 2;
 	marinesWanted = numMarines + 2;
 	medicsWanted = marinesWanted / 4;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(74, scvsWanted)));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(74, scvsWanted)));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+
+	// Without this check there would be crash during goal searching
+	//if (medicsWanted > 0)
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	//}
 
 
-	if (!isAcademy)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
-	}
-	
-	// Research Stimpacks after Academy is built
-	if (isAcademyCompleted
-		&& isAcademy
-		&& !isStimpackResearched
-		&& ! isStimackResearching)
-	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	}
+	//if (!isAcademy)
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, numTerranAcademyAll + 1));
+	//}
+	//
+	//// Research Stimpacks after Academy is built
+	//if (isAcademyCompleted
+	//	&& isAcademy
+	//	&& !isStimpackResearched
+	//	&& ! isStimackResearching)
+	//{
+	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	//}
 
-	// Research shells after Stimpacks are researched
-	if (isStimpackResearched
-		&& isAcademyCompleted
-		&& isAcademy
-		&& !isShellsUpgraded
-		&& !isShellsUpgrading)
-	{
-		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	}
+	//// Research shells after Stimpacks are researched
+	//if (isStimpackResearched
+	//	&& isAcademyCompleted
+	//	&& isAcademy
+	//	&& !isShellsUpgraded
+	//	&& !isShellsUpgrading)
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	//}
 
-	// Build Engineering Bay after Stimpacks are researched
-	if (isStimpackResearched
-		&& !isEngineeringBay)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
-	}
+	//// Build Engineering Bay after Stimpacks are researched
+	//if (isStimpackResearched
+	//	&& !isEngineeringBay)
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
+	//}
 
-	if (isEngineeringBayCompleted
-		&& isEngineeringBay)
-	{
-		if (!isInfantryWeaponsUpgraded
-			&& !isInfantryWeaponsUpgrading
-			&& !isInfantryArmorUpgrading
-			&& (currentInfantryWeaponsUpgrade < (currentInfantryArmorUpgrade + 1)))
-		{
-			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentInfantryWeaponsUpgrade + 1));
-		}
-		else if (!isInfantryArmorUpgraded
-			&& !isInfantryArmorUpgrading)
-		{
-			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentInfantryArmorUpgrade + 1));
-		}
-	}
+	//if (isEngineeringBayCompleted
+	//	&& isEngineeringBay)
+	//{
+	//	if (!isInfantryWeaponsUpgraded
+	//		&& !isInfantryWeaponsUpgrading
+	//		&& !isInfantryArmorUpgrading
+	//		&& (currentInfantryWeaponsUpgrade < (currentInfantryArmorUpgrade + 1)))
+	//	{
+	//		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentInfantryWeaponsUpgrade + 1));
+	//	}
+	//	else if (!isInfantryArmorUpgraded
+	//		&& !isInfantryArmorUpgrading)
+	//	{
+	//		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentInfantryArmorUpgrade + 1));
+	//	}
+	//}
 
-	// There is a risk of Dark Templar rush, build Comsat Station
-	if ((enemyRace == BWAPI::Races::Protoss)		
-		&& (!isComsat)
-		&& isAcademyCompleted
-		&& isAcademy
-		&& (numCommandCentersAll > 0))
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
-	}
-	else if ((BWAPI::Broodwar->getFrameCount() > buildComsatFrame)
-		&& !isComsat
-		&& isAcademyCompleted
-		&& (numCommandCentersAll > 0))
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
-	}
+	//// There is a risk of Dark Templar rush, build Comsat Station
+	//if ((enemyRace == BWAPI::Races::Protoss)		
+	//	&& (!isComsat)
+	//	&& isAcademyCompleted
+	//	&& isAcademy
+	//	&& (numCommandCentersAll > 0))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
+	//}
+	//else if ((BWAPI::Broodwar->getFrameCount() > buildComsatFrame)
+	//	&& !isComsat
+	//	&& isAcademyCompleted
+	//	&& (numCommandCentersAll > 0))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
+	//}
 
-	if ((BWAPI::Broodwar->getFrameCount() > expandOneFrame)
-		&& (numCommandCentersAll < 2))
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
-	}
+	//if ((BWAPI::Broodwar->getFrameCount() > expandOneFrame)
+	//	&& (numCommandCentersAll < 2))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
+	//}
 
 	return goal;
 }
@@ -1766,23 +1775,25 @@ bool StrategyManager::doAttackTerran3FactoryVultureRush()
 
 bool StrategyManager::doAttackTerranDoubleRaxMnM()
 {
-	if (!isMidGame)
-	{
-		return true;
-	}
-	else
-	{
-		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-		int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	//if (!isMidGame)
+	//{
+	//	return true;
+	//}
+	//else
+	//{
+	//	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	//	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
-		if ((numMarines >= 5)
-			&& (numMedics >= 1))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+	//	if ((numMarines >= 5)
+	//		&& (numMedics >= 1))
+	//	{
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		return false;
+	//	}
+	//	return true;
+	//}
+	return true;
 }
