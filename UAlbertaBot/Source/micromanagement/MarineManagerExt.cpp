@@ -110,7 +110,7 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	// Faster than Marine (without Stimpack)
 	else if ((targetType.topSpeed() >= selectedUnitType.topSpeed())
 		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot)
-		&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
+			&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
 	{
 		return selectedUnitWeaponRange;		// return 160
 	}
@@ -180,7 +180,7 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 
 	BWAPI::UnitType targetType = target->getType();
 	if ((targetType.canAttack())
-		&& (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
+		|| (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
 	{
 		useStimpack(selectedUnit);
 	}
@@ -260,7 +260,7 @@ void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
 		&& (selectedUnit->getHitPoints() >= 11)
 		&& (selectedUnit->getStimTimer() == 0))
 	{
-		selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines);
+		selectedUnit->useTech(BWAPI::TechTypes::Stim_Packs);
 	}
 	else
 	{
