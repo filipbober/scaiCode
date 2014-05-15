@@ -113,19 +113,19 @@ private:
 
 	// Build order goals
 	const MetaPairVector getTerranDoubleRaxMnMBuildOrderGoal() const;
-	const MetaPairVector getTerranTriRaxMnMRush() const;
-	const MetaPairVector getTerranProxyRaxMarineRush() const;
-	const MetaPairVector getTerran3FactoryVultureRush() const;
-	const MetaPairVector getTerranGundamRush() const;
-	const MetaPairVector getTerran1FastExpoDef() const;
-	const MetaPairVector getTerran1FastExpoNoDef() const;
-	const MetaPairVector getTerran2FactMechBuild() const;
-	const MetaPairVector getTerranGoliathBuild() const;
-	const MetaPairVector getTerranGoliathDrop() const;
-	const MetaPairVector getTerran1FastPortBuild() const;
-	const MetaPairVector getTerranWraithRush1Port() const;
-	const MetaPairVector getTerranWraithRush2PortsTvZ() const;
-	const MetaPairVector getTerranWraithRush2PortsTvT() const;
+	const MetaPairVector getTerranTriRaxMnMRushBuildOrderGoal() const;
+	const MetaPairVector getTerranProxyRaxMarineRushBuildOrderGoal() const;
+	const MetaPairVector getTerran3FactoryVultureRushBuildOrderGoal() const;
+	const MetaPairVector getTerranGundamRushBuildOrderGoal() const;
+	const MetaPairVector getTerran1FastExpoDefBuildOrderGoal() const;
+	const MetaPairVector getTerran1FastExpoNoDefBuildOrderGoal() const;
+	const MetaPairVector getTerran2FactMechBuildBuildOrderGoal() const;
+	const MetaPairVector getTerranGoliathBuildBuildOrderGoal() const;
+	const MetaPairVector getTerranGoliathDropBuildOrderGoal() const;
+	const MetaPairVector getTerran1FastPortBuildBuildOrderGoal() const;
+	const MetaPairVector getTerranWraithRush1PortBuildOrderGoal() const;
+	const MetaPairVector getTerranWraithRush2PortsTvZBuildOrderGoal() const;
+	const MetaPairVector getTerranWraithRush2PortsTvTBuildOrderGoal() const;
 
 
 	std::vector<std::string>	zergMidgameBook;
@@ -137,7 +137,11 @@ private:
 	bool doAttackZerg9PoolSpeedlingsRush();
 	bool doAttackZergMidgame();
 
-	bool doAttackTerran3FactoryVultureRush();
+	bool doAttackTerranDoubleRaxMnM();
+	bool doAttackTerran3FactoryVultureRush();	
+
+	// expand
+	const bool StrategyManager::expandTerranDoubleRaxMnM() const;
 
 
 };

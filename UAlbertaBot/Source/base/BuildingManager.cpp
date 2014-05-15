@@ -277,7 +277,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 			|| (b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo))
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) 
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;

@@ -29,9 +29,19 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 	setAverageEnemyPosition(selectedUnitTargets);
 
-	// For each Vulture
+	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
+		if ((selectedUnit->getType() == BWAPI::UnitTypes::Terran_Marine)
+			&& !(selectedUnit->isLoaded())
+			&& (hasBunkerSpace()))
+		{
+
+			goToBunker(selectedUnit);
+			continue;
+			
+		}
+
 		// if the order is to attack or defend
 		if (order.type == order.Attack || order.type == order.Defend)
 		{
@@ -41,7 +51,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 				// find the best target for this Vulture
 				BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
-				// attack it
+				// attack it				
 				kiteTarget(selectedUnit, target);
 				
 			}
@@ -110,7 +120,7 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	// Faster than Marine (without Stimpack)
 	else if ((targetType.topSpeed() >= selectedUnitType.topSpeed())
 		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot)
-		&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
+			&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
 	{
 		return selectedUnitWeaponRange;		// return 160
 	}
@@ -178,6 +188,13 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());
 
+	BWAPI::UnitType targetType = target->getType();
+	if ((targetType.canAttack())
+		|| (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
+	{
+		useStimpack(selectedUnit);
+	}
+
 	// determine whether the target can be kited
 	if (selectedUnitRange <= targetRange)
 	{
@@ -190,12 +207,12 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	double		dist(selectedUnit->getDistance(target));
 	double		speed(selectedUnit->getType().topSpeed());
 
-	int vultureWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
+	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	int meleeRange = 15;
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
-	if ((vultureWeaponCooldown == 0)
+	if ((selectedUnitWeaponCooldown == 0)
 		|| (dist >= (selectedUnitRange - meleeRange)))
 	{
 		smartAttackUnit(selectedUnit, target);
@@ -249,5 +266,46 @@ void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 
 void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
 {
-	// TODO
+	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
+		&& (selectedUnit->getHitPoints() >= 30)
+		&& (selectedUnit->getStimTimer() == 0))
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::Stim_Packs);
+	}
+	else
+	{
+		return;
+	}
+}
+
+void MarineManagerExt::goToBunker(BWAPI::Unit * selectedUnit)
+{
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+
+		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
+			&& (unit->getType().spaceProvided() > 1)
+			&& (unit->getLoadedUnits().size() < 4)
+			)
+		{
+			selectedUnit->load(unit);			
+			break;
+		}
+	}
+}
+
+bool MarineManagerExt::hasBunkerSpace()
+{
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+
+		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
+			&& (unit->getType().spaceProvided() > 1)
+			&& (unit->getLoadedUnits().size() < 4)
+			)
+		{
+			return true;
+		}
+	}
+	return false;
 }
