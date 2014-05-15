@@ -32,6 +32,16 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
+		if ((selectedUnit->getType() == BWAPI::UnitTypes::Terran_Marine)
+			&& !(selectedUnit->isLoaded())
+			&& (hasBunkerSpace()))
+		{
+
+			goToBunker(selectedUnit);
+			continue;
+			
+		}
+
 		// if the order is to attack or defend
 		if (order.type == order.Attack || order.type == order.Defend)
 		{
@@ -266,4 +276,36 @@ void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
 	{
 		return;
 	}
+}
+
+void MarineManagerExt::goToBunker(BWAPI::Unit * selectedUnit)
+{
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+
+		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
+			&& (unit->getType().spaceProvided() > 1)
+			&& (unit->getLoadedUnits().size() < 4)
+			)
+		{
+			selectedUnit->load(unit);			
+			break;
+		}
+	}
+}
+
+bool MarineManagerExt::hasBunkerSpace()
+{
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+
+		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
+			&& (unit->getType().spaceProvided() > 1)
+			&& (unit->getLoadedUnits().size() < 4)
+			)
+		{
+			return true;
+		}
+	}
+	return false;
 }

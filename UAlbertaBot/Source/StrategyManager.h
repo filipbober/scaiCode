@@ -137,8 +137,11 @@ private:
 	bool doAttackZerg9PoolSpeedlingsRush();
 	bool doAttackZergMidgame();
 
-	bool doAttackTerran3FactoryVultureRush();
 	bool doAttackTerranDoubleRaxMnM();
+	bool doAttackTerran3FactoryVultureRush();	
+
+	// expand
+	const bool StrategyManager::expandTerranDoubleRaxMnM() const;
 
 
 };

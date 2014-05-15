@@ -22,6 +22,8 @@ private:
 
 	void setAverageEnemyPosition(const UnitVector& targets);
 	void useStimpack(BWAPI::Unit * selectedUnit);
+	void goToBunker(BWAPI::Unit * selectedUnit);
+	bool hasBunkerSpace();
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;

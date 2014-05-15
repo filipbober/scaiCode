@@ -39,7 +39,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1 19";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1 19 50 50";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order
@@ -520,6 +520,48 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 	}
 
 	return doAttack || firstAttackSent;
+}
+
+const bool StrategyManager::expandTerranDoubleRaxMnM() const
+{
+	// if there is no place to expand to, we can't expand
+	if (MapTools::Instance().getNextExpansion() == BWAPI::TilePositions::None)
+	{
+		return false;
+	}
+
+	int numCommandCenter = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int frame = BWAPI::Broodwar->getFrameCount();
+
+	// if there are more than 4 idle workers, expand
+	if (WorkerManager::Instance().getNumIdleWorkers() > 4)
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 2) && (numMarines > 12 || frame > 9000))
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 2) && (numMarines > 16 || frame > 15000))
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 2) && (numMarines > 24 || frame > 21000))
+	{
+		return true;
+	}
+
+	if ((numCommandCenter < 2) && (numMarines > 30 || frame > 26000))
+	{
+		return true;
+	}
+
+	return false;
+
 }
 
 const bool StrategyManager::expandProtossZealotRush() const
@@ -1104,6 +1146,7 @@ int StrategyManager::getStrategyIdx()
 		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
 		//chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
 		chosenStrategy = TerranDoubleRaxMnM;
+		//chosenStrategy = TerranWraithRush1Port;
 
 	}
 
@@ -1224,7 +1267,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Supply_Depot, supplyDepotsWanted));
 
 	int buildComsatFrame = 4000;	
-	int expandOneFrame = 8000;
+	int expandOneFrame = 6000;
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
@@ -1269,7 +1312,11 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 
 	scvsWanted = numSCV + 2;
 	marinesWanted = numMarines + 2;
-	medicsWanted = marinesWanted / 3;
+
+	if (marinesWanted > 5)
+	{
+		medicsWanted = marinesWanted / 5;
+	}
 
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
@@ -1280,7 +1327,6 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
 	}
-
 
 	if (!isAcademy)
 	{
@@ -1306,12 +1352,12 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
 
-	// Build Engineering Bay after Stimpacks are researched
-	if (isStimpackResearched
-		&& !isEngineeringBay)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, numTerranEngineeringBay + 1));
-	}
+	//// Build Engineering Bay after Stimpacks are researched
+	//if ((isStimpackResearched)
+	//	&& (!isEngineeringBay))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, numTerranEngineeringBay + 1));
+	//}
 
 	//if (isEngineeringBayCompleted
 	//	&& isEngineeringBay)
@@ -1330,7 +1376,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	//	}
 	//}
 
-	//// There is a risk of Dark Templar rush, build Comsat Station
+	// There is a risk of Dark Templar rush, build Comsat Station
 	//if ((enemyRace == BWAPI::Races::Protoss)		
 	//	&& (!isComsat)
 	//	&& isAcademyCompleted
@@ -1347,11 +1393,10 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	//}
 
-	//if ((BWAPI::Broodwar->getFrameCount() > expandOneFrame)
-	//	&& (numCommandCentersAll < 2))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
-	//}
+	if (expandTerranDoubleRaxMnM())
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
+	}
 
 	return goal;
 }
@@ -1649,15 +1694,19 @@ const MetaPairVector StrategyManager::getTerranWraithRush1PortBuildOrderGoal() c
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 
-	int scvsWanted;
-	int marinesWanted;
+	int scvsWanted = 0;
+	int marinesWanted = 0;
+	int wraithsWanted = 0;
 
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
+	wraithsWanted = numWraiths + 2;
 
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Wraith, wraithsWanted));
 
 	return goal;
 }
