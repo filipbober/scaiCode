@@ -39,7 +39,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1 19";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order
@@ -1257,61 +1257,61 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	bool isShellsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) == 1);
 	bool isShellsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::U_238_Shells));
 
-	//int currentInfantryWeaponsUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
-	//bool isInfantryWeaponsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
-	//bool isInfantryWeaponsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)
-	//	== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	int currentInfantryWeaponsUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
+	bool isInfantryWeaponsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	bool isInfantryWeaponsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)
+		== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
 
-	//int currentInfantryArmorUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
-	//bool isInfantryArmorUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
-	//bool isInfantryArmorUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)
-	//	== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+	int currentInfantryArmorUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+	bool isInfantryArmorUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+	bool isInfantryArmorUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)
+		== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
 
 	scvsWanted = numSCV + 2;
 	marinesWanted = numMarines + 2;
-	medicsWanted = marinesWanted / 4;
+	medicsWanted = marinesWanted / 3;
 
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(74, scvsWanted)));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 
-	// Without this check there would be crash during goal searching
-	//if (medicsWanted > 0)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
-	//}
+	//Without this check there would be crash during goal searching
+	if (medicsWanted > 0)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	}
 
 
-	//if (!isAcademy)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, numTerranAcademyAll + 1));
-	//}
-	//
-	//// Research Stimpacks after Academy is built
-	//if (isAcademyCompleted
-	//	&& isAcademy
-	//	&& !isStimpackResearched
-	//	&& ! isStimackResearching)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//}
+	if (!isAcademy)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, numTerranAcademyAll + 1));
+	}
+	
+	// Research Stimpacks after Academy is built
+	if ((isAcademyCompleted)
+		&& (isAcademy)
+		&& (!isStimpackResearched)
+		&& (!isStimackResearching))
+	{
+		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	}
 
-	//// Research shells after Stimpacks are researched
-	//if (isStimpackResearched
-	//	&& isAcademyCompleted
-	//	&& isAcademy
-	//	&& !isShellsUpgraded
-	//	&& !isShellsUpgrading)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	//}
+	// Research shells after Stimpacks are researched
+	if ((isStimpackResearched)
+		&& (isAcademyCompleted)
+		&& (isAcademy)
+		&& (!isShellsUpgraded)
+		&& (!isShellsUpgrading))
+	{
+		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
 
-	//// Build Engineering Bay after Stimpacks are researched
-	//if (isStimpackResearched
-	//	&& !isEngineeringBay)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
-	//}
+	// Build Engineering Bay after Stimpacks are researched
+	if (isStimpackResearched
+		&& !isEngineeringBay)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, numTerranEngineeringBay + 1));
+	}
 
 	//if (isEngineeringBayCompleted
 	//	&& isEngineeringBay)
@@ -1781,11 +1781,21 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 	}
 	else
 	{
-		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-		int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+		//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+		//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
-		if ((numMarines >= 5)
-			&& (numMedics >= 1))
+		//if ((numMarines >= 10)
+		//	&& (numMedics >= 3))
+		//{
+		//	return true;
+		//}
+		//else
+		//{
+		//	return false;
+		//}
+		//return true;
+
+		if (BWAPI::Broodwar->getFrameCount() > 8000)
 		{
 			return true;
 		}
@@ -1793,7 +1803,5 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 		{
 			return false;
 		}
-		return true;
 	}
-	return true;
 }
