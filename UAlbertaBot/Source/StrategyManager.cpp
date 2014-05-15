@@ -442,7 +442,7 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 		if (currentStrategy == TerranDoubleRaxMnM)
 		{
 			// TODO: implement doAttack for the current strategy
-			return true;
+			return doAttackTerranDoubleRaxMnM();
 		}
 		else if (currentStrategy == TerranTriRaxMnMRush)
 		{
@@ -1280,6 +1280,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	
 	// Research Stimpacks after Academy is built
 	if (isAcademyCompleted
+		&& isAcademy
 		&& !isStimpackResearched
 		&& ! isStimackResearching)
 	{
@@ -1289,6 +1290,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	// Research shells after Stimpacks are researched
 	if (isStimpackResearched
 		&& isAcademyCompleted
+		&& isAcademy
 		&& !isShellsUpgraded
 		&& !isShellsUpgrading)
 	{
@@ -1302,12 +1304,13 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
 	}
 
-	if (isEngineeringBayCompleted)
+	if (isEngineeringBayCompleted
+		&& isEngineeringBay)
 	{
 		if (!isInfantryWeaponsUpgraded
 			&& !isInfantryWeaponsUpgrading
 			&& !isInfantryArmorUpgrading
-			&& (currentInfantryWeaponsUpgrade < currentInfantryArmorUpgrade + 1))
+			&& (currentInfantryWeaponsUpgrade < (currentInfantryArmorUpgrade + 1)))
 		{
 			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentInfantryWeaponsUpgrade + 1));
 		}
@@ -1321,13 +1324,16 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	// There is a risk of Dark Templar rush, build Comsat Station
 	if ((enemyRace == BWAPI::Races::Protoss)		
 		&& (!isComsat)
-		&& isAcademyCompleted)
+		&& isAcademyCompleted
+		&& isAcademy
+		&& (numCommandCentersAll > 0))
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	}
 	else if ((BWAPI::Broodwar->getFrameCount() > buildComsatFrame)
 		&& !isComsat
-		&& isAcademyCompleted)
+		&& isAcademyCompleted
+		&& (numCommandCentersAll > 0))
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	}
@@ -1755,5 +1761,28 @@ bool StrategyManager::doAttackTerran3FactoryVultureRush()
 	else
 	{
 		return false;
+	}
+}
+
+bool StrategyManager::doAttackTerranDoubleRaxMnM()
+{
+	if (!isMidGame)
+	{
+		return true;
+	}
+	else
+	{
+		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+		int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+
+		if ((numMarines >= 5)
+			&& (numMedics >= 1))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

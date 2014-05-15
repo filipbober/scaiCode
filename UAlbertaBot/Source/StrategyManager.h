@@ -138,6 +138,7 @@ private:
 	bool doAttackZergMidgame();
 
 	bool doAttackTerran3FactoryVultureRush();
+	bool doAttackTerranDoubleRaxMnM();
 
 
 };

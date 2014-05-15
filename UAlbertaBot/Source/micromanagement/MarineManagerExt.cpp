@@ -257,7 +257,7 @@ void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
 {
 	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
-		&& (selectedUnit->getHitPoints() >= 11)
+		&& (selectedUnit->getHitPoints() >= 30)
 		&& (selectedUnit->getStimTimer() == 0))
 	{
 		selectedUnit->useTech(BWAPI::TechTypes::Stim_Packs);
