@@ -1775,25 +1775,25 @@ bool StrategyManager::doAttackTerran3FactoryVultureRush()
 
 bool StrategyManager::doAttackTerranDoubleRaxMnM()
 {
-	//if (!isMidGame)
-	//{
-	//	return true;
-	//}
-	//else
-	//{
-	//	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	if (!isMidGame)
+	{
+		return true;
+	}
+	else
+	{
+		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+		int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
-	//	if ((numMarines >= 5)
-	//		&& (numMedics >= 1))
-	//	{
-	//		return true;
-	//	}
-	//	else
-	//	{
-	//		return false;
-	//	}
-	//	return true;
-	//}
+		if ((numMarines >= 5)
+			&& (numMedics >= 1))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		return true;
+	}
 	return true;
 }
