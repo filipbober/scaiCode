@@ -221,6 +221,10 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	else
 	{
 		BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
+		if (!fleePosition.isValid())
+		{
+			fleePosition.makeValid();
+		}
 
 		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
@@ -268,7 +272,7 @@ void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
 {
 	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
-		&& (selectedUnit->getHitPoints() >= 30)
+		&& (selectedUnit->getHitPoints() > 30)
 		&& (selectedUnit->getStimTimer() == 0))
 	{
 		selectedUnit->useTech(BWAPI::TechTypes::Stim_Packs);

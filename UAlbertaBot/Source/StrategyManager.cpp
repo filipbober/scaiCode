@@ -1425,6 +1425,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	int academiesWanted = 0;
 	int engineeringBaysWanted = 0;
 	int comsatStationsWanted = 0;
+	int bunkersWanted = 0;
 
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
@@ -1433,16 +1434,36 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	academiesWanted = 1;
 	engineeringBaysWanted = 1;
 	comsatStationsWanted = numCommandCentersAll;
-	
+	bunkersWanted = 2;
 
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, academiesWanted));
-
-
-
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, engineeringBaysWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, bunkersWanted));
+	
+	// Expand
+	if (expandTerranDoubleRaxMnM())
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
+	}
 
+	//// Stimpacks
+	//if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
+	//	&& (numTerranAcademyAll > 0))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	//}
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, comsatStationsWanted));
+	//// U238 Shells
+	//if ((self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
+	//	&& !(self->isUpgrading(BWAPI::UpgradeTypes::U_238_Shells))
+	//	&& (self->hasResearched(BWAPI::TechTypes::Stim_Packs))
+	//	&& (numTerranAcademyAll > 0))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	//}
+	
+
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, comsatStationsWanted));
 	
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
@@ -1451,16 +1472,6 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 	}
 
-	if (expandTerranDoubleRaxMnM())
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
-	}
-
-	if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
-		&& (numTerranAcademyAll > 1))
-	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	}
 
 		
 
