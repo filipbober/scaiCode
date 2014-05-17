@@ -1446,12 +1446,12 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
 	}
 
-	//// Stimpacks
-	//if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
-	//	&& (numTerranAcademyAll > 0))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//}
+	// Stimpacks
+	if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
+		&& (numTerranAcademyAll > 0))
+	{
+		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	}
 
 	//// U238 Shells
 	//if ((self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
@@ -1469,7 +1469,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 	if (medicsWanted > 0)
 	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
 	}
 
 
