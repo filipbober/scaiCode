@@ -189,8 +189,9 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	double targetRange(target->getType().groundWeapon().maxRange());
 
 	BWAPI::UnitType targetType = target->getType();
-	if ((targetType.canAttack())
+	if (((targetType.canAttack())
 		|| (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
+		&& (target->isInWeaponRange(selectedUnit)))
 	{
 		useStimpack(selectedUnit);
 	}
