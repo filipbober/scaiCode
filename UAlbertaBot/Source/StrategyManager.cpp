@@ -39,7 +39,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 1 0 0 3 0 0 3 0 1 0 4 0 0 0 6";			// deprecated
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
-	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1 19 50 50";
+	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1 19 50 50 20 37";
 	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order
@@ -1405,53 +1405,54 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	//}
 
-	BWAPI::Player* self = BWAPI::Broodwar->self();
-	int buildComsatFrame = 4000;	
-	int expandOneFrame = 6000;
+	//BWAPI::Player* self = BWAPI::Broodwar->self();
+	//int buildComsatFrame = 4000;	
+	//int expandOneFrame = 6000;
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	
-	int numCommandCentersAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
-	int numTerranAcademyAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
-	int numTerranEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
-	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	//
+	//int numCommandCentersAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	//int numTerranAcademyAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	//int numTerranEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	//int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 
 	int scvsWanted = 0;
 	int marinesWanted = 0;
-	int medicsWanted = 0;		// marine/medic ratio: 5:1
+	//int medicsWanted = 0;		// marine/medic ratio: 5:1
 
-	int academiesWanted = 0;
-	int engineeringBaysWanted = 0;
-	int comsatStationsWanted = 0;
-	int bunkersWanted = 0;
+
+	//int academiesWanted = 0;
+	//int engineeringBaysWanted = 0;
+	//int comsatStationsWanted = 0;
+	//int bunkersWanted = 0;
 
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
-	medicsWanted = numMarines / 5;		
+	//medicsWanted = numMarines / 5;		
 
-	academiesWanted = 1;
-	engineeringBaysWanted = 1;
-	comsatStationsWanted = numCommandCentersAll;
-	bunkersWanted = 2;
+	//academiesWanted = 1;
+	//engineeringBaysWanted = 1;
+	//comsatStationsWanted = numCommandCentersAll;
+	//bunkersWanted = 2;
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, academiesWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, engineeringBaysWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, bunkersWanted));
-	
-	// Expand
-	if (expandTerranDoubleRaxMnM())
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
-	}
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, academiesWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, engineeringBaysWanted));
+	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, bunkersWanted));
+	//
+	//// Expand
+	//if (expandTerranDoubleRaxMnM())
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
+	//}
 
-	// Stimpacks
-	if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
-		&& (numTerranAcademyAll > 0))
-	{
-		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	}
+	//// Stimpacks
+	//if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
+	//	&& (numTerranAcademyAll > 0))
+	//{
+	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
+	//}
 
 	//// U238 Shells
 	//if ((self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
@@ -1467,10 +1468,10 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	if (medicsWanted > 0)
-	{
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
-	}
+	//if (medicsWanted > 0)
+	//{
+	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	//}
 
 
 		
