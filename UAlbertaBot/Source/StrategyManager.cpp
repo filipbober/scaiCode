@@ -1405,7 +1405,7 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	//}
 
-	//BWAPI::Player* self = BWAPI::Broodwar->self();
+	BWAPI::Player* self = BWAPI::Broodwar->self();
 	//int buildComsatFrame = 4000;	
 	//int expandOneFrame = 6000;
 
@@ -1475,8 +1475,11 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	}
 
 
-	
-	goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	// Caused crash, probably.
+	if (!(self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) == self->getMaxUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells)))
+	{
+		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
+	}
 
 	return goal;
 }
