@@ -75,9 +75,9 @@ void ProductionManager::performBuildOrderSearch(const std::vector< std::pair<Met
 				)
 			{
 
-				// If there are already 3 buildings of the same type
+				// If there are already 4 buildings of the same type
 				// remove them from queue
-				if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 2))
+				if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 3))
 				{
 					buildOrder.erase(buildOrder.begin() + i);
 				}
