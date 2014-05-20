@@ -1467,7 +1467,11 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 
 	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, comsatStationsWanted));
 	
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
+	if (scvsWanted > numSCV)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
+	}
+
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 	if (medicsWanted > 0)
 	{
@@ -1476,7 +1480,10 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 
 
 	// Caused crash, probably.
-	if (!(self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) == self->getMaxUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells)))
+	if (!(self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) == self->getMaxUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells))
+		&& (self->allUnitCount(BWAPI::UnitTypes::Terran_Academy))
+		&& !(self->isUpgrading(BWAPI::UpgradeTypes::U_238_Shells))
+		)
 	{
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
