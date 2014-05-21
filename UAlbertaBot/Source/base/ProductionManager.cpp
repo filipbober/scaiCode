@@ -75,9 +75,9 @@ void ProductionManager::performBuildOrderSearch(const std::vector< std::pair<Met
 				)
 			{
 
-				// If there are already 3 buildings of the same type
+				// If there are already 4 buildings of the same type
 				// remove them from queue
-				if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 2))
+				if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 3))
 				{
 					buildOrder.erase(buildOrder.begin() + i);
 				}
@@ -169,6 +169,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 	// we don't care if it's not our unit
 	if (!unit || unit->getPlayer() != BWAPI::Broodwar->self())
 	{
+		queueDoSomething();
 		return;
 	}
 		
@@ -192,6 +193,9 @@ void ProductionManager::manageBuildOrderQueue()
 	// if there is nothing in the queue, oh well
 	if (queue.isEmpty()) 
 	{
+		// Build SCV while build order is searching
+		
+
 		return;
 	}
 
@@ -214,11 +218,13 @@ void ProductionManager::manageBuildOrderQueue()
 			break;
 		}
 		
+		// Ext
 		if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
-			(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+			(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
 		{
 			queue.removeCurrentHighestPriorityItem();
 		}
+		// eof ext
 
 		// if the next item in the list is a building and we can't yet make it
 		if (currentItem.metaType.isBuilding() && !(producer && canMake))
@@ -584,4 +590,25 @@ ProductionManager & ProductionManager::Instance() {
 void ProductionManager::onGameEnd()
 {
 	buildLearner.onGameEnd();
+}
+
+void ProductionManager::queueDoSomething()
+{
+	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+	{
+		std::vector<MetaType> buildOrder;
+
+		// If there are not too many workers or there are no barracks
+		if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56)
+			|| (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) > 0))
+		{
+			buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+		}
+		else
+		{
+			buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+		}
+
+		setBuildOrder(buildOrder);
+	}
 }

@@ -302,7 +302,7 @@ BWAPI::TilePosition MapTools::getNextExpansion()
 	BOOST_FOREACH(BWTA::BaseLocation * base, BWTA::getBaseLocations())
 	{
 		// if the base has gas
-		if(!base->isMineralOnly() && !(base == BWTA::getStartLocation(BWAPI::Broodwar->self())))
+		if (!base->isMineralOnly() && !(base == BWTA::getStartLocation(BWAPI::Broodwar->self())))
 		{
 			// get the tile position of the base
 			BWAPI::TilePosition tile = base->getTilePosition();
@@ -341,6 +341,51 @@ BWAPI::TilePosition MapTools::getNextExpansion()
 			}
 
 			if(!closestBase || distanceFromHome < minDistance)
+			{
+				closestBase = base;
+				minDistance = distanceFromHome;
+			}
+		}
+		// If there is no base with both minerals and gas, return the one with minerals only
+		else if (!(base == BWTA::getStartLocation(BWAPI::Broodwar->self())))
+		{
+			// get the tile position of the base
+			BWAPI::TilePosition tile = base->getTilePosition();
+
+			// the rectangle for this base location
+			int x1 = tile.x() * 32;
+			int y1 = tile.y() * 32;
+			int x2 = x1 + BWAPI::UnitTypes::Protoss_Nexus.tileWidth() * 32;
+			int y2 = y1 + BWAPI::UnitTypes::Protoss_Nexus.tileHeight() * 32;
+
+			bool buildingInTheWay = false;
+
+			// for each unit in the rectangle where we want to build it
+			BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->getUnitsInRectangle(x1, y1, x2, y2))
+			{
+				// if the unit is a building, we can't build here
+				if (unit->getType().isBuilding())
+				{
+					buildingInTheWay = true;
+					break;
+				}
+			}
+
+			if (buildingInTheWay)
+			{
+				continue;
+			}
+
+			// the base's distance from our main nexus
+			double distanceFromHome = MapTools::Instance().getMyBaseDistance(BWAPI::Position(tile));//homeTile.getDistance(tile);
+
+			// if it is not connected, continue
+			if (!BWTA::isConnected(homeTile, tile) || distanceFromHome < 0)
+			{
+				continue;
+			}
+
+			if (!closestBase || distanceFromHome < minDistance)
 			{
 				closestBase = base;
 				minDistance = distanceFromHome;

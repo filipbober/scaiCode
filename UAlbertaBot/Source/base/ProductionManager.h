@@ -64,6 +64,10 @@ class ProductionManager
 	int							getFreeMinerals();
 	int							getFreeGas();
 
+	// Extensions
+	void queueDoSomething();
+	// eof ext
+
 public:
 
 	static ProductionManager &	Instance();
