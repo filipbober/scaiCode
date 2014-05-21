@@ -597,7 +597,18 @@ void ProductionManager::queueDoSomething()
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 	{
 		std::vector<MetaType> buildOrder;
-		buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+
+		// If there are not too many workers or there are no barracks
+		if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56)
+			|| (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) > 0))
+		{
+			buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+		}
+		else
+		{
+			buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+		}
+
 		setBuildOrder(buildOrder);
 	}
 }
