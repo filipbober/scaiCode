@@ -616,7 +616,7 @@ void BuildingManager::scannerSweep()
 					targetPosition.makeValid();
 				}
 
-				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, chosenTarget->getPosition());
+				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
 				break;
 			}
 		}
