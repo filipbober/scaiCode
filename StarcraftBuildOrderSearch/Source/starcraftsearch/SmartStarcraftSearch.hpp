@@ -133,7 +133,7 @@ class SmartStarcraftSearch
 			
 			// This is maximum number of production buildings. Default 8 was too much, so it was reduced to 5.
 			//int productionBuildingLimit = 8;
-			int productionBuildingLimit = 5;
+			int productionBuildingLimit = 6;
 
 			// now, for each unit in that vector
 			for (Action a = 0; a < DATA.size(); ++a)
