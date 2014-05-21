@@ -186,6 +186,9 @@
     <ClCompile Include="..\Source\micromanagement\VultureManagerExt.cpp">
       <Filter>game\combat\micro\specific</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\micromanagement\WraithManagerExt.cpp">
+      <Filter>game\combat\micro\specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -330,6 +333,9 @@
       <Filter>game\combat\micro\specific</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\micromanagement\VultureManagerExt.h">
+      <Filter>game\combat\micro\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\micromanagement\WraithManagerExt.h">
       <Filter>game\combat\micro\specific</Filter>
     </ClInclude>
   </ItemGroup>

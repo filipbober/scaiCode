@@ -40,6 +40,9 @@ void BuildingManager::update()
 	// check to see if any buildings have completed and update data structures
 	checkForCompletedBuildings();
 
+	// Ext: Scanner Sweep
+	scannerSweep();
+
 	// draw some debug information
 	//BuildingPlacer::Instance().drawReservedTiles();
 
@@ -531,4 +534,77 @@ BuildingManager & BuildingManager::Instance()
 {
 	static BuildingManager instance;
 	return instance;
+}
+
+void BuildingManager::scannerSweep()
+{
+	std::set<BWAPI::Unit *> targets = BWAPI::Broodwar->enemy()->getUnits();
+
+	//if (InformationManager::Instance().enemyHasCloakedUnits())
+	//{
+	//	return;
+	//}
+
+	BWAPI::Broodwar->printf("                                           DebExt: 1");
+	// Select Comsat stations
+	std::set<BWAPI::Unit *>	selectedUnits;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
+		{
+			selectedUnits.insert(unit);
+		}
+	}
+
+	// Select visible and cloaked enemy units as targets
+	UnitVector selectedUnitTargets;
+	BOOST_FOREACH(BWAPI::Unit* target, targets)
+	{
+		if (target->isVisible()
+			&& !target->isCloaked())
+		{
+			selectedUnitTargets.push_back(target);
+		}
+	}
+
+
+
+
+
+	
+
+	// figure out targets: visible and cloaked
+	
+
+	BWAPI::Broodwar->printf("                                           DebExt: 2");
+
+	// Use decloak once per frame, cause it will reveal multiple units. Hopefully
+	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
+	{
+		if (selectedUnit->getEnergy() >= BWAPI::TechTypes::Scanner_Sweep.energyUsed())
+		{
+			BWAPI::Unit* chosenTarget = NULL;
+			int distance = 10000;
+
+			// Set target
+			BOOST_FOREACH(BWAPI::Unit * target, targets)
+			{
+				if (selectedUnit->getDistance(target) < distance)
+				{
+					chosenTarget = selectedUnit;
+					BWAPI::Broodwar->printf("                                           DebExt: 3");
+				}
+			}
+
+			if (chosenTarget->isCloaked())
+			{
+				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, chosenTarget);
+				BWAPI::Broodwar->printf("                                           DebExt: 4");
+				break;
+			}
+		}
+	}
+	BWAPI::Broodwar->printf("                                           DebExt: 5");
+
+
 }

@@ -12,6 +12,7 @@
 
 #include "micromanagement/MarineManagerExt.h"
 #include "micromanagement/VultureManagerExt.h"
+#include "micromanagement/WraithManagerExt.h"
 
 class ZealotManager;
 class DarkTemplarManager;
@@ -39,6 +40,7 @@ class Squad
 	//MarineManagerExt marineManager;
 	MarineManagerExt marineManager;	// For testing
 	VultureManagerExt vultureManager;
+	WraithManagerExt wraithManager;
 	// eof ext
 
 	std::map<BWAPI::Unit *, bool>	nearEnemy;

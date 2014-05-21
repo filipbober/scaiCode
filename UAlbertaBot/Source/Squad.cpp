@@ -47,6 +47,7 @@ void Squad::update()
 		// Extensions
 		marineManager.regroup(regroupPosition);
 		vultureManager.regroup(regroupPosition);
+		wraithManager.regroup(regroupPosition);
 		// eof ext
 	}
 	else // otherwise, execute micro
@@ -60,6 +61,7 @@ void Squad::update()
 		// Extensions
 		marineManager.execute(order);
 		vultureManager.execute(order);
+		wraithManager.execute(order);
 		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
@@ -127,6 +129,8 @@ void Squad::setManagerUnits()
 	// Extensions
 	UnitVector terranMarines;
 	UnitVector terranVultures;
+	UnitVector terranComsatStations;
+	UnitVector terranWraiths;
 	// eof ext
 
 	// add units to micro managers
@@ -139,9 +143,15 @@ void Squad::setManagerUnits()
 			{
 				terranMarines.push_back(unit);
 			}
+			// Select Terran Vultures
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
 			{
 				terranVultures.push_back(unit);
+			}
+			// Select Terran Wraiths
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Wraith)
+			{
+				terranWraiths.push_back(unit);
 			}
 			// select detector units
 			else if (unit->getType().isDetector() && !unit->getType().isBuilding())
@@ -174,6 +184,7 @@ void Squad::setManagerUnits()
 	// Extensions
 	marineManager.setUnits(terranMarines);
 	vultureManager.setUnits(terranVultures);
+	wraithManager.setUnits(terranWraiths);
 	// eof ext
 
 }
