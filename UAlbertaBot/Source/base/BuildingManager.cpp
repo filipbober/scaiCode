@@ -538,9 +538,10 @@ BuildingManager & BuildingManager::Instance()
 
 void BuildingManager::scannerSweep()
 {
+	BWAPI::Broodwar->printf("                                           DebExt: 0");
 	std::set<BWAPI::Unit *> targets = BWAPI::Broodwar->enemy()->getUnits();
 
-	//if (InformationManager::Instance().enemyHasCloakedUnits())
+	//if (!InformationManager::Instance().enemyHasCloakedUnits())
 	//{
 	//	return;
 	//}
@@ -554,21 +555,25 @@ void BuildingManager::scannerSweep()
 		{
 			selectedUnits.insert(unit);
 		}
-	}
+	}	
 
 	// Select visible and cloaked enemy units as targets
 	UnitVector selectedUnitTargets;
 	BOOST_FOREACH(BWAPI::Unit* target, targets)
 	{
 		if (target->isVisible()
-			&& !target->isCloaked())
+			&& target->isCloaked())
 		{
 			selectedUnitTargets.push_back(target);
 		}
 	}
 
 
-
+	if (selectedUnits.empty()
+		|| selectedUnitTargets.empty())
+	{
+		return;
+	}
 
 
 	
@@ -581,6 +586,11 @@ void BuildingManager::scannerSweep()
 	// Use decloak once per frame, cause it will reveal multiple units. Hopefully
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
+		if (!selectedUnit->isCompleted())
+		{
+			break;
+		}
+
 		if (selectedUnit->getEnergy() >= BWAPI::TechTypes::Scanner_Sweep.energyUsed())
 		{
 			BWAPI::Unit* chosenTarget = NULL;
@@ -596,15 +606,55 @@ void BuildingManager::scannerSweep()
 				}
 			}
 
-			if (chosenTarget->isCloaked())
+			if (chosenTarget->isCloaked()
+				&& (chosenTarget != NULL))
 			{
-				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, chosenTarget);
 				BWAPI::Broodwar->printf("                                           DebExt: 4");
+				BWAPI::Position targetPosition = chosenTarget->getPosition();
+				if (!targetPosition.isValid())
+				{
+					targetPosition.makeValid();
+				}
+
+				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, chosenTarget->getPosition());
 				break;
 			}
 		}
 	}
 	BWAPI::Broodwar->printf("                                           DebExt: 5");
+
+
+
+
+
+
+
+
+
+
+
+
+	//BWAPI::Player* enemy = BWAPI::Broodwar->enemy;
+	//std::set<BWAPI::Unit*> centers = BWAPI::Broodwar->self()->getUnits();
+	//for (std::set<BWAPI::Unit*>::iterator c = centers.begin(); c != centers.end
+	//	(); c++)
+	//{
+	//	if ((*c)->getType() == BWAPI::UnitTypes::Terran_Command_Center &&
+	//		(*c)->isCompleted() && (*c)->getAddon()->isCompleted())
+	//	{
+	//		if ((*c)->getAddon()->getEnergy() >= 50)
+	//		{
+	//			(*c)->getAddon()->useTech
+	//				(BWAPI::TechTypes::Scanner_Sweep, enemy->getPosition());
+	//			break;
+	//		}
+	//	}
+	//}
+
+
+
+
+
 
 
 }
