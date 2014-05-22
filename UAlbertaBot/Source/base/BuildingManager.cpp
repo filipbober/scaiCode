@@ -586,12 +586,14 @@ void BuildingManager::scannerSweep()
 	// Use decloak once per frame, cause it will reveal multiple units. Hopefully
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
-		if (!selectedUnit->isCompleted())
+		if (!selectedUnit->isCompleted()
+			|| !selectedUnit->exists())
 		{
 			break;
 		}
 
-		if (selectedUnit->getEnergy() >= BWAPI::TechTypes::Scanner_Sweep.energyUsed())
+		//if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed())
+		if (selectedUnit->getEnergy() > 50)
 		{
 			BWAPI::Unit* chosenTarget = NULL;
 			int distance = 10000;
@@ -601,7 +603,7 @@ void BuildingManager::scannerSweep()
 			{
 				if (selectedUnit->getDistance(target) < distance)
 				{
-					chosenTarget = selectedUnit;
+					chosenTarget = target;
 					BWAPI::Broodwar->printf("                                           DebExt: 3");
 				}
 			}
@@ -617,6 +619,7 @@ void BuildingManager::scannerSweep()
 				}
 
 				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+				
 				break;
 			}
 		}
