@@ -538,22 +538,30 @@ BuildingManager & BuildingManager::Instance()
 
 void BuildingManager::scannerSweep()
 {
-	BWAPI::Broodwar->printf("                                           DebExt: 0");
-	std::set<BWAPI::Unit *> targets = BWAPI::Broodwar->enemy()->getUnits();
+	// Issue
+	// https://code.google.com/p/bwapi/issues/detail?id=147
+
+	// Sweep once per 240 frames
+	if (BWAPI::Broodwar->getFrameCount() % 240 != 0)
+	{
+		return;
+	}
 
 	//if (!InformationManager::Instance().enemyHasCloakedUnits())
 	//{
 	//	return;
 	//}
 
-	BWAPI::Broodwar->printf("                                           DebExt: 1");
+	std::set<BWAPI::Unit *> targets = BWAPI::Broodwar->enemy()->getUnits();
+
 	// Select Comsat stations
 	std::set<BWAPI::Unit *>	selectedUnits;
 	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
 		if (unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
 		{
-			selectedUnits.insert(unit);
+			//selectedUnits.insert(unit);
+			selectedUnits.insert(unit->getAddon());
 		}
 	}	
 
@@ -581,8 +589,6 @@ void BuildingManager::scannerSweep()
 	// figure out targets: visible and cloaked
 	
 
-	BWAPI::Broodwar->printf("                                           DebExt: 2");
-
 	// Use decloak once per frame, cause it will reveal multiple units. Hopefully
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
@@ -593,7 +599,7 @@ void BuildingManager::scannerSweep()
 		}
 
 		//if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed())
-		if (selectedUnit->getEnergy() > 50)
+		if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
 		{
 			BWAPI::Unit* chosenTarget = NULL;
 			int distance = 10000;
@@ -604,23 +610,30 @@ void BuildingManager::scannerSweep()
 				if (selectedUnit->getDistance(target) < distance)
 				{
 					chosenTarget = target;
-					BWAPI::Broodwar->printf("                                           DebExt: 3");
 				}
 			}
 
 			if (!chosenTarget->isCloaked()
 				&& (chosenTarget != NULL))
 			{
-				BWAPI::Broodwar->printf("                                           DebExt: 4");
 				BWAPI::Position targetPosition = chosenTarget->getPosition();
 				if (!targetPosition.isValid())
 				{
 					targetPosition.makeValid();
 				}
 
-				selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
-				
-				break;
+				if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
+				{
+					BWAPI::Broodwar->printf("                                           DebExt: Scanning");
+					BWAPI::Broodwar->printf("                                           DebExt: frame = %d", BWAPI::Broodwar->getFrameCount());
+					BWAPI::Broodwar->printf("                                           DebExt: energy = %d", selectedUnit->getEnergy());
+					BWAPI::Broodwar->printf("                                           DebExt: target distance = %d", selectedUnit->getDistance(chosenTarget));
+					BWAPI::Broodwar->printf("                                           DebExt: target x = %d", targetPosition.x());
+					BWAPI::Broodwar->printf("                                           DebExt: target y = %d", targetPosition.y());
+					bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+					if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
+					break;
+				}								
 			}
 		}
 	}
