@@ -190,13 +190,12 @@ bool GameCommander::isCombatUnit(BWAPI::Unit * unit) const
 {
 	assert(unit != NULL);
 
-	// no workers or buildings allowed
 	if (unit && unit->getType().isWorker() || unit->getType().isBuilding())
 	{
 		return false;
 	}
 
-	// check for various types of combat units
+	//check for various types of combat units
 	if (unit->getType().canAttack() || 
 		unit->getType() == BWAPI::UnitTypes::Terran_Medic ||
 		unit->getType() == BWAPI::UnitTypes::Protoss_High_Templar ||

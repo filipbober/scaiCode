@@ -104,7 +104,8 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 
 	// Larvas are low priority targets
-	if (targetType == BWAPI::UnitTypes::Zerg_Larva)
+	if (targetType == BWAPI::UnitTypes::Zerg_Larva
+		|| targetType == BWAPI::UnitTypes::Protoss_Interceptor)
 	{
 		return 1;
 	}

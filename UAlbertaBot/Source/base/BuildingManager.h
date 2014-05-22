@@ -40,6 +40,7 @@ class BuildingManager {
 
 	// Ext
 	bool setAddonBuilding(Building &b);
+	void scannerSweep();
 	// eof ext
 
 	// functions for performing tedious vector tasks
