@@ -37,6 +37,14 @@ protected:
 	bool				unitNearChokepoint(BWAPI::Unit * unit) const;
 	void				trainSubUnits(BWAPI::Unit * unit) const;
 
+	// Extensions
+	void smartBorderMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const; 
+	int nextClockwiseBorderIdx(int borderId) const;
+	int nextCounterclockwiseBorderIdx(int borderId) const;
+	int clockwiseSteps(int attackerBorder, int enemyBorder) const;
+	int counterclockwiseSteps(int attackerBorder, int enemyBorder) const;
+	// eof ext
+
 public:
 						MicroManager() : drawDebugVectors(true), lastRegroupPerformed(0) {}
     virtual				~MicroManager(){}
