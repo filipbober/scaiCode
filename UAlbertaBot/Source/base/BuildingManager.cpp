@@ -576,7 +576,7 @@ void BuildingManager::scannerSweep()
 	{
 		if (target->isVisible()
 			&& !target->getType().isBuilding()
-			&& !target->isCloaked())
+			&& target->isCloaked())
 		{
 			selectedUnitTargets.push_back(target);
 		}
@@ -613,17 +613,18 @@ void BuildingManager::scannerSweep()
 			// Set target
 			BOOST_FOREACH(BWAPI::Unit * target, selectedUnitTargets)
 			{
-				if (selectedUnit->getDistance(target) < distance)
+				if ((selectedUnit->getDistance(target) < distance)
+					&& selectedUnit->getDistance(target) > 0)
 				{
 					chosenTarget = target;
 				}
 			}
 
-			if (!chosenTarget->isCloaked()
+			if (chosenTarget->isCloaked()
 				&& (chosenTarget != NULL))
 			{
-				//BWAPI::Position targetPosition = chosenTarget->getPosition();
-				BWAPI::Position targetPosition = chosenTarget->getRegion()->getCenter();
+				BWAPI::Position targetPosition = chosenTarget->getPosition();
+				//BWAPI::Position targetPosition = chosenTarget->getRegion()->getCenter();
 				if (!targetPosition.isValid())
 				{
 					targetPosition.makeValid();
@@ -641,18 +642,18 @@ void BuildingManager::scannerSweep()
 					BWAPI::Broodwar->printf("                                           DebExt: target distance = %d", selectedUnit->getDistance(chosenTarget));
 					BWAPI::Broodwar->printf("                                           DebExt: target x = %d", targetPosition.x());
 					BWAPI::Broodwar->printf("                                           DebExt: target y = %d", targetPosition.y());
-					//bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
-					if ((selectedUnit->getLastCommandFrame() + 2400) <= BWAPI::Broodwar->getFrameCount())
+
+					int scannerDuration = 12;
+					int framesPerSecond = 48;
+					if (((selectedUnit->getLastCommandFrame() + (scannerDuration * framesPerSecond)) <= BWAPI::Broodwar->getFrameCount())
+						&& (chosenTarget->exists()))
 					{
 						bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+						if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
+						break;
 					}
-					//if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
-					break;
+									
 				}	
-				else
-				{
-					BWAPI::Broodwar->printf("                                           DebExt: Scanning not initiated");
-				}
 			}
 		}
 	}
