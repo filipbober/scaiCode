@@ -39,10 +39,10 @@ protected:
 
 	// Extensions
 	void smartBorderMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const; 
-	int nextClockwiseBorderIdx(int borderId);
-	int nextCounterclockwiseBorderIdx(int borderId);
-	int clockwiseSteps(int attackerBorder, int enemyBorder);
-	int counterclockwiseSteps(int attackerBorder, int enemyBorder);
+	int nextClockwiseBorderIdx(int borderId) const;
+	int nextCounterclockwiseBorderIdx(int borderId) const;
+	int clockwiseSteps(int attackerBorder, int enemyBorder) const;
+	int counterclockwiseSteps(int attackerBorder, int enemyBorder) const;
 	// eof ext
 
 public:

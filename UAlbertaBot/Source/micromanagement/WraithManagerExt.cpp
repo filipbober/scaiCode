@@ -55,7 +55,8 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 				if (selectedUnit->getDistance(order.position) > 100)
 				{
 					// move to it					
-					smartAttackMove(selectedUnit, order.position);
+					//smartAttackMove(selectedUnit, order.position);
+					smartBorderMove(selectedUnit, order.position);
 
 					// TODO: implement borderAttackMove()
 				}
@@ -93,7 +94,7 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	BWAPI::UnitType selectedUnitType = selectedUnit->getType();
 	BWAPI::UnitType targetType = target->getType();
 
-	bool canAttackUs = targetType.groundWeapon() != BWAPI::WeaponTypes::None;
+	bool canAttackUs = targetType.airWeapon() != BWAPI::WeaponTypes::None;
 	int selectedUnitWeaponRange = selectedUnitType.groundWeapon().maxRange();		// 160, Concussive
 	int targetWeaponRange = targetType.groundWeapon().maxRange();
 
@@ -120,14 +121,13 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 		return 4;
 	}
 	// Anti air units are top priority
-	else if (targetType.airWeapon() != BWAPI::WeaponTypes::None)
+	else if (canAttackUs)
 	{
 		return selectedUnitWeaponRange + 10;
 	}
-	// Faster than Marine (without Stimpack)
 	else 
 	{
-		return selectedUnitWeaponRange;		// return 160
+		return 1;
 	}
 }
 
