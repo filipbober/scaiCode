@@ -562,7 +562,7 @@ void BuildingManager::scannerSweep()
 	BOOST_FOREACH(BWAPI::Unit* target, targets)
 	{
 		if (target->isVisible()
-			&& target->isCloaked())
+			&& !target->isCloaked())
 		{
 			selectedUnitTargets.push_back(target);
 		}
@@ -606,7 +606,7 @@ void BuildingManager::scannerSweep()
 				}
 			}
 
-			if (chosenTarget->isCloaked()
+			if (!chosenTarget->isCloaked()
 				&& (chosenTarget != NULL))
 			{
 				BWAPI::Broodwar->printf("                                           DebExt: 4");
