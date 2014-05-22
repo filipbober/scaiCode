@@ -41,7 +41,8 @@ void BuildingManager::update()
 	checkForCompletedBuildings();
 
 	// Ext: Scanner Sweep
-	scannerSweep();
+	scannerSweep();	
+	// eof ext
 
 	// draw some debug information
 	//BuildingPlacer::Instance().drawReservedTiles();
@@ -541,9 +542,10 @@ void BuildingManager::scannerSweep()
 	// Issue
 	// https://code.google.com/p/bwapi/issues/detail?id=147
 
-	// Sweep once per 240 frames
-	if (BWAPI::Broodwar->getFrameCount() % 240 != 0)
+	 //Sweep once per 240 frames
+	if ((BWAPI::Broodwar->getFrameCount() % 240) != 0)
 	{
+		//BWAPI::Broodwar->printf("                                           DebExt: returning, frame mod 240 = %d", (BWAPI::Broodwar->getFrameCount() % 240));
 		return;
 	}
 
@@ -553,6 +555,10 @@ void BuildingManager::scannerSweep()
 	//}
 
 	std::set<BWAPI::Unit *> targets = BWAPI::Broodwar->enemy()->getUnits();
+	if (targets.empty())
+	{
+		return;
+	}
 
 	// Select Comsat stations
 	std::set<BWAPI::Unit *>	selectedUnits;
@@ -560,8 +566,7 @@ void BuildingManager::scannerSweep()
 	{
 		if (unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
 		{
-			//selectedUnits.insert(unit);
-			selectedUnits.insert(unit->getAddon());
+			selectedUnits.insert(unit);
 		}
 	}	
 
@@ -605,7 +610,7 @@ void BuildingManager::scannerSweep()
 			int distance = 10000;
 
 			// Set target
-			BOOST_FOREACH(BWAPI::Unit * target, targets)
+			BOOST_FOREACH(BWAPI::Unit * target, selectedUnitTargets)
 			{
 				if (selectedUnit->getDistance(target) < distance)
 				{
@@ -622,7 +627,9 @@ void BuildingManager::scannerSweep()
 					targetPosition.makeValid();
 				}
 
-				if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
+				if ((selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
+					&& selectedUnit->getSpellCooldown() == 0
+					&& targetPosition.isValid())
 				{
 					BWAPI::Broodwar->printf("                                           DebExt: Scanning");
 					BWAPI::Broodwar->printf("                                           DebExt: frame = %d", BWAPI::Broodwar->getFrameCount());
@@ -630,10 +637,14 @@ void BuildingManager::scannerSweep()
 					BWAPI::Broodwar->printf("                                           DebExt: target distance = %d", selectedUnit->getDistance(chosenTarget));
 					BWAPI::Broodwar->printf("                                           DebExt: target x = %d", targetPosition.x());
 					BWAPI::Broodwar->printf("                                           DebExt: target y = %d", targetPosition.y());
-					bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
-					if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
+					//bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+					//if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
 					break;
-				}								
+				}	
+				else
+				{
+					BWAPI::Broodwar->printf("                                           DebExt: Scanning not initiated");
+				}
 			}
 		}
 	}
