@@ -575,6 +575,7 @@ void BuildingManager::scannerSweep()
 	BOOST_FOREACH(BWAPI::Unit* target, targets)
 	{
 		if (target->isVisible()
+			&& !target->getType().isBuilding()
 			&& !target->isCloaked())
 		{
 			selectedUnitTargets.push_back(target);
@@ -621,23 +622,30 @@ void BuildingManager::scannerSweep()
 			if (!chosenTarget->isCloaked()
 				&& (chosenTarget != NULL))
 			{
-				BWAPI::Position targetPosition = chosenTarget->getPosition();
+				//BWAPI::Position targetPosition = chosenTarget->getPosition();
+				BWAPI::Position targetPosition = chosenTarget->getRegion()->getCenter();
 				if (!targetPosition.isValid())
 				{
 					targetPosition.makeValid();
 				}
 
 				if ((selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
-					&& selectedUnit->getSpellCooldown() == 0
-					&& targetPosition.isValid())
+					&& (selectedUnit->getSpellCooldown() == 0)
+					&& (targetPosition.isValid()))
 				{
 					BWAPI::Broodwar->printf("                                           DebExt: Scanning");
+					BWAPI::Broodwar->printf("                                           DebExt: selectedUnit = %s", selectedUnit->getType().c_str());
+					BWAPI::Broodwar->printf("                                           DebExt: chosenTarget = %s", chosenTarget->getType().c_str());
 					BWAPI::Broodwar->printf("                                           DebExt: frame = %d", BWAPI::Broodwar->getFrameCount());
 					BWAPI::Broodwar->printf("                                           DebExt: energy = %d", selectedUnit->getEnergy());
 					BWAPI::Broodwar->printf("                                           DebExt: target distance = %d", selectedUnit->getDistance(chosenTarget));
 					BWAPI::Broodwar->printf("                                           DebExt: target x = %d", targetPosition.x());
 					BWAPI::Broodwar->printf("                                           DebExt: target y = %d", targetPosition.y());
 					//bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+					if ((selectedUnit->getLastCommandFrame() + 2400) <= BWAPI::Broodwar->getFrameCount())
+					{
+						bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+					}
 					//if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
 					break;
 				}	
