@@ -1145,8 +1145,8 @@ int StrategyManager::getStrategyIdx()
 	{
 		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
 		//chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
-		chosenStrategy = TerranDoubleRaxMnM;
-		//chosenStrategy = TerranWraithRush1Port;
+		//chosenStrategy = TerranDoubleRaxMnM;
+		chosenStrategy = TerranWraithRush1Port;
 
 	}
 

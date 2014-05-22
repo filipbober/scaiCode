@@ -207,6 +207,113 @@ void MicroManager::smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targe
 									BWAPI::Colors::Orange );
 }
 
+void MicroManager::smartBorderMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
+{
+	assert(attacker);
+
+	// if we have issued a command to this unit already this frame, ignore this one
+	if (attacker->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount() || attacker->isAttackFrame())
+	{
+		return;
+	}
+
+	// 1. Go to the closest border
+	// 2. Go either clockwise or counter clockwise
+	int distFromBorder = 50;
+
+	int mapWidth = BWAPI::Broodwar->mapWidth() * TILE_SIZE;		// Map width in Position units
+	int mapHeight = BWAPI::Broodwar->mapHeight() * TILE_SIZE;	// Map height in Position units
+
+	
+
+	//BWAPI::Position borderN = BWAPI::Position(attacker->getPosition().x, mapHeight);
+	//BWAPI::Position borderE = BWAPI::Position(0, attacker->getPosition().y);
+	//BWAPI::Position borderS = BWAPI::Position(attacker->getPosition().x, 0);
+	//BWAPI::Position borderW = BWAPI::Position(mapWidth, attacker->getPosition().y);
+
+	BWAPI::Position borders[4]; // NESW
+	borders[0] = BWAPI::Position(attacker->getPosition().x(), mapHeight);
+	borders[1] = BWAPI::Position(0, attacker->getPosition().y());
+	borders[2] = BWAPI::Position(attacker->getPosition().x(), 0);
+	borders[3] = BWAPI::Position(mapWidth, attacker->getPosition().y());
+
+	BWAPI::Position closestCurrentAttackerBorder = BWAPI::Position(INT_MAX, INT_MAX);
+	BWAPI::Position closestNextAttackerBorder = BWAPI::Position(INT_MAX, INT_MAX);
+	BWAPI::Position closestNextEnemyBorder = BWAPI::Position(INT_MAX, INT_MAX);
+
+	int enemyBorderId = 0;
+	// Check distance to every border and choose the closest
+	// for the attacker and enemy.
+	// Ignore borders that are already close enough
+	for (int i = 0; i < 4; i++)
+	{
+		if ((attacker->getDistance(borders[i]) < attacker->getDistance(closestNextAttackerBorder)))
+		{
+			closestCurrentAttackerBorder = borders[i];
+			if ((attacker->getDistance(borders[i]) > distFromBorder))
+			{
+				closestNextAttackerBorder = borders[i];
+			}
+		}
+
+		if ((targetPosition.getDistance(borders[i]) < targetPosition.getDistance(closestNextEnemyBorder)))
+		{
+			closestNextEnemyBorder = borders[i];
+			enemyBorderId = i;
+		}
+	}
+
+
+
+
+
+	bool isClockwise = true;
+	//BWAPI::Position movePosition = closestAttackerBorder;
+
+
+}
+
+int MicroManager::nextClockwiseBorderIdx(int borderId)
+{
+	if (borderId == 3)
+		return 0;
+	else
+		return borderId + 1;
+}
+
+int MicroManager::nextCounterclockwiseBorderIdx(int borderId)
+{
+	if (borderId == 0)
+		return 3;
+	else
+		return borderId - 1;
+}
+
+int MicroManager::clockwiseSteps(int attackerBorder, int enemyBorder)
+{
+	int steps = 0;
+
+	while (attackerBorder != enemyBorder)
+	{
+		steps++;
+		attackerBorder = nextClockwiseBorderIdx(attackerBorder);
+	}
+	return steps;
+}
+
+int MicroManager::counterclockwiseSteps(int attackerBorder, int enemyBorder)
+{
+	int steps = 0;
+
+	while (attackerBorder != enemyBorder)
+	{
+		steps++;
+		attackerBorder = nextCounterclockwiseBorderIdx(attackerBorder);
+	}
+	return steps;
+}
+
+
 void MicroManager::smartMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
 {
 	assert(attacker);
