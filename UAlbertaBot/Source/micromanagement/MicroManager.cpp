@@ -210,7 +210,7 @@ void MicroManager::smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targe
 void MicroManager::smartBorderMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
 {
 	assert(attacker);
-
+	 
 	// if we have issued a command to this unit already this frame, ignore this one
 	if (attacker->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount() || attacker->isAttackFrame())
 	{

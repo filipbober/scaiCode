@@ -195,6 +195,9 @@
     <ClCompile Include="..\Source\WaypointCreatorExt.cpp">
       <Filter>game\combat\micro</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\UnitManagerExt.cpp">
+      <Filter>game\combat\micro</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -348,6 +351,9 @@
       <Filter>game\combat</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\WaypointCreatorExt.h">
+      <Filter>game\combat\micro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\UnitManagerExt.h">
       <Filter>game\combat\micro</Filter>
     </ClInclude>
   </ItemGroup>
