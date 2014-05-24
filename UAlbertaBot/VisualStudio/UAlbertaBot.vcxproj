@@ -154,6 +154,7 @@
     <ClCompile Include="..\Source\UnitCommandData.cpp" />
     <ClCompile Include="..\Source\UnitCommandManager.cpp" />
     <ClCompile Include="..\Source\UnitData.cpp" />
+    <ClCompile Include="..\Source\UnitDataExt.cpp" />
     <ClCompile Include="..\Source\Visualizer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +206,7 @@
     <ClInclude Include="..\Source\UnitCommandData.h" />
     <ClInclude Include="..\Source\UnitCommandManager.h" />
     <ClInclude Include="..\Source\UnitData.h" />
+    <ClInclude Include="..\Source\UnitDataExt.h" />
     <ClInclude Include="..\Source\Visualizer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
