@@ -33,6 +33,6 @@ BWAPI::Position UnitDataExt::nextWaypoint()
 	}
 	else
 	{
-		return &_destination;
+		return _destination;
 	}
 }
