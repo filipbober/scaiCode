@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "UnitDataExt.h"
 
+typedef std::vector<UnitDataExt> UnitDataVector;
+
 class UnitManagerExt
 {
 public:
@@ -9,11 +11,12 @@ public:
 	~UnitManagerExt();
 
 	void update();
-	void addUnit(BWAPI::Unit* unitToAdd);
+	void addUnit(BWAPI::Position destination, BWAPI::Unit* unitToAdd);
 	
 
 private:
-	UnitVector _units;
+	//UnitVector _units;
+	UnitDataVector _unitsData;
 	
 
 };

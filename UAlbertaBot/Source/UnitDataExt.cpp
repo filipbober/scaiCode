@@ -18,6 +18,12 @@ int UnitDataExt::getUnitId() const
 	return _unit->getID();
 }
 
+const BWAPI::Unit* UnitDataExt::getUnit() const
+{
+	return _unit;
+}
+
+
 UnitDataExt::State UnitDataExt::getState()
 {
 	return _state;

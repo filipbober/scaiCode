@@ -13,12 +13,12 @@ UnitManagerExt::~UnitManagerExt()
 void UnitManagerExt::update()
 {
 	// Erase not-existing units from the vector
-	for (UnitVector::iterator it = _units.begin(); it != _units.end(); /*++it*/)
+	for (UnitDataVector::iterator it = _unitsData.begin(); it != _unitsData.end(); /*++it*/)
 	{
 		
-		if (!(*it)->exists())
+		if (!it->getUnit()->exists())
 		{
-			_units.erase(it);
+			_unitsData.erase(it);
 		}
 		else
 		{
@@ -27,20 +27,21 @@ void UnitManagerExt::update()
 	}
 }
 
-void UnitManagerExt::addUnit(BWAPI::Unit* unitToAdd)
+void UnitManagerExt::addUnit(BWAPI::Position destination, BWAPI::Unit* unitToAdd)
 {
 	int unitToAddId = unitToAdd->getID();
 
 	// Check if unit is already added
-	BOOST_FOREACH(BWAPI::Unit * unit, _units)
+	BOOST_FOREACH(UnitDataExt unitData, _unitsData)
 	{
-		if (unitToAddId == unit->getID())
+		if (unitToAddId == unitData.getUnit()->getID())
 		{
 			return;
 		}
 	}
 
 	// if it's not then add it
-	_units.push_back(unitToAdd);
+	UnitDataExt unitData = UnitDataExt(destination, unitToAdd);
+	_unitsData.push_back(unitData);
 
 }

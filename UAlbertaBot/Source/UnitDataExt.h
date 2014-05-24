@@ -12,6 +12,7 @@ public:
 	~UnitDataExt();
 
 	int getUnitId() const;
+	const BWAPI::Unit* getUnit() const;
 
 	State getState();
 	void setState(State state);
