@@ -1,10 +1,11 @@
 #include "UnitDataExt.h"
 
 
-UnitDataExt::UnitDataExt(BWAPI::Position destination, int unitId)
-: _unitId(unitId)
+UnitDataExt::UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit)
+: _unit(unit)
 {
 	_destination = destination;
+	_state = State_Idle;
 }
 
 
@@ -14,7 +15,17 @@ UnitDataExt::~UnitDataExt()
 
 int UnitDataExt::getUnitId() const
 {
-	return _unitId;
+	return _unit->getID();
+}
+
+UnitDataExt::State UnitDataExt::getState()
+{
+	return _state;
+}
+
+void UnitDataExt::setState(State state)
+{
+	_state = state;
 }
 
 void UnitDataExt::addWaypoint(BWAPI::Position waypoint)

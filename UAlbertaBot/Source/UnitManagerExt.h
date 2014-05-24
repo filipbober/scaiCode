@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "UnitDataExt.h"
 
 class UnitManagerExt
 {
@@ -13,6 +14,7 @@ public:
 
 private:
 	UnitVector _units;
+	
 
 };
 

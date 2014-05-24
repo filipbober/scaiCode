@@ -14,6 +14,7 @@ std::vector<BWAPI::Position> WaypointCreatorExt::createBorderMoveWaypoints(BWAPI
 {
 	// for testing purposes:
 	std::vector<BWAPI::Position> waypoints;
+	waypoints.push_back(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y()));
 	waypoints.push_back(targetPosition);
 	// 
 

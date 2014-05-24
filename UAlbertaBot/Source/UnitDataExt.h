@@ -6,10 +6,15 @@
 class UnitDataExt
 {
 public:
-	UnitDataExt(BWAPI::Position destination, int unitId);
+	enum State { State_Moving, State_Attacking, State_Idle };
+
+	UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit);
 	~UnitDataExt();
 
 	int getUnitId() const;
+
+	State getState();
+	void setState(State state);
 
 	void addWaypoint(BWAPI::Position waypoint);
 	BWAPI::Position nextWaypoint();	
@@ -17,7 +22,8 @@ public:
 private:
 	BWAPI::Position _destination;
 	std::vector<BWAPI::Position>  _waypoints;
-	const int _unitId;
+	const BWAPI::Unit* _unit;
+	State _state;
 	
 
 };
