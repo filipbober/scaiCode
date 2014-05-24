@@ -17,16 +17,16 @@ int UnitDataExt::getUnitId() const
 	return _unitId;
 }
 
-void UnitDataExt::addWaypoint(BWAPI::Position* waypoint)
+void UnitDataExt::addWaypoint(BWAPI::Position waypoint)
 {
 	_waypoints.push_back(waypoint);
 }
 
-BWAPI::Position* UnitDataExt::nextWaypoint()
+BWAPI::Position UnitDataExt::nextWaypoint()
 {
 	if (!_waypoints.empty())
 	{
-		BWAPI::Position* pos;
+		BWAPI::Position pos;
 		pos = _waypoints.back();
 		_waypoints.pop_back();
 		return pos;

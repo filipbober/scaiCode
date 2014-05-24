@@ -6,6 +6,6 @@ public:
 	WaypointCreatorExt();
 	~WaypointCreatorExt();
 
-	void WaypointCreatorExt::createBorderMoveWaypoints(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
+	std::vector<BWAPI::Position> WaypointCreatorExt::createBorderMoveWaypoints(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
 };
 

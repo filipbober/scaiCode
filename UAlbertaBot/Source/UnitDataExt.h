@@ -11,12 +11,12 @@ public:
 
 	int getUnitId() const;
 
-	void addWaypoint(BWAPI::Position* waypoint);
-	BWAPI::Position* nextWaypoint();	
+	void addWaypoint(BWAPI::Position waypoint);
+	BWAPI::Position nextWaypoint();	
 
 private:
 	BWAPI::Position _destination;
-	std::vector<BWAPI::Position*>  _waypoints;
+	std::vector<BWAPI::Position>  _waypoints;
 	const int _unitId;
 	
 

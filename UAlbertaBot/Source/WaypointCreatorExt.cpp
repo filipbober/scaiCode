@@ -10,8 +10,13 @@ WaypointCreatorExt::~WaypointCreatorExt()
 {
 }
 
-void WaypointCreatorExt::createBorderMoveWaypoints(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
+std::vector<BWAPI::Position> WaypointCreatorExt::createBorderMoveWaypoints(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
 {
+	// for testing purposes:
+	std::vector<BWAPI::Position> waypoints;
+	waypoints.push_back(targetPosition);
+	// 
+
 	//assert(attacker);
 
 	//// if we have issued a command to this unit already this frame, ignore this one
