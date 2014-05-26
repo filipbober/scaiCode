@@ -8,6 +8,7 @@ class UnitDataExt
 public:
 	enum State { State_Moving, State_Attacking, State_Idle };
 
+	UnitDataExt(const BWAPI::Unit* unit);
 	UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit);
 	~UnitDataExt();
 
@@ -17,6 +18,7 @@ public:
 	State getState();
 	void setState(State state);
 
+	void setDestination(BWAPI::Position destination);
 	void addWaypoint(BWAPI::Position waypoint);
 	BWAPI::Position nextWaypoint();	
 

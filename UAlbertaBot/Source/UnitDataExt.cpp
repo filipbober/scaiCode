@@ -1,5 +1,10 @@
 #include "UnitDataExt.h"
 
+UnitDataExt::UnitDataExt(const BWAPI::Unit* unit)
+: _unit(unit)
+{
+	_state = State_Idle;
+}
 
 UnitDataExt::UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit)
 : _unit(unit)
@@ -32,6 +37,11 @@ UnitDataExt::State UnitDataExt::getState()
 void UnitDataExt::setState(State state)
 {
 	_state = state;
+}
+
+void UnitDataExt::setDestination(BWAPI::Position destination)
+{
+	_destination = destination;
 }
 
 void UnitDataExt::addWaypoint(BWAPI::Position waypoint)

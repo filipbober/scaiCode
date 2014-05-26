@@ -10,8 +10,11 @@ public:
 	UnitManagerExt();
 	~UnitManagerExt();
 
+	// Singleton
+	static UnitManagerExt& Instance();
+
 	void update();
-	void addUnit(BWAPI::Position destination, BWAPI::Unit* unitToAdd);
+	void addUnit(BWAPI::Unit* unitToAdd);
 	
 
 private:

@@ -27,7 +27,7 @@ void UnitManagerExt::update()
 	}
 }
 
-void UnitManagerExt::addUnit(BWAPI::Position destination, BWAPI::Unit* unitToAdd)
+void UnitManagerExt::addUnit(BWAPI::Unit* unitToAdd)
 {
 	int unitToAddId = unitToAdd->getID();
 
@@ -41,7 +41,13 @@ void UnitManagerExt::addUnit(BWAPI::Position destination, BWAPI::Unit* unitToAdd
 	}
 
 	// if it's not then add it
-	UnitDataExt unitData = UnitDataExt(destination, unitToAdd);
+	UnitDataExt unitData = UnitDataExt(unitToAdd);
 	_unitsData.push_back(unitData);
 
+}
+
+UnitManagerExt& UnitManagerExt::Instance()
+{	
+	static UnitManagerExt instance;
+	return instance;
 }
