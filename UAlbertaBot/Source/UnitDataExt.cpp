@@ -2,7 +2,8 @@
 
 UnitDataExt::UnitDataExt(const BWAPI::Unit* unit)
 : _unit(unit),
-isDestinationSet(false)
+isDestinationSet(false),
+_waypoints()
 {
 	_state = State_Idle;
 }
@@ -52,6 +53,7 @@ void UnitDataExt::pushWaypoint(BWAPI::Position waypoint)
 	BWAPI::Broodwar->printf("                                           DebExt: waypoint x = %d", waypoint.y());
 	BWAPI::Broodwar->printf("                                           DebExt: waypoint y = %d", waypoint.y());
 	_waypoints.push_back(waypoint);
+	BWAPI::Broodwar->printf("                                           DebExt: waypoints size = %d", _waypoints.size());
 }
 
 BWAPI::Position UnitDataExt::popWaypoint()
