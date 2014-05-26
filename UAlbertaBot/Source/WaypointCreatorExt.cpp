@@ -1,6 +1,8 @@
 #include "WaypointCreatorExt.h"
 
 
+
+
 WaypointCreatorExt::WaypointCreatorExt()
 {
 }
@@ -10,12 +12,27 @@ WaypointCreatorExt::~WaypointCreatorExt()
 {
 }
 
-std::vector<BWAPI::Position> WaypointCreatorExt::createBorderMoveWaypoints(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
+void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Position targetPosition)
 {
 	// for testing purposes:
-	std::vector<BWAPI::Position> waypoints;
-	waypoints.push_back(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y()));
-	waypoints.push_back(targetPosition);
+	//std::vector<BWAPI::Position> waypoints;
+	//waypoints.push_back(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y()));
+	//waypoints.push_back(targetPosition);
+
+
+
+
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
+
+	BWAPI::Position pos = BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y());
+	if (!pos.isValid())
+	{
+		pos.makeValid();
+	}
+	//unitData->pushWaypoint(pos);
+	unitData->pushWaypoint(targetPosition);
+	unitData->setDestination(targetPosition);
+
 	// 
 
 	//assert(attacker);

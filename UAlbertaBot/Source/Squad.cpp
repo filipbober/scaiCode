@@ -140,13 +140,7 @@ void Squad::setManagerUnits()
 		{
 			// Select Terran Marines
 			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
-			{
-				// test
-				BWAPI::Broodwar->printf("                                           DebExt: Adding a unit");
-				UnitManagerExt::Instance().addUnit(unit);
-				BWAPI::Broodwar->printf("                                           DebExt: Unit added: %s", unit->getType().c_str());
-				//
-
+			{				
 				terranMarines.push_back(unit);
 			}
 			// Select Terran Vultures
@@ -157,6 +151,15 @@ void Squad::setManagerUnits()
 			// Select Terran Wraiths
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Wraith)
 			{
+				// test
+				UnitManagerExt::Instance().addUnit(unit);
+				UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+				if (!unitData->isDestinationSet)
+				{					
+					WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
+				}
+				
+
 				terranWraiths.push_back(unit);
 			}
 			// select detector units

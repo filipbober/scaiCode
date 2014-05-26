@@ -46,6 +46,20 @@ void UnitManagerExt::addUnit(BWAPI::Unit* unitToAdd)
 
 }
 
+UnitDataExt* UnitManagerExt::getUnitData(BWAPI::Unit* unit)
+{
+	BOOST_FOREACH(UnitDataExt unitData, _unitsData)
+	{
+		if (unit->getID() == unitData.getUnit()->getID())
+		{
+			return &unitData;
+		}
+	}
+	// If unit was not found
+	BWAPI::Broodwar->printf("                                           DebExt: getUnitData error: Unit not found!");
+	return NULL;
+}
+
 UnitManagerExt& UnitManagerExt::Instance()
 {	
 	static UnitManagerExt instance;

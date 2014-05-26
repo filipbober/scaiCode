@@ -12,6 +12,8 @@ public:
 	UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit);
 	~UnitDataExt();
 
+	bool isDestinationSet;
+
 	int getUnitId() const;
 	const BWAPI::Unit* getUnit() const;
 
@@ -19,15 +21,14 @@ public:
 	void setState(State state);
 
 	void setDestination(BWAPI::Position destination);
-	void addWaypoint(BWAPI::Position waypoint);
-	BWAPI::Position nextWaypoint();	
+	void pushWaypoint(BWAPI::Position waypoint);
+	BWAPI::Position popWaypoint();	
 
 private:
 	BWAPI::Position _destination;
 	std::vector<BWAPI::Position>  _waypoints;
 	const BWAPI::Unit* _unit;
-	State _state;
-	
+	State _state;	
 
 };
 

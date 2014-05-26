@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "UnitDataExt.h"
+#include "WaypointCreatorExt.h"
 
 typedef std::vector<UnitDataExt> UnitDataVector;
 
@@ -15,6 +16,7 @@ public:
 
 	void update();
 	void addUnit(BWAPI::Unit* unitToAdd);
+	UnitDataExt* getUnitData(BWAPI::Unit* unit);
 	
 
 private:
