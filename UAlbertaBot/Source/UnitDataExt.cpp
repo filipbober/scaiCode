@@ -49,9 +49,9 @@ void UnitDataExt::setDestination(BWAPI::Position destination)
 
 void UnitDataExt::pushWaypoint(BWAPI::Position waypoint)
 {
-	BWAPI::Broodwar->printf("                                           DebExt: pushWaypoint");
-	BWAPI::Broodwar->printf("                                           DebExt: waypoint x = %d", waypoint.y());
-	BWAPI::Broodwar->printf("                                           DebExt: waypoint y = %d", waypoint.y());
+	//BWAPI::Broodwar->printf("                                           DebExt: pushWaypoint");
+	//BWAPI::Broodwar->printf("                                           DebExt: waypoint x = %d", waypoint.y());
+	//BWAPI::Broodwar->printf("                                           DebExt: waypoint y = %d", waypoint.y());
 	_waypoints.push_back(waypoint);
 	BWAPI::Broodwar->printf("                                           DebExt: waypoints size = %d", _waypoints.size());
 }

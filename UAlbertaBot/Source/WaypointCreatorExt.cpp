@@ -24,6 +24,10 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 
 	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
 
+	//BWAPI::Broodwar->printf("                                           DebExt: waypoint unit id = %d", unitData->getUnit()->getID());
+	BWAPI::Broodwar->printf("                                           DebExt: WaypointCreatorExt isDestinationSet %s", unitData->isDestinationSet ? "true" : "false");
+
+
 	BWAPI::Position pos = BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y());
 	if (!pos.isValid())
 	{
