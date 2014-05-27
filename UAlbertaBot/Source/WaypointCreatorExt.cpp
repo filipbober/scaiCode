@@ -33,8 +33,8 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 	{
 		pos.makeValid();
 	}
-	//unitData->pushWaypoint(pos);
-	unitData->pushWaypoint(targetPosition);
+	unitData->pushWaypoint(pos);
+	//unitData->pushWaypoint(targetPosition);
 	unitData->setDestination(targetPosition);
 
 	// 

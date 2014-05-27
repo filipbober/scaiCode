@@ -6,6 +6,7 @@ isDestinationSet(false),
 _waypoints()
 {
 	_state = State_Idle;
+	_waypoints.reserve(10);
 }
 
 UnitDataExt::UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit)
