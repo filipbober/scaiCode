@@ -3,6 +3,7 @@
 
 UnitManagerExt::UnitManagerExt()
 {
+	_unitsData.reserve(200);
 }
 
 
