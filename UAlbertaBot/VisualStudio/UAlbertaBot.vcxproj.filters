@@ -189,6 +189,15 @@
     <ClCompile Include="..\Source\micromanagement\WraithManagerExt.cpp">
       <Filter>game\combat\micro\specific</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\UnitDataExt.cpp">
+      <Filter>game\combat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\WaypointCreatorExt.cpp">
+      <Filter>game\combat\micro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\UnitManagerExt.cpp">
+      <Filter>game\combat\micro</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -337,6 +346,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\micromanagement\WraithManagerExt.h">
       <Filter>game\combat\micro\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\UnitDataExt.h">
+      <Filter>game\combat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\WaypointCreatorExt.h">
+      <Filter>game\combat\micro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\UnitManagerExt.h">
+      <Filter>game\combat\micro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

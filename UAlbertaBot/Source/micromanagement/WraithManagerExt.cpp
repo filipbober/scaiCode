@@ -1,5 +1,6 @@
 #include "WraithManagerExt.h"
 #include "Common.h"
+#include "UnitManagerExt.h"
 
 
 WraithManagerExt::WraithManagerExt()
@@ -41,7 +42,7 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 			// if there are targets
 			if (!selectedUnitTargets.empty())
 			{
-				// find the best target for this Vulture
+				// find the best target for this unit
 				BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
 				// attack it				
@@ -56,7 +57,37 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 				{
 					// move to it					
 					//smartAttackMove(selectedUnit, order.position);
-					smartBorderMove(selectedUnit, order.position);
+					
+					//smartBorderMove(selectedUnit, order.position);
+					//smartAttackMove(selectedUnit, 
+
+					// Testing: pop all the waypoints before reaching them
+
+					//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(selectedUnit);
+
+					//// Move to UnitData moveToWaypoint()
+					//BWAPI::Position moveLocation;
+					//if (!unitData->isWaypointReached())
+					//{
+					//	moveLocation = unitData->getWaypoint();
+					//}
+					//else
+					//{
+					//	unitData->popWaypoint();
+					//	moveLocation = unitData->getWaypoint();
+					//}
+
+					BWAPI::Position movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					smartAttackMove(selectedUnit, movePosition);
+
+					//BWAPI::Position moveLocation = UnitManagerExt::Instance().getUnitData(selectedUnit)->popWaypoint();
+					// ----
+
+					//if (!moveLocation.isValid())
+					//{
+					//	moveLocation.makeValid();
+					//}
+					//smartAttackMove(selectedUnit, moveLocation);
 
 					// TODO: implement borderAttackMove()
 				}

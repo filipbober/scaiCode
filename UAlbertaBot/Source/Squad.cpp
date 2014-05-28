@@ -140,7 +140,7 @@ void Squad::setManagerUnits()
 		{
 			// Select Terran Marines
 			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
-			{
+			{				
 				terranMarines.push_back(unit);
 			}
 			// Select Terran Vultures
@@ -151,6 +151,21 @@ void Squad::setManagerUnits()
 			// Select Terran Wraiths
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Wraith)
 			{
+				// test
+				UnitManagerExt::Instance().addUnit(unit);
+				UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+				//BWAPI::Broodwar->printf("                                           DebExt: setManagerUnits");			// Removing this printf causes SC to crash
+				//if (unitData->isDestinationSet == false)
+				if (!unitData->isDestinationSet)
+				{		
+					//BWAPI::Broodwar->printf("                                           DebExt: ---------------------------------------------");
+					//BWAPI::Broodwar->printf("                                           DebExt: waypoint unit id = %d", unitData->getUnit()->getID());
+					//BWAPI::Broodwar->printf("                                           DebExt: %s", unitData->isDestinationSet ? "true" : "false");
+					WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
+				}
+				//BWAPI::Broodwar->printf("                                           DebExt: eof setManagerUnits");
+				
+
 				terranWraiths.push_back(unit);
 			}
 			// select detector units

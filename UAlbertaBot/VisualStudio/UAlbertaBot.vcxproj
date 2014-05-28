@@ -154,7 +154,10 @@
     <ClCompile Include="..\Source\UnitCommandData.cpp" />
     <ClCompile Include="..\Source\UnitCommandManager.cpp" />
     <ClCompile Include="..\Source\UnitData.cpp" />
+    <ClCompile Include="..\Source\UnitDataExt.cpp" />
+    <ClCompile Include="..\Source\UnitManagerExt.cpp" />
     <ClCompile Include="..\Source\Visualizer.cpp" />
+    <ClCompile Include="..\Source\WaypointCreatorExt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\base\BuildLearner.h" />
@@ -205,7 +208,10 @@
     <ClInclude Include="..\Source\UnitCommandData.h" />
     <ClInclude Include="..\Source\UnitCommandManager.h" />
     <ClInclude Include="..\Source\UnitData.h" />
+    <ClInclude Include="..\Source\UnitDataExt.h" />
+    <ClInclude Include="..\Source\UnitManagerExt.h" />
     <ClInclude Include="..\Source\Visualizer.h" />
+    <ClInclude Include="..\Source\WaypointCreatorExt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
