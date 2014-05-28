@@ -3,7 +3,7 @@
 
 UnitManagerExt::UnitManagerExt()
 {
-	_unitsData.reserve(200);
+	//_unitsData.reserve(200);
 }
 
 
@@ -49,13 +49,22 @@ void UnitManagerExt::addUnit(BWAPI::Unit* unitToAdd)
 
 UnitDataExt* UnitManagerExt::getUnitData(BWAPI::Unit* unit)
 {
-	BOOST_FOREACH(UnitDataExt unitData, _unitsData)
+	//BOOST_FOREACH(UnitDataExt unitData, _unitsData)
+	//{
+	//	if (unit->getID() == unitData.getUnit()->getID())
+	//	{
+	//		return &unitData;
+	//	}
+	//}
+
+	for (int i = 0; i < _unitsData.size(); i++)
 	{
-		if (unit->getID() == unitData.getUnit()->getID())
+		if (unit->getID() == _unitsData.at(i).getUnitId())
 		{
-			return &unitData;
+			return &_unitsData.at(i);
 		}
 	}
+
 	// If unit was not found
 	BWAPI::Broodwar->printf("                                           DebExt: getUnitData error: Unit not found!");
 	return NULL;
