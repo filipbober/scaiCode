@@ -34,9 +34,9 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 		pos.makeValid();
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: UnitDataExt address %d", &unitData);
-	//unitData->pushWaypoint(pos);
-	//unitData->pushWaypoint(targetPosition);
+	//BWAPI::Broodwar->printf("                                           DebExt: UnitDataExt address %d", &unitData);
+	unitData->pushWaypoint(pos);
+	unitData->pushWaypoint(targetPosition);
 	unitData->setDestination(targetPosition);
 
 	// 
