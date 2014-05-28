@@ -19,6 +19,7 @@ void UnitManagerExt::update()
 		
 		if (!it->getUnit()->exists())
 		{
+			BWAPI::Broodwar->printf("                                           DebExt: UnitManagerExt update unit it = %d", it->getUnit()->getID());
 			_unitsData.erase(it);
 		}
 		else
@@ -30,6 +31,8 @@ void UnitManagerExt::update()
 
 void UnitManagerExt::addUnit(BWAPI::Unit* unitToAdd)
 {
+	update();
+
 	int unitToAddId = unitToAdd->getID();
 
 	// Check if unit is already added
