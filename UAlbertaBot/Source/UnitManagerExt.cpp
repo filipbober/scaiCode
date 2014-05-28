@@ -49,14 +49,6 @@ void UnitManagerExt::addUnit(BWAPI::Unit* unitToAdd)
 
 UnitDataExt* UnitManagerExt::getUnitData(BWAPI::Unit* unit)
 {
-	//BOOST_FOREACH(UnitDataExt unitData, _unitsData)
-	//{
-	//	if (unit->getID() == unitData.getUnit()->getID())
-	//	{
-	//		return &unitData;
-	//	}
-	//}
-
 	for (int i = 0; i < _unitsData.size(); i++)
 	{
 		if (unit->getID() == _unitsData.at(i).getUnitId())
@@ -68,6 +60,22 @@ UnitDataExt* UnitManagerExt::getUnitData(BWAPI::Unit* unit)
 	// If unit was not found
 	BWAPI::Broodwar->printf("                                           DebExt: getUnitData error: Unit not found!");
 	return NULL;
+}
+
+BWAPI::Position UnitManagerExt::getMovePosition(BWAPI::Unit* unit)
+{
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+	if (!unitData->isWaypointReached())
+	{
+		return unitData->getWaypoint();
+	}
+	else
+	{
+		unitData->popWaypoint();
+		return unitData->getWaypoint();
+	}
+
 }
 
 UnitManagerExt& UnitManagerExt::Instance()

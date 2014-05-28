@@ -3,14 +3,16 @@
 UnitDataExt::UnitDataExt(const BWAPI::Unit* unit)
 : _unit(unit),
 isDestinationSet(false),
-_waypoints()
+_waypoints(),
+_waypointProximity(30)
 {
 	_state = State_Idle;
 	//_waypoints.reserve(10);
 }
 
 UnitDataExt::UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit)
-: _unit(unit)
+: _unit(unit),
+_waypointProximity(30)
 {
 	_destination = destination;
 	_state = State_Idle;
@@ -63,31 +65,41 @@ BWAPI::Position UnitDataExt::popWaypoint()
 
 	if (!_waypoints.empty())
 	{
-		//int i = 0;
-		//BOOST_FOREACH(BWAPI::Position waypoint, _waypoints)
-		//{
-		//	BWAPI::Broodwar->printf("                                           DebExt: Waypint %d", i);
-		//	BWAPI::Broodwar->printf("                                           DebExt: x = ", waypoint.x());
-		//	BWAPI::Broodwar->printf("                                           DebExt: y = ", waypoint.y());
-		//	i++;
-		//}
+		BWAPI::Position pos = _waypoints.back();
+		_waypoints.pop_back();
 
-
-		// Bug below
-		//BWAPI::Position pos = _waypoints.back();
-		//_waypoints.pop_back();
-
-		//BWAPI::Broodwar->printf("                                           DebExt: pos x = %d", pos.x());
-		//BWAPI::Broodwar->printf("                                           DebExt: pos y = %d", pos.y());
-
-		//return pos;
+		return pos;
 	}
 	else
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: destination x = %d", _destination.x());
-		BWAPI::Broodwar->printf("                                           DebExt: destination y = %d", _destination.y());
 		return _destination;
 	}
 
 	return _destination;
+}
+
+BWAPI::Position UnitDataExt::getWaypoint() const
+{
+	if (!_waypoints.empty())
+	{
+		return _waypoints.back();
+	}
+	else
+	{
+		return _destination;
+	}
+}
+
+bool UnitDataExt::isWaypointReached()
+{
+	int distance = _unit->getDistance(_waypoints.back());
+	
+	if (distance <= _waypointProximity)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

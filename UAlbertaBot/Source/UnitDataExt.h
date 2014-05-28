@@ -23,12 +23,16 @@ public:
 	void setDestination(BWAPI::Position destination);
 	void pushWaypoint(BWAPI::Position waypoint);
 	BWAPI::Position popWaypoint();	
+	BWAPI::Position getWaypoint() const;
+
+	bool isWaypointReached();						// True if current waypoint is reached
 
 private:
 	BWAPI::Position _destination;
 	std::vector<BWAPI::Position>  _waypoints;
 	const BWAPI::Unit* _unit;
 	State _state;	
+	int _waypointProximity;
 
 };
 

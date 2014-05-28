@@ -17,6 +17,7 @@ public:
 	void update();
 	void addUnit(BWAPI::Unit* unitToAdd);
 	UnitDataExt* getUnitData(BWAPI::Unit* unit);
+	BWAPI::Position getMovePosition(BWAPI::Unit* unit);
 	
 
 private:

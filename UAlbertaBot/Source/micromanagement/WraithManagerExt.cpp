@@ -62,7 +62,27 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 					//smartAttackMove(selectedUnit, 
 
 					// Testing: pop all the waypoints before reaching them
-					BWAPI::Position moveLocation = UnitManagerExt::Instance().getUnitData(selectedUnit)->popWaypoint();
+
+					//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(selectedUnit);
+
+					//// Move to UnitData moveToWaypoint()
+					//BWAPI::Position moveLocation;
+					//if (!unitData->isWaypointReached())
+					//{
+					//	moveLocation = unitData->getWaypoint();
+					//}
+					//else
+					//{
+					//	unitData->popWaypoint();
+					//	moveLocation = unitData->getWaypoint();
+					//}
+
+					BWAPI::Position movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					smartAttackMove(selectedUnit, movePosition);
+
+					//BWAPI::Position moveLocation = UnitManagerExt::Instance().getUnitData(selectedUnit)->popWaypoint();
+					// ----
+
 					//if (!moveLocation.isValid())
 					//{
 					//	moveLocation.makeValid();
