@@ -22,24 +22,74 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 
 
 
+	//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
+
+	////BWAPI::Broodwar->printf("                                           DebExt: waypoint unit id = %d", unitData->getUnit()->getID());
+	//BWAPI::Broodwar->printf("                                           DebExt: WaypointCreatorExt isDestinationSet %s", unitData->isDestinationSet ? "true" : "false");
+
+
+	//BWAPI::Position pos = BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y());
+	//if (!pos.isValid())
+	//{
+	//	pos.makeValid();
+	//}
+	//BWAPI::Position toplLeftMap = BWAPI::Position(10, BWAPI::Broodwar->mapHeight() - 10);
+
+	////BWAPI::Broodwar->printf("                                           DebExt: UnitDataExt address %d", &unitData);
+	//unitData->setDestination(targetPosition);
+	//unitData->pushWaypoint(targetPosition);
+	//unitData->pushWaypoint(toplLeftMap);
+	//unitData->pushWaypoint(pos);
+
+
+
+
+
+	// Border movement
 	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
+	int distFromBorder = 10;
+	BWAPI::Position attackerPosition = attacker->getPosition();
+	BWAPI::Position attackerBorders[4];			// NESW
+	BWAPI::Position targetPositionBorders[4];			// NESW
 
-	//BWAPI::Broodwar->printf("                                           DebExt: waypoint unit id = %d", unitData->getUnit()->getID());
-	BWAPI::Broodwar->printf("                                           DebExt: WaypointCreatorExt isDestinationSet %s", unitData->isDestinationSet ? "true" : "false");
+	attackerBorders[0] = BWAPI::Position(attackerPosition.x(), BWAPI::Broodwar->mapHeight() - distFromBorder);		// N
+	attackerBorders[1] = BWAPI::Position(distFromBorder, attackerPosition.y());										// E
+	attackerBorders[2] = BWAPI::Position(attackerPosition.x(), distFromBorder);										// S
+	attackerBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, attackerPosition.y());		// W
 
+	targetPositionBorders[0] = BWAPI::Position(targetPosition.x(), BWAPI::Broodwar->mapHeight() - distFromBorder);			// N
+	targetPositionBorders[1] = BWAPI::Position(distFromBorder, targetPosition.y());											// E
+	targetPositionBorders[2] = BWAPI::Position(targetPosition.x(), distFromBorder);											// S
+	targetPositionBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, targetPosition.y());			// W
 
-	BWAPI::Position pos = BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation().x(), BWAPI::Broodwar->self()->getStartLocation().y());
-	if (!pos.isValid())
-	{
-		pos.makeValid();
-	}
-	BWAPI::Position toplLeftMap = BWAPI::Position(10, BWAPI::Broodwar->mapHeight() - 10);
+	// Push waypoints from last to first
 
-	//BWAPI::Broodwar->printf("                                           DebExt: UnitDataExt address %d", &unitData);
+	// Set the destination
 	unitData->setDestination(targetPosition);
-	unitData->pushWaypoint(targetPosition);
-	unitData->pushWaypoint(toplLeftMap);
-	unitData->pushWaypoint(pos);
+
+	// Set waypoint closest to the enemy base
+	BWAPI::Position enemyBaseBorderPos = targetPositionBorders[closestBorderId(targetPosition, targetPositionBorders)];
+	unitData->pushWaypoint(enemyBaseBorderPos);
+
+	// Decide whether it is better to move clockwise or counterclockwise
+	BWAPI::Position attackerBorderPos = attackerBorders[closestBorderId(attackerPosition, attackerBorders)];
+
+
+
+	// ---------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	
 
@@ -182,4 +232,53 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 	//}
 
 	//smartMove(attacker, nextPosition);
+}
+
+int WaypointCreatorExt::closestBorderId(BWAPI::Position mapPostition, BWAPI::Position borders[], int size)
+{
+	int id = 0;
+	int closestDistance = INT_MAX;
+
+	for (int i = 0; i < size; i++)
+	{
+		int currentDistance = mapPostition.getDistance(borders[i]);
+		if (currentDistance < closestDistance)
+		{
+			closestDistance = currentDistance;
+			id = i;
+		}
+	}
+
+	return id;
+
+}
+
+int WaypointCreatorExt::distanceClockwise(BWAPI::Position fromPos, BWAPI::Position toPos, int distFromBorder)
+{
+	BWAPI::Position fromPosBorders[4];			// NESW
+
+	fromPosBorders[0] = BWAPI::Position(fromPos.x(), BWAPI::Broodwar->mapHeight() - distFromBorder);		// N
+	fromPosBorders[1] = BWAPI::Position(distFromBorder, fromPos.y());										// E
+	fromPosBorders[2] = BWAPI::Position(fromPos.x(), distFromBorder);										// S
+	fromPosBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, fromPos.y());			// W
+
+	int closestBrdId = closestBorderId(fromPos, fromPosBorders);
+	int nextClkId = nextClockwiseId(closestBrdId);
+
+}
+
+int WaypointCreatorExt::nextClockwiseId(int borderId)
+{
+	if (borderId == 3)
+		return 0;
+	else
+		return borderId + 1;
+}
+
+int WaypointCreatorExt::nextCounterclockwiseId(int borderId)
+{
+	if (borderId == 0)
+		return 3;
+	else
+		return borderId - 1;
 }
