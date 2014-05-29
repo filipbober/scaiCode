@@ -108,6 +108,10 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	{
 		return 1;
 	}
+	else if (targetType == BWAPI::UnitTypes::Protoss_Pylon)
+	{
+		return 3;
+	}
 	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
 	{
 		return 2;
@@ -115,13 +119,13 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	// Workers are priority over ground units and buildings
 	else if (targetType.isWorker())
 	{
-		return 3;
+		return 4;
 	}
 	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon
 		|| targetType == BWAPI::UnitTypes::Terran_Missile_Turret
 		|| targetType == BWAPI::UnitTypes::Zerg_Spore_Colony)
 	{
-		return 4;
+		return 5;
 	}
 	// Anti air units are top priority
 	else if (canAttackUs)
@@ -182,11 +186,21 @@ BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 
 void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
-	double selectedUnitAirRange(selectedUnit->getType().airWeapon().maxRange());
+	double selectedUnitRange;
+	if (target->getType().isFlyer())
+	{
+		selectedUnitRange = selectedUnit->getType().airWeapon().maxRange();
+	}
+	else
+	{
+		selectedUnitRange = selectedUnit->getType().groundWeapon().maxRange();
+	}
+
 	double targetRange(target->getType().airWeapon().maxRange());
 
-	// determine whether the target can be kited
-	if (target->getType().airWeapon() != BWAPI::WeaponTypes::None)
+	// Determine whether the target can be kited (can attack us and have greater or rqual range)
+	if ((target->getType().airWeapon() == BWAPI::WeaponTypes::None)
+		|| (targetRange >= selectedUnitRange))
 	{
 		// if we can't kite it, there's no point to do so
 		smartAttackUnit(selectedUnit, target);
@@ -203,7 +217,7 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
 	if ((selectedUnitWeaponCooldown == 0)
-		|| (dist >= (selectedUnitAirRange - meleeRange)))
+		|| (dist >= (selectedUnitRange - meleeRange)))
 	{
 		smartAttackUnit(selectedUnit, target);
 	}
