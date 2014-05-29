@@ -217,8 +217,8 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	{
 		// if we can't kite it, there's no point to do so
 		if (selectedUnitWeaponCooldown > 0)
-		{						
-				smartMove(selectedUnit, target->getPosition());
+		{					
+			smartMove(selectedUnit, target->getPosition());
 		}
 		else
 		{
