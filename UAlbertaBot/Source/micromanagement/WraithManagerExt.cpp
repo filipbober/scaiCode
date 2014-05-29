@@ -55,41 +55,13 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 				// if we're not near the order position
 				if (selectedUnit->getDistance(order.position) > 100)
 				{
-					// move to it					
-					//smartAttackMove(selectedUnit, order.position);
-					
-					//smartBorderMove(selectedUnit, order.position);
-					//smartAttackMove(selectedUnit, 
+					// move to it	
 
-					// Testing: pop all the waypoints before reaching them
-
-					//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(selectedUnit);
-
-					//// Move to UnitData moveToWaypoint()
-					//BWAPI::Position moveLocation;
-					//if (!unitData->isWaypointReached())
-					//{
-					//	moveLocation = unitData->getWaypoint();
-					//}
-					//else
-					//{
-					//	unitData->popWaypoint();
-					//	moveLocation = unitData->getWaypoint();
-					//}
-
+					// Border movement
 					BWAPI::Position movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					// eof Border movement
+
 					smartAttackMove(selectedUnit, movePosition);
-
-					//BWAPI::Position moveLocation = UnitManagerExt::Instance().getUnitData(selectedUnit)->popWaypoint();
-					// ----
-
-					//if (!moveLocation.isValid())
-					//{
-					//	moveLocation.makeValid();
-					//}
-					//smartAttackMove(selectedUnit, moveLocation);
-
-					// TODO: implement borderAttackMove()
 				}
 			}
 		}
