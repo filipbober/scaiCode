@@ -17,5 +17,7 @@ private:
 
 	static void setMapBorderWaypoints(BWAPI::Position borderWaypoints[], int distFromBorder, int size = 8);
 	static int getClosestBorderWaypointId(BWAPI::Position mapPostition, BWAPI::Position borderWaypoints[], int size = 8);
+	static int getNextBorderWaypointId(int currentWaypointId);
+	static int getPreviousBorderWaypointId(int currentWaypointId);
 };
 
