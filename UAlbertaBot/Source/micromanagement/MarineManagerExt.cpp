@@ -155,14 +155,15 @@ BWAPI::Unit* MarineManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 	{
 		int priority = getAttackPriority(selectedUnit, unit);
 		int distance = selectedUnit->getDistance(unit);
+		int unitToughness = unit->getHitPoints() + unit->getShields();
 
 		// if the unit is in range, update the target with the lowest hp
 		if (selectedUnit->getDistance(unit) <= range)
 		{
 			if (priority > highestInRangePriority ||
-				(priority == highestInRangePriority && unit->getHitPoints() < lowestInRangeHitPoints))
+				(priority == highestInRangePriority && unitToughness < lowestInRangeHitPoints))
 			{
-				lowestInRangeHitPoints = unit->getHitPoints();
+				lowestInRangeHitPoints = unitToughness;
 				highestInRangePriority = priority;
 				inRangeTarget = unit;
 			}
