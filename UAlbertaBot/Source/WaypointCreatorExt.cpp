@@ -45,7 +45,41 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 
 
 
-	// Border movement
+	//// Border movement
+	//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
+	//int distFromBorder = 10;
+	//BWAPI::Position attackerPosition = attacker->getPosition();
+	//BWAPI::Position attackerBorders[4];			// NESW
+	//BWAPI::Position targetPositionBorders[4];			// NESW
+
+	//attackerBorders[0] = BWAPI::Position(attackerPosition.x(), BWAPI::Broodwar->mapHeight() - distFromBorder);		// N
+	//attackerBorders[1] = BWAPI::Position(distFromBorder, attackerPosition.y());										// E
+	//attackerBorders[2] = BWAPI::Position(attackerPosition.x(), distFromBorder);										// S
+	//attackerBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, attackerPosition.y());		// W
+
+	//targetPositionBorders[0] = BWAPI::Position(targetPosition.x(), BWAPI::Broodwar->mapHeight() - distFromBorder);			// N
+	//targetPositionBorders[1] = BWAPI::Position(distFromBorder, targetPosition.y());											// E
+	//targetPositionBorders[2] = BWAPI::Position(targetPosition.x(), distFromBorder);											// S
+	//targetPositionBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, targetPosition.y());			// W
+
+	//// Push waypoints from last to first
+
+	//// Set the destination
+	//unitData->setDestination(targetPosition);
+
+	//// Set waypoint closest to the enemy base
+	//BWAPI::Position enemyBaseBorderPos = targetPositionBorders[closestBorderId(targetPosition, targetPositionBorders)];
+	//unitData->pushWaypoint(enemyBaseBorderPos);
+
+	//// Decide whether it is better to move clockwise or counterclockwise
+	//BWAPI::Position attackerBorderPos = attackerBorders[closestBorderId(attackerPosition, attackerBorders)];
+
+	//double clockwiseDist = distanceClockwise(enemyBaseBorderPos, attackerBorderPos, distFromBorder);
+
+	// ---------------
+
+
+
 	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
 	int distFromBorder = 10;
 	BWAPI::Position attackerPosition = attacker->getPosition();
@@ -61,26 +95,6 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 	targetPositionBorders[1] = BWAPI::Position(distFromBorder, targetPosition.y());											// E
 	targetPositionBorders[2] = BWAPI::Position(targetPosition.x(), distFromBorder);											// S
 	targetPositionBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, targetPosition.y());			// W
-
-	// Push waypoints from last to first
-
-	// Set the destination
-	unitData->setDestination(targetPosition);
-
-	// Set waypoint closest to the enemy base
-	BWAPI::Position enemyBaseBorderPos = targetPositionBorders[closestBorderId(targetPosition, targetPositionBorders)];
-	unitData->pushWaypoint(enemyBaseBorderPos);
-
-	// Decide whether it is better to move clockwise or counterclockwise
-	BWAPI::Position attackerBorderPos = attackerBorders[closestBorderId(attackerPosition, attackerBorders)];
-
-
-
-	// ---------------
-
-
-
-
 
 
 
@@ -237,7 +251,7 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 int WaypointCreatorExt::closestBorderId(BWAPI::Position mapPostition, BWAPI::Position borders[], int size)
 {
 	int id = 0;
-	int closestDistance = INT_MAX;
+	int closestDistance = INT_MAX;		// getDistance returns double, but it doesn't matter
 
 	for (int i = 0; i < size; i++)
 	{
@@ -250,20 +264,6 @@ int WaypointCreatorExt::closestBorderId(BWAPI::Position mapPostition, BWAPI::Pos
 	}
 
 	return id;
-
-}
-
-int WaypointCreatorExt::distanceClockwise(BWAPI::Position fromPos, BWAPI::Position toPos, int distFromBorder)
-{
-	BWAPI::Position fromPosBorders[4];			// NESW
-
-	fromPosBorders[0] = BWAPI::Position(fromPos.x(), BWAPI::Broodwar->mapHeight() - distFromBorder);		// N
-	fromPosBorders[1] = BWAPI::Position(distFromBorder, fromPos.y());										// E
-	fromPosBorders[2] = BWAPI::Position(fromPos.x(), distFromBorder);										// S
-	fromPosBorders[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, fromPos.y());			// W
-
-	int closestBrdId = closestBorderId(fromPos, fromPosBorders);
-	int nextClkId = nextClockwiseId(closestBrdId);
 
 }
 
@@ -281,4 +281,36 @@ int WaypointCreatorExt::nextCounterclockwiseId(int borderId)
 		return 3;
 	else
 		return borderId - 1;
+}
+
+void WaypointCreatorExt::setMapBorderWaypoints(BWAPI::Position borderWaypoints[], int distFromBorder, int size)
+{
+	// From top-left clockwise
+
+	borderWaypoints[0] = BWAPI::Position(distFromBorder, BWAPI::Broodwar->mapHeight() - distFromBorder);
+	borderWaypoints[1] = BWAPI::Position(BWAPI::Broodwar->mapWidth() / 2, BWAPI::Broodwar->mapHeight() - distFromBorder);
+	borderWaypoints[2] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, BWAPI::Broodwar->mapHeight() - distFromBorder);
+	borderWaypoints[3] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, BWAPI::Broodwar->mapHeight() / 2);
+	borderWaypoints[4] = BWAPI::Position(BWAPI::Broodwar->mapWidth() - distFromBorder, distFromBorder);
+	borderWaypoints[5] = BWAPI::Position(BWAPI::Broodwar->mapWidth()/2, distFromBorder);
+	borderWaypoints[6] = BWAPI::Position(distFromBorder, distFromBorder);
+	borderWaypoints[7] = BWAPI::Position(distFromBorder, BWAPI::Broodwar->mapHeight() / 2);
+}
+
+int WaypointCreatorExt::getClosestBorderWaypointId(BWAPI::Position mapPostition, BWAPI::Position borderWaypoints[], int size)
+{
+	double minDistance = DBL_MAX;
+	int id;
+
+	for (int i = 0; i < size; i++)
+	{
+		double currentDistance = mapPostition.getDistance(borderWaypoints[i]);
+		if (currentDistance < minDistance)
+		{
+			minDistance = currentDistance;
+			id = i;
+		}
+	}
+
+	return id;
 }
