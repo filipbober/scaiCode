@@ -216,10 +216,8 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 		|| (targetRange >= selectedUnitRange))
 	{
 		// if we can't kite it, there's no point to do so
-		// If we moved towards target it would still be out of range then advance towards it
-		if ((selectedUnitWeaponCooldown > 0)
-			&& (targetRange + 10 < selectedUnit->getDistance(target)))
-		{			
+		if (selectedUnitWeaponCooldown > 0)
+		{						
 				smartMove(selectedUnit, target->getPosition());
 		}
 		else
