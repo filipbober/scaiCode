@@ -55,8 +55,12 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 				// if we're not near the order position
 				if (selectedUnit->getDistance(order.position) > 100)
 				{
-					// move to it					
+					// move to it	
+
+					// Border movement
 					BWAPI::Position movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					// eof Border movement
+
 					smartAttackMove(selectedUnit, movePosition);
 				}
 			}
