@@ -81,6 +81,20 @@ BWAPI::Position UnitManagerExt::getMovePosition(BWAPI::Unit* unit)
 
 }
 
+void UnitManagerExt::setWaypoints(BWAPI::Unit* attacker, BWAPI::Position targetPosition, WaypointMovementType movementType)
+{
+	if (movementType == WaypointMovementType_BorderMovement)
+	{
+		UnitManagerExt::Instance().addUnit(attacker);
+		UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
+
+		if (!unitData->isDestinationSet)
+		{
+			WaypointCreatorExt::setBorderMoveWaypoints(attacker, targetPosition);
+		}
+	}
+}
+
 UnitManagerExt& UnitManagerExt::Instance()
 {	
 	static UnitManagerExt instance;

@@ -11,6 +11,8 @@ public:
 	UnitManagerExt();
 	~UnitManagerExt();
 
+	enum WaypointMovementType { WaypointMovementType_BorderMovement };
+
 	// Singleton
 	static UnitManagerExt& Instance();
 
@@ -18,6 +20,7 @@ public:
 	void addUnit(BWAPI::Unit* unitToAdd);
 	UnitDataExt* getUnitData(BWAPI::Unit* unit);
 	BWAPI::Position getMovePosition(BWAPI::Unit* unit);
+	void setWaypoints(BWAPI::Unit* attacker, BWAPI::Position targetPosition, WaypointMovementType movementType);
 	
 
 private:

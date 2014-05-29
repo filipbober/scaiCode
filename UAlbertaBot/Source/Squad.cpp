@@ -153,13 +153,14 @@ void Squad::setManagerUnits()
 			{
 
 				// Unit data & border movement
-				UnitManagerExt::Instance().addUnit(unit);
-				UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+				//UnitManagerExt::Instance().addUnit(unit);
+				//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
 
-				if (!unitData->isDestinationSet)
-				{		
-					WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
-				}
+				//if (!unitData->isDestinationSet)
+				//{		
+				//	WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
+				//}
+				UnitManagerExt::Instance().setWaypoints(unit, order.position, UnitManagerExt::WaypointMovementType_BorderMovement);
 				// eof unit data
 
 				terranWraiths.push_back(unit);
