@@ -140,7 +140,7 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
 {
-	int range(selectedUnit->getType().groundWeapon().maxRange());
+	int selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());	
 
 	int highestInRangePriority(0);
 	int highestNotInRangePriority(0);
@@ -152,12 +152,22 @@ BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 
 	BOOST_FOREACH(BWAPI::Unit * unit, targets)
 	{
+		// Set range properely for flying units
+		if (unit->getType().isFlyer())
+		{
+			selectedUnitRange = selectedUnit->getType().airWeapon().maxRange();
+		}
+		else
+		{
+			selectedUnitRange = selectedUnit->getType().groundWeapon().maxRange();
+		}
+
 		int priority = getAttackPriority(selectedUnit, unit);
 		int distance = selectedUnit->getDistance(unit);
 		int unitToughness = unit->getHitPoints() + unit->getShields();
 
 		// if the unit is in range, update the target with the lowest hp
-		if (selectedUnit->getDistance(unit) <= range)
+		if (selectedUnit->getDistance(unit) <= selectedUnitRange)
 		{
 			if (priority > highestInRangePriority ||
 				(priority == highestInRangePriority && unitToughness < lowestInRangeHitPoints))
@@ -186,14 +196,17 @@ BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 
 void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
+	int selectedUnitWeaponCooldown;
 	double selectedUnitRange;
 	if (target->getType().isFlyer())
 	{
 		selectedUnitRange = selectedUnit->getType().airWeapon().maxRange();
+		selectedUnitWeaponCooldown = selectedUnit->getAirWeaponCooldown();
 	}
 	else
 	{
 		selectedUnitRange = selectedUnit->getType().groundWeapon().maxRange();
+		selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	}
 
 	double targetRange(target->getType().airWeapon().maxRange());
@@ -204,14 +217,16 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	{
 		// if we can't kite it, there's no point to do so
 		smartAttackUnit(selectedUnit, target);
+
+		// On cooldown advance towards target
+
 		return;
 	}
 
 	bool		kite(true);
 	double		dist(selectedUnit->getDistance(target));
-	double		speed(selectedUnit->getType().topSpeed());
+	double		speed(selectedUnit->getType().topSpeed());	
 
-	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	int meleeRange = 15;
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
@@ -275,7 +290,7 @@ void WraithManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets)
 {
 	if (selectedUnit->isDetected()
-		|| !BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field))
+		|| !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)))
 	{
 		selectedUnit->decloak();
 		return;
