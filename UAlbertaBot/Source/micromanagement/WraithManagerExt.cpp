@@ -108,8 +108,14 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	int targetWeaponRange = targetType.groundWeapon().maxRange();
 
 
+	// Detectors are top priority but Photon Cannons are too strong
+	if (targetType.isDetector()
+		&& targetType != BWAPI::UnitTypes::Protoss_Photon_Cannon)
+	{
+		return 100;
+	}
 	// Larvas are low priority targets
-	if (targetType == BWAPI::UnitTypes::Zerg_Larva
+	else if (targetType == BWAPI::UnitTypes::Zerg_Larva
 		|| targetType == BWAPI::UnitTypes::Protoss_Interceptor)
 	{
 		return 1;
@@ -221,15 +227,24 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 		selectedUnitRange = selectedUnit->getType().groundWeapon().maxRange();
 		selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	}
+	
+	double targetRange = getTargetWeaponRange(selectedUnit, target);
 
-	double targetRange(target->getType().airWeapon().maxRange());
+	// Avoid
 
 	// Determine whether the target can be kited (can attack us and have greater or rqual range)
 	if ((target->getType().airWeapon() == BWAPI::WeaponTypes::None)
 		|| (targetRange >= selectedUnitRange))
 	{
+		// If target is a turret and there are other viable targets then
+		// move closer but stay out of the turret range
+		if (isTurret(target)
+			&& (_noTurretTargetsNo > 0))
+		{
+			smartMove(selectedUnit, getSafeTurretPosition(selectedUnit, target, 10));
+		}
 		// if we can't kite it, there's no point to do so
-		if (selectedUnitWeaponCooldown > 0)
+		else if (selectedUnitWeaponCooldown > 0)
 		{					
 			smartMove(selectedUnit, target->getPosition());
 		}

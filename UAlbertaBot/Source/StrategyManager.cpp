@@ -1488,6 +1488,8 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
 	}
 
+
+
 	return goal;
 }
 
@@ -1766,9 +1768,11 @@ const MetaPairVector StrategyManager::getTerran1FastPortBuildBuildOrderGoal() co
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
 	int scvsWanted;
 	int marinesWanted;
+	int battleCruisersWanted = 0;
 
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
@@ -1786,10 +1790,12 @@ const MetaPairVector StrategyManager::getTerranWraithRush1PortBuildOrderGoal() c
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
 	int scvsWanted = 0;
 	int marinesWanted = 0;
 	int wraithsWanted = 0;
+	int battleCruisersWanted = 0;
 
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
@@ -1798,6 +1804,17 @@ const MetaPairVector StrategyManager::getTerranWraithRush1PortBuildOrderGoal() c
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Wraith, wraithsWanted));
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, 2));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 2));
+
+	int frames = BWAPI::Broodwar->getFrameCount();
+	if (frames > 8000)
+	{
+		battleCruisersWanted = numBattlecruisers + 2;
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Physics_Lab, 1));
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Battlecruiser, battleCruisersWanted));
+	}
 
 	return goal;
 }
