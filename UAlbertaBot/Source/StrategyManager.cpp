@@ -12,6 +12,7 @@ StrategyManager::StrategyManager()
 , selfRace(BWAPI::Broodwar->self()->getRace())
 , enemyRace(BWAPI::Broodwar->enemy()->getRace())
 , isMidGame(false)
+, isAttackOrderGranted(true)
 {
 	addStrategies();
 	setStrategy();
@@ -50,7 +51,7 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranGoliathBuild] = "0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 0 22 0 0 22";
 	terranOpeningBook[TerranGoliathDrop] = "0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 0 22 0 0 22 0 25 24 0 23 17 0 0 26 48 6 6 17 9 6 6";			// hard to implement - needs Dropship micro
 	terranOpeningBook[Terran1FastPortBuild] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 23 1 17 0 7 0 43 26 0 7 21 9";				// hard to implement - needs Dropship micro
-	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 1 0 17 1 20 10 19 0 26 27 39";
+	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 1 0 17 1 20 10 50 19 0 26 27 39";
 	terranOpeningBook[TerranWraithRush2PortsTvZ] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 0 25 17 0 1 26 10 20 10 10 39 19 21 0 27";
 	terranOpeningBook[TerranWraithRush2PortsTvT] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 25 0 25 0 3 0 3 17 0 10 26 0 21";
 	
@@ -496,8 +497,7 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 		}
 		else if (currentStrategy == TerranWraithRush1Port)
 		{
-			// TODO: implement doAttack for the current strategy
-			return true;
+			return doAttackTerranWraithRush1Port();
 		}
 		else if (currentStrategy == TerranWraithRush2PortsTvZ)
 		{
@@ -1961,4 +1961,29 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 			return false;
 		}
 	}
+}
+
+bool StrategyManager::doAttackTerranWraithRush1Port()
+{
+	if (!isMidGame)
+	{
+		return true;
+	}
+
+	int frames = BWAPI::Broodwar->getFrameCount();
+	if (frames % 1000 == 0)
+	{
+		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+		int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+		int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+
+		if ((numMarines > 5)
+			&& numWraiths > 3)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 }

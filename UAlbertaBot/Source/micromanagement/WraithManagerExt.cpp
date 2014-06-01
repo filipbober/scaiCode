@@ -241,7 +241,13 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 		if (isTurret(target)
 			&& (_noTurretTargetsNo > 0))
 		{
-			smartMove(selectedUnit, getSafeTurretPosition(selectedUnit, target, 10));
+			BWAPI::Position safePos = getSafeTurretPosition(selectedUnit, target, 10);
+			if (!safePos.isValid())
+			{
+				safePos.makeValid();
+			}
+
+			smartMove(selectedUnit, safePos);
 		}
 		// if we can't kite it, there's no point to do so
 		else if (selectedUnitWeaponCooldown > 0)

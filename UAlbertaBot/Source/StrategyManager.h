@@ -139,6 +139,10 @@ private:
 
 	bool doAttackTerranDoubleRaxMnM();
 	bool doAttackTerran3FactoryVultureRush();	
+	bool doAttackTerranWraithRush1Port();
+
+	// Fields
+	bool isAttackOrderGranted;
 
 	// expand
 	const bool StrategyManager::expandTerranDoubleRaxMnM() const;
