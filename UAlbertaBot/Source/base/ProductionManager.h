@@ -66,6 +66,7 @@ class ProductionManager
 
 	// Extensions
 	void queueDoSomething();
+	void queueDoSomethingTerranWraithRush1Port();
 	// eof ext
 
 public:

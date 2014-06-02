@@ -615,13 +615,7 @@ void ProductionManager::queueDoSomething()
 	{
 		if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
 		{
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
-
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
+			queueDoSomethingTerranWraithRush1Port();
 		}
 		else
 		{
@@ -655,4 +649,35 @@ void ProductionManager::queueDoSomething()
 
 	//	setBuildOrder(buildOrder);
 	//}
+}
+
+void ProductionManager::queueDoSomethingTerranWraithRush1Port()
+{
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+
+	if (numBunkers < (numMarines / 4))
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
+	}
+
+	if (numStarports < 3)
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+	}
+
+	if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56))
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+	}
+
+	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+
+	for (int i = 0; i < numStarports; i++)
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
+	}
+
 }
