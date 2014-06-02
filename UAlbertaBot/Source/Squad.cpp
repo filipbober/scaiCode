@@ -204,6 +204,15 @@ void Squad::setManagerUnits()
 // calculates whether or not to regroup
 bool Squad::needsToRegroup()
 {
+	// Extension
+	//BOOST_FOREACH(BWAPI::Unit* unit, units)
+	//{
+	//	if (unit->getType().isFlyer())
+	//		return false;
+	//}
+	// eof Ext
+
+
 	// if we are not attacking, never regroup
 	if (units.empty() || (order.type != SquadOrder::Attack))
 	{
@@ -262,6 +271,7 @@ bool Squad::needsToRegroup()
 	}
 
 
+	// Extension
 	if ((score > -500)
 		&& (score < 0))
 	{
@@ -271,6 +281,7 @@ bool Squad::needsToRegroup()
 	{
 		retreat = false;
 	}
+	// eof ext
 
 	return retreat;
 }

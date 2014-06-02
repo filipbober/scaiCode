@@ -88,6 +88,13 @@ void UnitManagerExt::setWaypoints(BWAPI::Unit* attacker, BWAPI::Position targetP
 		UnitManagerExt::Instance().addUnit(attacker);
 		UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(attacker);
 
+		// Recompute destination if order position has changed
+		if (targetPosition != unitData->getDestination())
+		{
+			unitData->isDestinationSet = false;
+			unitData->eraseWaypoints();
+		}
+
 		if (!unitData->isDestinationSet)
 		{
 			WaypointCreatorExt::setBorderMoveWaypoints(attacker, targetPosition);

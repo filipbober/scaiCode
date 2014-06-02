@@ -75,15 +75,13 @@ void ProductionManager::performBuildOrderSearch(const std::vector< std::pair<Met
 				)
 			{
 
-				// If there are already 4 buildings of the same type
-				// remove them from queue
-				if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 3))
-				{
-					buildOrder.erase(buildOrder.begin() + i);
-				}
+				//// If there are already 4 buildings of the same type
+				//// remove them from queue
+				//if ((BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type) > 3))
+				//{
+				//	buildOrder.erase(buildOrder.begin() + i);
+				//}
 			}
-
-			int numBuildings = BWAPI::Broodwar->self()->allUnitCount(buildOrder[i].type);
 		}
 	}
 
@@ -121,12 +119,14 @@ void ProductionManager::update()
 	// if nothing is currently building, get a new goal from the strategy manager
 	if ((queue.size() == 0) && (BWAPI::Broodwar->getFrameCount() > 10) && !Options::Modules::USING_BUILD_ORDER_DEMO)
 	{
+		// Extension
 		if (!StrategyManager::Instance().isMidGame)
 		{
 			// If it is not mid game yet (just finished build order), set midgame falg to true
 			StrategyManager::Instance().isMidGame = true;
 			BWAPI::Broodwar->printf("Midgame started!");
-		}
+		}		
+		// eof Extension
 
 		BWAPI::Broodwar->drawTextScreen(150, 10, "Nothing left to build, new search!");
 		const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();
@@ -141,20 +141,39 @@ void ProductionManager::update()
 	}
 
 	// if they have cloaked units get a new goal asap (for Protoss)
-	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss &&
-		!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
+	if (!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
 	{
-		if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) < 2)
+		if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Protoss)
 		{
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Protoss_Photon_Cannon), true);
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Protoss_Photon_Cannon), true);
-		}
+			if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) < 2)
+			{
+				queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Protoss_Photon_Cannon), true);
+				queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Protoss_Photon_Cannon), true);
+			}
 
-		if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Forge) == 0)
+			if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Forge) == 0)
+			{
+				queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Protoss_Forge), true);
+			}
+		}
+		else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 		{
-			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Protoss_Forge), true);
-		}
+			if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) < 2)
+			{
+				queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Missile_Turret), true);
+				queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Missile_Turret), true);
+			}
 
+			if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay) == 0)
+			{
+				queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Engineering_Bay), true);
+			}
+
+		}
+		else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Zerg)
+		{
+			// TODO: Implement
+		}
 		BWAPI::Broodwar->printf("Enemy Cloaked Unit Detected!");
 		enemyCloakedDetected = true;
 	}
@@ -169,7 +188,6 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 	// we don't care if it's not our unit
 	if (!unit || unit->getPlayer() != BWAPI::Broodwar->self())
 	{
-		queueDoSomething();
 		return;
 	}
 		
@@ -193,9 +211,7 @@ void ProductionManager::manageBuildOrderQueue()
 	// if there is nothing in the queue, oh well
 	if (queue.isEmpty()) 
 	{
-		// Build SCV while build order is searching
-		
-
+		queueDoSomething();
 		return;
 	}
 
@@ -594,21 +610,74 @@ void ProductionManager::onGameEnd()
 
 void ProductionManager::queueDoSomething()
 {
+
 	if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 	{
-		std::vector<MetaType> buildOrder;
-
-		// If there are not too many workers or there are no barracks
-		if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56)
-			|| (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) > 0))
+		if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
 		{
-			buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+			queueDoSomethingTerranWraithRush1Port();
 		}
 		else
 		{
-			buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
-		}
 
-		setBuildOrder(buildOrder);
+		}
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 	}
+
+
+
+	//if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+	//{
+	//	std::vector<MetaType> buildOrder;
+
+	//	// If there are not too many workers or there are no barracks
+	//	if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56)
+	//		|| (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) > 0))
+	//	{
+	//		buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	//	}
+	//	else
+	//	{
+	//		buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	//	}
+
+	//	setBuildOrder(buildOrder);
+	//}
+}
+
+void ProductionManager::queueDoSomethingTerranWraithRush1Port()
+{
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+
+	if (numBunkers < (numMarines / 4))
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
+	}
+
+	if (numStarports < 3)
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+	}
+
+	if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56))
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+	}
+
+	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+
+	for (int i = 0; i < numStarports; i++)
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
+	}
+
 }

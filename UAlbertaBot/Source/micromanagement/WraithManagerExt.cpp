@@ -15,7 +15,7 @@ WraithManagerExt::~WraithManagerExt()
 void WraithManagerExt::executeMicro(const UnitVector & targets)
 {
 	const UnitVector & selectedUnits = getUnits();
-
+	_noTurretTargetsNo = 0;
 
 	// figure out targets
 	UnitVector selectedUnitTargets;
@@ -25,6 +25,12 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 		if (targets[i]->isVisible())
 		{
 			selectedUnitTargets.push_back(targets[i]);
+
+			if (!isTurret(targets[i]))
+			{
+				_noTurretTargetsNo++;
+			}
+
 		}
 	}
 
@@ -102,11 +108,21 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	int targetWeaponRange = targetType.groundWeapon().maxRange();
 
 
+	// Detectors are top priority but Photon Cannons are too strong
+	if (targetType.isDetector()
+		&& targetType != BWAPI::UnitTypes::Protoss_Photon_Cannon)
+	{
+		return 100;
+	}
 	// Larvas are low priority targets
-	if (targetType == BWAPI::UnitTypes::Zerg_Larva
+	else if (targetType == BWAPI::UnitTypes::Zerg_Larva
 		|| targetType == BWAPI::UnitTypes::Protoss_Interceptor)
 	{
 		return 1;
+	}
+	else if (targetType == BWAPI::UnitTypes::Protoss_Pylon)
+	{
+		return 3;
 	}
 	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
 	{
@@ -115,13 +131,20 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	// Workers are priority over ground units and buildings
 	else if (targetType.isWorker())
 	{
-		return 3;
-	}
-	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon
-		|| targetType == BWAPI::UnitTypes::Terran_Missile_Turret
-		|| targetType == BWAPI::UnitTypes::Zerg_Spore_Colony)
-	{
 		return 4;
+	}
+	else if (isTurret(target))
+	{
+		// Attack tower if in its weapon range
+		// Otherwise attack something else
+		if (target->isInWeaponRange(selectedUnit))
+		{
+			return 5;
+		}
+		else
+		{
+			return 1;
+		}
 	}
 	// Anti air units are top priority
 	else if (canAttackUs)
@@ -136,7 +159,7 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
 {
-	int range(selectedUnit->getType().groundWeapon().maxRange());
+	int selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());	
 
 	int highestInRangePriority(0);
 	int highestNotInRangePriority(0);
@@ -148,16 +171,27 @@ BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 
 	BOOST_FOREACH(BWAPI::Unit * unit, targets)
 	{
+		// Set range properely for flying units
+		if (unit->getType().isFlyer())
+		{
+			selectedUnitRange = selectedUnit->getType().airWeapon().maxRange();
+		}
+		else
+		{
+			selectedUnitRange = selectedUnit->getType().groundWeapon().maxRange();
+		}
+
 		int priority = getAttackPriority(selectedUnit, unit);
 		int distance = selectedUnit->getDistance(unit);
+		int unitToughness = unit->getHitPoints() + unit->getShields();
 
 		// if the unit is in range, update the target with the lowest hp
-		if (selectedUnit->getDistance(unit) <= range)
+		if (selectedUnit->getDistance(unit) <= selectedUnitRange)
 		{
 			if (priority > highestInRangePriority ||
-				(priority == highestInRangePriority && unit->getHitPoints() < lowestInRangeHitPoints))
+				(priority == highestInRangePriority && unitToughness < lowestInRangeHitPoints))
 			{
-				lowestInRangeHitPoints = unit->getHitPoints();
+				lowestInRangeHitPoints = unitToughness;
 				highestInRangePriority = priority;
 				inRangeTarget = unit;
 			}
@@ -181,28 +215,64 @@ BWAPI::Unit* WraithManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 
 void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
-	double selectedUnitAirRange(selectedUnit->getType().airWeapon().maxRange());
-	double targetRange(target->getType().airWeapon().maxRange());
-
-	// determine whether the target can be kited
-	if (target->getType().airWeapon() != BWAPI::WeaponTypes::None)
+	int selectedUnitWeaponCooldown;
+	double selectedUnitRange;
+	if (target->getType().isFlyer())
 	{
+		selectedUnitRange = selectedUnit->getType().airWeapon().maxRange();
+		selectedUnitWeaponCooldown = selectedUnit->getAirWeaponCooldown();
+	}
+	else
+	{
+		selectedUnitRange = selectedUnit->getType().groundWeapon().maxRange();
+		selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
+	}
+	
+	double targetRange = getTargetWeaponRange(selectedUnit, target);
+
+	// Avoid
+
+	// Determine whether the target can be kited (can attack us and have greater or rqual range)
+	if ((target->getType().airWeapon() == BWAPI::WeaponTypes::None)
+		|| (targetRange >= selectedUnitRange))
+	{
+		// If target is a turret and there are other viable targets then
+		// move closer but stay out of the turret range
+		if (isTurret(target)
+			&& (_noTurretTargetsNo > 0))
+		{
+			BWAPI::Position safePos = getSafeTurretPosition(selectedUnit, target, 10);
+			if (!safePos.isValid())
+			{
+				safePos.makeValid();
+			}
+
+			smartMove(selectedUnit, safePos);
+		}
 		// if we can't kite it, there's no point to do so
-		smartAttackUnit(selectedUnit, target);
+		else if (selectedUnitWeaponCooldown > 0)
+		{					
+			smartMove(selectedUnit, target->getPosition());
+		}
+		else
+		{
+			smartAttackUnit(selectedUnit, target);
+		}
+
+
 		return;
 	}
 
 	bool		kite(true);
 	double		dist(selectedUnit->getDistance(target));
-	double		speed(selectedUnit->getType().topSpeed());
+	double		speed(selectedUnit->getType().topSpeed());	
 
-	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	int meleeRange = 15;
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
 	if ((selectedUnitWeaponCooldown == 0)
-		|| (dist >= (selectedUnitAirRange - meleeRange)))
+		|| (dist >= (selectedUnitRange - meleeRange)))
 	{
 		smartAttackUnit(selectedUnit, target);
 	}
@@ -260,7 +330,7 @@ void WraithManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets)
 {
 	if (selectedUnit->isDetected()
-		|| !BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field))
+		|| !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)))
 	{
 		selectedUnit->decloak();
 		return;
@@ -273,6 +343,96 @@ void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targe
 			selectedUnit->cloak();
 			break;
 		}
+	}
+}
+
+bool WraithManagerExt::isInTurretRange(BWAPI::Position position, UnitVector & targets, BWAPI::Unit* selectedUnit)
+{
+	BWAPI::UnitType targetType;
+
+	BOOST_FOREACH(BWAPI::Unit* target, targets)
+	{
+		targetType = target->getType();
+
+		// If target is a turret
+		if (isTurret(target))
+		{
+			// If our position is in turret range
+			if (getTargetWeaponRange(selectedUnit, target) >= target->getDistance(position))
+			{
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+bool WraithManagerExt::isTurret(BWAPI::Unit* target)
+{
+	BWAPI::UnitType targetType = target->getType();
+
+	if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon
+		|| targetType == BWAPI::UnitTypes::Terran_Missile_Turret
+		|| targetType == BWAPI::UnitTypes::Zerg_Spore_Colony)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+BWAPI::Position WraithManagerExt::getSafeTurretPosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity)
+{
+	int safeX = target->getPosition().x();
+	int safeY = target->getPosition().y();
+
+	BWAPI::Position selectedUnitPosition = selectedUnit->getPosition();
+	BWAPI::Position targetPosition = target->getPosition();
+	int targetRange = getTargetWeaponRange(selectedUnit, target);
+
+	// Set X
+	if (selectedUnitPosition.x() < targetPosition.x())
+	{
+		safeX -= targetRange;
+	}	
+	else if (selectedUnitPosition.x() > targetPosition.x())
+	{
+		safeX += targetRange;
+	}
+	else
+	{
+		safeX = target->getPosition().x();
+	}
+
+	// Set Y
+	if (selectedUnitPosition.y() < targetPosition.y())
+	{
+		safeY -= targetRange;
+	}
+	else if (selectedUnitPosition.y() > targetPosition.y())
+	{
+		safeY += targetRange;
+	}
+	else
+	{
+		safeY = target->getPosition().y();
+	}
+
+	return BWAPI::Position(safeX, safeY);
+}
+
+int WraithManagerExt::getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
+{
+	if (selectedUnit->getType().isFlyer())
+	{
+		return target->getType().airWeapon().maxRange();
+	}
+	else
+	{
+		return target->getType().groundWeapon().maxRange();
 	}
 }
 

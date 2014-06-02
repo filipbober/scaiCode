@@ -601,7 +601,8 @@ void BuildingManager::scannerSweep()
 		if (!selectedUnit->isCompleted()
 			|| !selectedUnit->exists())
 		{
-			break;
+			//break;
+			return;
 		}
 
 		//if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed())

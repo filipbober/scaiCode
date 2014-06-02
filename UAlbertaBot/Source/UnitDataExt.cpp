@@ -50,6 +50,11 @@ void UnitDataExt::setDestination(BWAPI::Position destination)
 	isDestinationSet = true;
 }
 
+BWAPI::Position UnitDataExt::getDestination()
+{
+	return _destination;
+}
+
 void UnitDataExt::pushWaypoint(BWAPI::Position waypoint)
 {
 	//BWAPI::Broodwar->printf("                                           DebExt: pushWaypoint");
@@ -88,6 +93,11 @@ BWAPI::Position UnitDataExt::getWaypoint() const
 	{
 		return _destination;
 	}
+}
+
+void UnitDataExt::eraseWaypoints()
+{
+	_waypoints.clear();
 }
 
 bool UnitDataExt::isWaypointReached()
