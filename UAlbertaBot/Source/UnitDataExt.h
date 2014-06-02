@@ -21,9 +21,11 @@ public:
 	void setState(State state);
 
 	void setDestination(BWAPI::Position destination);
+	BWAPI::Position getDestination();
 	void pushWaypoint(BWAPI::Position waypoint);
 	BWAPI::Position popWaypoint();	
 	BWAPI::Position getWaypoint() const;
+	void eraseWaypoints();
 
 	bool isWaypointReached();						// True if current waypoint is reached
 
