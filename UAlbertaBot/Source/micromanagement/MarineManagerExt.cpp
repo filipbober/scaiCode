@@ -119,6 +119,10 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	{
 		return 2;
 	}
+	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
+	{
+		return selectedUnitWeaponRange + 5;
+	}
 	// Templars are extremely dangerous to bio units and should be eliminated asap.
 	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar)
 	{

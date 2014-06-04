@@ -628,6 +628,7 @@ void ProductionManager::queueDoSomething()
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Medic), true);
 	}
 
 
