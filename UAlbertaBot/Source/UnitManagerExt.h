@@ -21,6 +21,9 @@ public:
 	UnitDataExt* getUnitData(BWAPI::Unit* unit);
 	BWAPI::Position getMovePosition(BWAPI::Unit* unit);
 	void setWaypoints(BWAPI::Unit* attacker, BWAPI::Position targetPosition, WaypointMovementType movementType);
+
+	void setUnitStateToAttack(BWAPI::Unit* unit);
+	bool isAttacking(BWAPI::Unit* unit);
 	
 
 private:

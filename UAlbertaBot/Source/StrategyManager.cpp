@@ -2023,6 +2023,7 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 
 bool StrategyManager::doAttackTerranWraithRush1Port()
 {
+	// Code below causes SC to crash
 	//if (!isMidGame)
 	//{
 	//	return true;

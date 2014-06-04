@@ -102,6 +102,25 @@ void UnitManagerExt::setWaypoints(BWAPI::Unit* attacker, BWAPI::Position targetP
 	}
 }
 
+void UnitManagerExt::setUnitStateToAttack(BWAPI::Unit* unit)
+{
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+	unitData->setState(UnitDataExt::State_Attacking);
+}
+
+bool UnitManagerExt::isAttacking(BWAPI::Unit* unit)
+{
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+	if (unitData->getState() == UnitDataExt::State_Attacking)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 UnitManagerExt& UnitManagerExt::Instance()
 {	
 	static UnitManagerExt instance;
