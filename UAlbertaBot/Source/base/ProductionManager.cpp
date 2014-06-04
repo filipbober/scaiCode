@@ -619,16 +619,16 @@ void ProductionManager::queueDoSomething()
 		}
 		else
 		{
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
 
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Medic), true);
 		}
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
-
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
-
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Medic), true);
+		
 	}
 
 
