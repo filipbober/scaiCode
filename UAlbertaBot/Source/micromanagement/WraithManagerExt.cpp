@@ -354,6 +354,11 @@ bool WraithManagerExt::isInTurretRange(BWAPI::Position position, UnitVector & ta
 {
 	BWAPI::UnitType targetType;
 
+	if (targets.empty())
+	{
+		return false;
+	}
+
 	BOOST_FOREACH(BWAPI::Unit* target, targets)
 	{
 		targetType = target->getType();
@@ -425,7 +430,13 @@ BWAPI::Position WraithManagerExt::getSafeTurretPosition(BWAPI::Unit* selectedUni
 		safeY = target->getPosition().y();
 	}
 
-	return BWAPI::Position(safeX, safeY);
+	BWAPI::Position safePos = BWAPI::Position(safeX, safeY);
+	if (!safePos.isValid())
+	{
+		safePos.makeValid();
+	}
+
+	return safePos;
 }
 
 int WraithManagerExt::getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
