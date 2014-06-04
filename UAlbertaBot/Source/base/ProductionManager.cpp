@@ -657,7 +657,7 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
 
-	if (numBunkers < (numMarines / 4))
+	if (numBunkers <= (numMarines / 4))
 	{
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
 	}
