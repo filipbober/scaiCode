@@ -44,24 +44,10 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 		}
 
 		// if the order is to attack or defend
-		if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
+		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
+			&& !isAttackWraith1PortRush())
 		{
-			if (order.type == order.Attack || order.type == order.Defend)
-			{
-				if (!selectedUnitTargets.empty())
-				{
-					BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
-
-					if (selectedUnit->getDistance(target) < 300)
-					{
-						kiteTarget(selectedUnit, target);
-					}
-					else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
-					{
-						smartAttackMove(selectedUnit, order.position);
-					}
-				}
-			}
+			executeTerranWraithRush1Port(selectedUnit, selectedUnitTargets);
 		}
 		else if (order.type == order.Attack || order.type == order.Defend)
 		{
@@ -340,4 +326,24 @@ bool MarineManagerExt::hasBunkerSpace()
 bool MarineManagerExt::isAttackWraith1PortRush()
 {
 	return false;
+}
+
+void MarineManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+{
+	if (order.type == order.Attack || order.type == order.Defend)
+	{
+		if (!selectedUnitTargets.empty())
+		{
+			BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
+
+			if (selectedUnit->getDistance(target) < 300)
+			{
+				kiteTarget(selectedUnit, target);
+			}
+			else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
+			{
+				smartAttackMove(selectedUnit, order.position);
+			}
+		}
+	}
 }
