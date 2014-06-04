@@ -1,5 +1,6 @@
 #include "MarineManagerExt.h"
 #include "Common.h"
+#include "StrategyManager.h"
 
 
 MarineManagerExt::MarineManagerExt()
@@ -43,12 +44,31 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 		}
 
 		// if the order is to attack or defend
-		if (order.type == order.Attack || order.type == order.Defend)
+		if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
+		{
+			if (order.type == order.Attack || order.type == order.Defend)
+			{
+				if (!selectedUnitTargets.empty())
+				{
+					BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
+
+					if (selectedUnit->getDistance(target) < 300)
+					{
+						kiteTarget(selectedUnit, target);
+					}
+					else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
+					{
+						smartAttackMove(selectedUnit, order.position);
+					}
+				}
+			}
+		}
+		else if (order.type == order.Attack || order.type == order.Defend)
 		{
 			// if there are targets
 			if (!selectedUnitTargets.empty())
 			{
-				// find the best target for this Vulture
+				// find the best target for this Marine
 				BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
 				// attack it				
@@ -314,5 +334,10 @@ bool MarineManagerExt::hasBunkerSpace()
 			return true;
 		}
 	}
+	return false;
+}
+
+bool MarineManagerExt::isAttackWraith1PortRush()
+{
 	return false;
 }

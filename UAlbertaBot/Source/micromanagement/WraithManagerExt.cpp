@@ -109,7 +109,11 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 
 	// Detectors are top priority but Photon Cannons are too strong
-	if (targetType.isDetector()
+	if (targetType == BWAPI::UnitTypes::Protoss_Carrier)
+	{
+		return 99;
+	}
+	else if (targetType.isDetector()
 		&& targetType != BWAPI::UnitTypes::Protoss_Photon_Cannon)
 	{
 		return 100;
@@ -232,7 +236,7 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 
 	// Avoid
 
-	// Determine whether the target can be kited (can attack us and have greater or rqual range)
+	// Determine whether the target can be kited (can attack us and have greater or equal range)
 	if ((target->getType().airWeapon() == BWAPI::WeaponTypes::None)
 		|| (targetRange >= selectedUnitRange))
 	{

@@ -25,6 +25,8 @@ private:
 	void goToBunker(BWAPI::Unit * selectedUnit);
 	bool hasBunkerSpace();
 
+	bool isAttackWraith1PortRush();
+
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
 };
