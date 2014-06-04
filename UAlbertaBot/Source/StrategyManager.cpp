@@ -2023,30 +2023,32 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 
 bool StrategyManager::doAttackTerranWraithRush1Port()
 {
-	if (!isMidGame)
-	{
-		return true;
-	}
+	//if (!isMidGame)
+	//{
+	//	return true;
+	//}
 
-	int frames = BWAPI::Broodwar->getFrameCount();
-	if (frames % 1000 == 0)
-	{
-		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-		int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-		int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+	//int frames = BWAPI::Broodwar->getFrameCount();
+	//if (frames % 1000 == 0)
+	//{
+	//	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	//	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	//	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
-		if ((numMarines > 5)
-			&& numWraiths > 3)
-		{
-			isAttackOrderGranted = true;
-		}
-		else
-		{
-			isAttackOrderGranted = false;
-		}
-	}
+	//	if ((numMarines > 5)
+	//		&& numWraiths > 3)
+	//	{
+	//		isAttackOrderGranted = true;
+	//	}
+	//	else
+	//	{
+	//		isAttackOrderGranted = false;
+	//	}
+	//}
 
-	return isAttackOrderGranted;
+	//return isAttackOrderGranted;
+
+	return true;
 }
 
 bool StrategyManager::doAttackTerranTriRaxMnMRush()

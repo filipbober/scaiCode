@@ -80,11 +80,12 @@ BWAPI::Position UnitDataExt::popWaypoint()
 
 		return pos;
 	}
-	else
+	else if (isDestinationSet)
 	{
 		return _destination;
 	}
 
+	BWAPI::Broodwar->printf("                                           DebExt: ERROR! Destination is not set!");
 	return _destination;
 }
 
