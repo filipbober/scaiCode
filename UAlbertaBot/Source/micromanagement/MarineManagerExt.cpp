@@ -1,5 +1,6 @@
 #include "MarineManagerExt.h"
 #include "Common.h"
+#include "StrategyManager.h"
 
 
 MarineManagerExt::MarineManagerExt()
@@ -43,12 +44,17 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 		}
 
 		// if the order is to attack or defend
-		if (order.type == order.Attack || order.type == order.Defend)
+		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
+			&& !isAttackWraith1PortRush())
+		{
+			executeTerranWraithRush1Port(selectedUnit, selectedUnitTargets);
+		}
+		else if (order.type == order.Attack || order.type == order.Defend)
 		{
 			// if there are targets
 			if (!selectedUnitTargets.empty())
 			{
-				// find the best target for this Vulture
+				// find the best target for this Marine
 				BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
 				// attack it				
@@ -112,6 +118,10 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
 	{
 		return 2;
+	}
+	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
+	{
+		return selectedUnitWeaponRange + 5;
 	}
 	// Templars are extremely dangerous to bio units and should be eliminated asap.
 	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar)
@@ -315,4 +325,29 @@ bool MarineManagerExt::hasBunkerSpace()
 		}
 	}
 	return false;
+}
+
+bool MarineManagerExt::isAttackWraith1PortRush()
+{
+	return false;
+}
+
+void MarineManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+{
+	if (order.type == order.Attack || order.type == order.Defend)
+	{
+		if (!selectedUnitTargets.empty())
+		{
+			BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
+
+			if (selectedUnit->getDistance(target) < 300)
+			{
+				kiteTarget(selectedUnit, target);
+			}
+			else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
+			{
+				smartAttackMove(selectedUnit, order.position);
+			}
+		}
+	}
 }

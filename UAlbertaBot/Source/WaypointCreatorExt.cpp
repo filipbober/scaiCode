@@ -56,7 +56,7 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 	// Push waypoints
 
 	// Push closest enemy border
-	if (!targetBorderPosition.isValid()) { targetBorderPosition.makeValid(); }
+	//if (!targetBorderPosition.isValid()) { targetBorderPosition.makeValid(); }
 	unitData->pushWaypoint(targetBorderPosition);
 
 	// Push either clockwise or counterclockwise until closest attacker waypoint is reached
@@ -65,7 +65,7 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 
 	// Push closest enemy waypoint
 	currentWaypoint = borderWaypoints[currentWaypointId];
-	if (!currentWaypoint.isValid()) { currentWaypoint.makeValid(); }
+	//if (!currentWaypoint.isValid()) { currentWaypoint.makeValid(); }
 	unitData->pushWaypoint(currentWaypoint);
 
 	if (isClockwise)
@@ -75,7 +75,7 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 			currentWaypointId = getNextBorderWaypointId(currentWaypointId);
 			currentWaypoint = borderWaypoints[currentWaypointId];
 
-			if (!currentWaypoint.isValid()) { currentWaypoint.makeValid(); }
+			//if (!currentWaypoint.isValid()) { currentWaypoint.makeValid(); }
 			unitData->pushWaypoint(currentWaypoint);
 		}
 	}
@@ -86,13 +86,13 @@ void WaypointCreatorExt::setBorderMoveWaypoints(BWAPI::Unit* attacker, BWAPI::Po
 			currentWaypointId = getPreviousBorderWaypointId(currentWaypointId);
 			currentWaypoint = borderWaypoints[currentWaypointId];
 
-			if (!currentWaypoint.isValid()) { currentWaypoint.makeValid(); }
+			//if (!currentWaypoint.isValid()) { currentWaypoint.makeValid(); }
 			unitData->pushWaypoint(currentWaypoint);
 		}
 	}
 
 	// Push closest attacker waypoint
-	if (!borderWaypoints[attackerClosestWaypointId].isValid()) { borderWaypoints[attackerClosestWaypointId].makeValid(); }
+	//if (!borderWaypoints[attackerClosestWaypointId].isValid()) { borderWaypoints[attackerClosestWaypointId].makeValid(); }
 	unitData->pushWaypoint(borderWaypoints[attackerClosestWaypointId]);
 }
 

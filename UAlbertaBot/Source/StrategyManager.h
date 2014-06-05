@@ -140,6 +140,7 @@ private:
 	bool doAttackTerranDoubleRaxMnM();
 	bool doAttackTerran3FactoryVultureRush();	
 	bool doAttackTerranWraithRush1Port();
+	bool doAttackTerranTriRaxMnMRush();
 
 	// Fields
 	bool isAttackOrderGranted;

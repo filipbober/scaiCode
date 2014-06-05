@@ -25,6 +25,9 @@ private:
 	void goToBunker(BWAPI::Unit * selectedUnit);
 	bool hasBunkerSpace();
 
+	bool isAttackWraith1PortRush();
+	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
 };

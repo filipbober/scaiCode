@@ -41,7 +41,7 @@ void StrategyManager::addStrategies()
 
 	terranOpeningBook[TerranMarineRush] = "0 0 0 0 0 17 0 0 19 0 0 19 17 0 18 0 0 20";
 	terranOpeningBook[TerranDoubleRaxMnM] = "0 0 0 0 0 17 0 19 0 0 17 18 17 1 19 0 50 0 0 50 0 1 20 0 1 15 37";
-	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20";
+	terranOpeningBook[TerranTriRaxMnMRush] = "0 0 0 0 0 17 0 0 19 0 0 19 0 0 17 19 18 21 20 32";
 	terranOpeningBook[TerranProxyRaxMarineRush] = "0 0 17 0 0 0 0 19 19 0 0 1 1";		// hard to implement
 	terranOpeningBook[Terran3FactoryVultureRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 1 0 0 22 1 0 22 1 0 23 21 17 0 3 0 0 47 0 0 3 23 0 17 0 22 0 0 0 30 38";		// <- Preferred build order
 	terranOpeningBook[TerranGundamRush] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 1 22 0 1 0 1 22 1 0 23 17 1 0 7 3 38 0 1 17 43";				// hard to implement, check if tanks are build
@@ -51,7 +51,10 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranGoliathBuild] = "0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 0 22 0 0 22";
 	terranOpeningBook[TerranGoliathDrop] = "0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 0 22 0 0 22 0 25 24 0 23 17 0 0 26 48 6 6 17 9 6 6";			// hard to implement - needs Dropship micro
 	terranOpeningBook[Terran1FastPortBuild] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 23 1 17 0 7 0 43 26 0 7 21 9";				// hard to implement - needs Dropship micro
-	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 1 0 17 1 20 10 50 19 0 26 27 39";
+	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 1 0 17 1 20 10 50 19 0 26 50 21 0 30 0 27 39";
+	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22"; // base build
+	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27"; // base 2 ports
+	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27";
 	terranOpeningBook[TerranWraithRush2PortsTvZ] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 0 25 17 0 1 26 10 20 10 10 39 19 21 0 27";
 	terranOpeningBook[TerranWraithRush2PortsTvT] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 25 0 25 0 3 0 3 17 0 10 26 0 21";
 	
@@ -448,7 +451,7 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 		else if (currentStrategy == TerranTriRaxMnMRush)
 		{
 			// TODO: implement doAttack for the current strategy
-			return true;
+			return doAttackTerranTriRaxMnMRush();
 		}
 		else if (currentStrategy == TerranProxyRaxMarineRush)
 		{
@@ -1147,6 +1150,7 @@ int StrategyManager::getStrategyIdx()
 		//chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
 		//chosenStrategy = TerranDoubleRaxMnM;
 		chosenStrategy = TerranWraithRush1Port;
+		//chosenStrategy = TerranTriRaxMnMRush;
 
 	}
 
@@ -1501,17 +1505,25 @@ const MetaPairVector StrategyManager::getTerranTriRaxMnMRushBuildOrderGoal() con
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+
 	int scvsWanted;
 	int marinesWanted;
 	int medicsWanted;
 
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 4;
-	medicsWanted = numMarines / 4;
+	medicsWanted = 1 + (numMarines / 4);
 
+	if (numAcademies < 1)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, 1));
+	}
+
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
+	
 
 
 	return goal;
@@ -1785,36 +1797,82 @@ const MetaPairVector StrategyManager::getTerran1FastPortBuildBuildOrderGoal() co
 const MetaPairVector StrategyManager::getTerranWraithRush1PortBuildOrderGoal() const
 {
 
+
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
+	int frames = BWAPI::Broodwar->getFrameCount();
 
 	int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+	int numFirebats = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Firebat);
+
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numControlTowers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Control_Tower);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numPhysicsLabs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
+	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 
 	int scvsWanted = 0;
 	int marinesWanted = 0;
 	int wraithsWanted = 0;
 	int battleCruisersWanted = 0;
+	int firebatsWanted = 0;
+
+	int bunkersWanted = 0;
 
 	scvsWanted = numSCV + 3;
-	marinesWanted = numMarines + 3;
+	//marinesWanted = numMarines + 3;
 	wraithsWanted = numWraiths + 2;
+	bunkersWanted = numBunkers + 1; // 2 + (marinesWanted / 4);
+
+
+	// Battlecruiser pipeline
+
+	// If there is no Starport, build one
+	if (numStarports < 1)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Starport, numStarports + 1));
+	}
+	// Make sure that every Starport has a Control Tower attached
+	else if (numControlTowers < numStarports)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Control_Tower, numControlTowers + 1));
+	}
+	// Build a Science Facility
+	else if (numScienceFacilities < 1)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Science_Facility, 1));
+	}
+	// Attach Physics Lab to the Science Facility (should be one anyway, so constraints are not needed)
+	else if (numPhysicsLabs < numScienceFacilities)
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Physics_Lab, 1));
+	}
+	// BC requirements are met. Start building BC's - as many as there are Starports with Control Towers
+	else
+	{
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Battlecruiser, std::min(numControlTowers, numStarports)));
+	}
+	// eof Battlecruiser
+
+	// Firebat pipeline
+	if (numAcademies > 0)
+	{
+		firebatsWanted = 1 + (numMarines / 2);
+		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Firebat, firebatsWanted));
+	}
+	// eof Firebat
 
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
 	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Wraith, wraithsWanted));
 
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, 2));
-	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, 2));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, bunkersWanted));
+	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Missile_Turret, numBunkers + 1));
 
-	int frames = BWAPI::Broodwar->getFrameCount();
-	if (frames > 8000)
-	{
-		battleCruisersWanted = numBattlecruisers + 2;
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Physics_Lab, 1));
-		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Battlecruiser, battleCruisersWanted));
-	}
+	
 
 	return goal;
 }
@@ -1965,25 +2023,59 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 
 bool StrategyManager::doAttackTerranWraithRush1Port()
 {
+	// Code below causes SC to crash
+	//if (!isMidGame)
+	//{
+	//	return true;
+	//}
+
+	//int frames = BWAPI::Broodwar->getFrameCount();
+	//if (frames % 1000 == 0)
+	//{
+	//	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	//	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	//	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+
+	//	if ((numMarines > 5)
+	//		&& numWraiths > 3)
+	//	{
+	//		isAttackOrderGranted = true;
+	//	}
+	//	else
+	//	{
+	//		isAttackOrderGranted = false;
+	//	}
+	//}
+
+	//return isAttackOrderGranted;
+
+	return true;
+}
+
+bool StrategyManager::doAttackTerranTriRaxMnMRush()
+{
 	if (!isMidGame)
 	{
-		return true;
+		return false;
 	}
 
 	int frames = BWAPI::Broodwar->getFrameCount();
 	if (frames % 1000 == 0)
 	{
 		int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-		int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-		int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+		int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 
-		if ((numMarines > 5)
-			&& numWraiths > 3)
+		if ((numMarines > 30)
+			&& numMedics > 5)
 		{
-			return true;
+			isAttackOrderGranted = true;
 		}
-
-		return false;
+		else
+		{
+			isAttackOrderGranted = false;
+		}
 	}
+
+	return isAttackOrderGranted;
 
 }

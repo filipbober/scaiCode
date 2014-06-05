@@ -619,15 +619,16 @@ void ProductionManager::queueDoSomething()
 		}
 		else
 		{
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
 
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Medic), true);
 		}
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
-
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
-
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+		
 	}
 
 
@@ -653,11 +654,15 @@ void ProductionManager::queueDoSomething()
 
 void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 {
+	BWAPI::Broodwar->printf("                                           DebExt: doSomething invoked");
+
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	
 	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 
-	if (numBunkers < (numMarines / 4))
+	if (numBunkers <= (numMarines / 4))
 	{
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
 	}
@@ -672,6 +677,11 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
 	}
 
+	if (numAcademies > 0)
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
+	}
+
 	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 
@@ -679,5 +689,67 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 	{
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
 	}
+
+}
+
+void ProductionManager::queueTerranMarines(double prodPercent)
+{
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+
+	if (numBarracks < 1)
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	}
+
+}
+
+void ProductionManager::queueTerranFirebats(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranWraiths(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranSCVs(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranBCs(double prodPercent)
+{
+
+}
+
+
+void ProductionManager::queueTerranSupply(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranBunkers(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranTurrets(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranBCUpgrades(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranTankUpgrades(double prodPercent)
+{
+
+}
+
+void ProductionManager::queueTerranBioUpgrades(double prodPercent)
+{
 
 }

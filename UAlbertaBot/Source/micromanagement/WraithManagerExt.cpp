@@ -109,7 +109,11 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 
 	// Detectors are top priority but Photon Cannons are too strong
-	if (targetType.isDetector()
+	if (targetType == BWAPI::UnitTypes::Protoss_Carrier)
+	{
+		return 99;
+	}
+	else if (targetType.isDetector()
 		&& targetType != BWAPI::UnitTypes::Protoss_Photon_Cannon)
 	{
 		return 100;
@@ -232,7 +236,7 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 
 	// Avoid
 
-	// Determine whether the target can be kited (can attack us and have greater or rqual range)
+	// Determine whether the target can be kited (can attack us and have greater or equal range)
 	if ((target->getType().airWeapon() == BWAPI::WeaponTypes::None)
 		|| (targetRange >= selectedUnitRange))
 	{
@@ -350,6 +354,11 @@ bool WraithManagerExt::isInTurretRange(BWAPI::Position position, UnitVector & ta
 {
 	BWAPI::UnitType targetType;
 
+	if (targets.empty())
+	{
+		return false;
+	}
+
 	BOOST_FOREACH(BWAPI::Unit* target, targets)
 	{
 		targetType = target->getType();
@@ -421,7 +430,13 @@ BWAPI::Position WraithManagerExt::getSafeTurretPosition(BWAPI::Unit* selectedUni
 		safeY = target->getPosition().y();
 	}
 
-	return BWAPI::Position(safeX, safeY);
+	BWAPI::Position safePos = BWAPI::Position(safeX, safeY);
+	if (!safePos.isValid())
+	{
+		safePos.makeValid();
+	}
+
+	return safePos;
 }
 
 int WraithManagerExt::getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
