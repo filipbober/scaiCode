@@ -48,6 +48,8 @@ void CombatCommander::assignIdleSquads(std::set<BWAPI::Unit *> & unitsToAssign)
 
 void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign)
 {
+	//assignAttackSquadsExt(unitsToAssign);
+
 	if (unitsToAssign.empty()) { return; }
 
 	bool workersDefending = false;
