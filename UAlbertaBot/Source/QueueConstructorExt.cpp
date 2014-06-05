@@ -67,6 +67,7 @@ void QueueConstructorExt::makeTestQueue()
 
 	queueTerranMarines(0.5);
 	queueTerranFirebats(0.5);
+	queueTerranSCVs(1.0);
 }
 
 void QueueConstructorExt::queueTerranMarines(double prodPercent)
@@ -116,11 +117,47 @@ void QueueConstructorExt::queueTerranFirebats(double prodPercent)
 
 void QueueConstructorExt::queueTerranWraiths(double prodPercent)
 {
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+
+	int wraithsWanted = std::max(1, (int)ceil(numStarports * prodPercent));
+
+	if (numBarracks < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	}
+	else if (numFactories < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Factory), true);
+	}
+	else if (numStarports < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+	}
+	else
+	{
+		for (int i = 0; i < wraithsWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
+		}
+	}
 
 }
 
 void QueueConstructorExt::queueTerranSCVs(double prodPercent)
 {
+	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+
+	int scvsWanted = std::max(1, (int)ceil(numCommandCenters * prodPercent));
+
+	if (numCommandCenters > 0)
+	{
+		for (int i = 0; i < scvsWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+		}
+	}
 
 }
 void QueueConstructorExt::queueTerranBCs(double prodPercent)
