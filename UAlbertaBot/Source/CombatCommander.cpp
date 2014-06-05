@@ -72,6 +72,62 @@ void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign
 	} 
 }
 
+void CombatCommander::assignAttackSquadsExt(std::set<BWAPI::Unit *> & unitsToAssign)
+{
+	if (unitsToAssign.empty()) { return; }
+	
+	bool workersDefending = false;
+	BOOST_FOREACH(BWAPI::Unit * unit, unitsToAssign)
+	{
+		if (unit->getType().isWorker())
+		{
+			workersDefending = true;
+		}
+		else
+		{
+			// Add units to the UnitManagerExt (needed for getting and setting states
+			UnitManagerExt::Instance().addUnit(unit);
+		}
+	}
+
+	
+
+	bool attackEnemy = !unitsToAssign.empty() && !workersDefending && StrategyManager::Instance().doAttack(unitsToAssign);
+
+	// If attack permission is granted set attack units
+	if (attackEnemy)
+	{	
+		BOOST_FOREACH(BWAPI::Unit * unit, unitsToAssign)
+		{
+			if (UnitManagerExt::Instance().getUnitData(unit) != NULL)
+			{
+				UnitManagerExt::Instance().setUnitStateToAttack(unit);				
+			}
+		}
+	}
+	
+	// Get all the attack units
+	// Even if attack is not granted, attacking units should still attack
+	std::set<BWAPI::Unit *> unitsToAttack;
+	BOOST_FOREACH(BWAPI::Unit * unit, unitsToAssign)
+	{
+		if ((UnitManagerExt::Instance().getUnitData(unit) != NULL)
+			&& UnitManagerExt::Instance().isAttacking(unit))
+		{
+			unitsToAttack.insert(unit);
+		}
+	}
+
+	if (!unitsToAttack.empty())
+	{
+		assignAttackRegion(unitsToAttack);				// attack occupied enemy region
+		assignAttackKnownBuildings(unitsToAttack);		// attack known enemy buildings
+		assignAttackVisibleUnits(unitsToAttack);			// attack visible enemy units
+		assignAttackExplore(unitsToAttack);				// attack and explore for unknown units
+	}
+
+}
+
 BWTA::Region * CombatCommander::getClosestEnemyRegion()
 {
 	BWTA::Region * closestEnemyRegion = NULL;

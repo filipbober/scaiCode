@@ -38,6 +38,10 @@ class CombatCommander
 	BWTA::Region *		getClosestEnemyRegion();
 	BWAPI::Position		getDefendLocation();
 
+	// Extensions
+	void assignAttackSquadsExt(std::set<BWAPI::Unit *> & unitsToAssign);
+	// eof ext
+
 public:
 
 	CombatCommander();
