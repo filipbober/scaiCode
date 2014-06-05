@@ -143,6 +143,10 @@ void Squad::setManagerUnits()
 			{				
 				terranMarines.push_back(unit);
 			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Firebat)
+			{
+				terranMarines.push_back(unit);
+			}
 			// Select Terran Vultures
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
 			{

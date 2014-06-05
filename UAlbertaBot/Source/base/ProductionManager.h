@@ -68,20 +68,7 @@ class ProductionManager
 	void queueDoSomething();
 	void queueDoSomethingTerranWraithRush1Port();
 
-	// Specific units
-	void queueTerranMarines(double prodPercent);
-	void queueTerranFirebats(double prodPercent);
-	void queueTerranWraiths(double prodPercent);
-	void queueTerranSCVs(double prodPercent);
-	void queueTerranBCs(double prodPercent);
-
-	void queueTerranSupply(double prodPercent);
-	void queueTerranBunkers(double prodPercent);
-	void queueTerranTurrets(double prodPercent);
-
-	void queueTerranBCUpgrades(double prodPercent);
-	void queueTerranTankUpgrades(double prodPercent);
-	void queueTerranBioUpgrades(double prodPercent);
+	
 
 	// eof ext
 
