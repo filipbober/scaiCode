@@ -198,6 +198,9 @@
     <ClCompile Include="..\Source\UnitManagerExt.cpp">
       <Filter>game\combat\micro</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\QueueConstructorExt.cpp">
+      <Filter>game\macro\Extensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -355,6 +358,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\UnitManagerExt.h">
       <Filter>game\combat\micro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\QueueConstructorExt.h">
+      <Filter>game\macro\Extensions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

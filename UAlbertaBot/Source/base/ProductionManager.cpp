@@ -12,6 +12,8 @@
 #include "extensions\BuildOrderTest.h"
 #include "extensions\BuildOrderCreator.h"
 #include "extensions\ZergBuildOrderCreator.h"
+#include "..\QueueConstructorExt.h"
+
 
 ProductionManager::ProductionManager() 
 	: initialBuildSet(false)
@@ -654,102 +656,44 @@ void ProductionManager::queueDoSomething()
 
 void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 {
-	BWAPI::Broodwar->printf("                                           DebExt: doSomething invoked");
+	QueueConstructorExt::Instance().clearQueue();
+	QueueConstructorExt::Instance().makeTestQueue();
+	queue = QueueConstructorExt::Instance().getQueue();
 
-	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	
-	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
-	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	//BWAPI::Broodwar->printf("                                           DebExt: doSomething invoked");
 
-	if (numBunkers <= (numMarines / 4))
-	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
-	}
+	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	//
+	//int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	//int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	//int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 
-	if (numStarports < 3)
-	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
-	}
+	//if (numBunkers <= (numMarines / 4))
+	//{
+	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
+	//}
 
-	if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56))
-	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
-	}
+	//if (numStarports < 3)
+	//{
+	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+	//}
 
-	if (numAcademies > 0)
-	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
-	}
+	//if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56))
+	//{
+	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+	//}
 
-	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+	//if (numAcademies > 0)
+	//{
+	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
+	//}
 
-	for (int i = 0; i < numStarports; i++)
-	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
-	}
+	//queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+	//queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 
-}
-
-void ProductionManager::queueTerranMarines(double prodPercent)
-{
-	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
-
-	if (numBarracks < 1)
-	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
-	}
-
-}
-
-void ProductionManager::queueTerranFirebats(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranWraiths(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranSCVs(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranBCs(double prodPercent)
-{
-
-}
-
-
-void ProductionManager::queueTerranSupply(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranBunkers(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranTurrets(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranBCUpgrades(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranTankUpgrades(double prodPercent)
-{
-
-}
-
-void ProductionManager::queueTerranBioUpgrades(double prodPercent)
-{
+	//for (int i = 0; i < numStarports; i++)
+	//{
+	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
+	//}
 
 }
