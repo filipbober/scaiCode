@@ -4,6 +4,7 @@
 
 #include "Common.h"
 #include "BuildingManager.h"
+#include "../UnitManagerExt.h"
 
 
 BuildingManager::BuildingManager() 
@@ -663,41 +664,6 @@ void BuildingManager::scannerSweep()
 		}
 	}
 	BWAPI::Broodwar->printf("                                           DebExt: 5");
-
-
-
-
-
-
-
-
-
-
-
-
-	//BWAPI::Player* enemy = BWAPI::Broodwar->enemy;
-	//std::set<BWAPI::Unit*> centers = BWAPI::Broodwar->self()->getUnits();
-	//for (std::set<BWAPI::Unit*>::iterator c = centers.begin(); c != centers.end
-	//	(); c++)
-	//{
-	//	if ((*c)->getType() == BWAPI::UnitTypes::Terran_Command_Center &&
-	//		(*c)->isCompleted() && (*c)->getAddon()->isCompleted())
-	//	{
-	//		if ((*c)->getAddon()->getEnergy() >= 50)
-	//		{
-	//			(*c)->getAddon()->useTech
-	//				(BWAPI::TechTypes::Scanner_Sweep, enemy->getPosition());
-	//			break;
-	//		}
-	//	}
-	//}
-
-
-
-
-
-
-
 }
 
 void BuildingManager::buildingLiftLand()
@@ -726,7 +692,20 @@ void BuildingManager::buildingLiftLand()
 	{
 		if (unit->isUnderAttack())
 		{
+			UnitManagerExt::Instance().setLandingPosition(unit, unit->getTilePosition());			
 			unit->lift();
+		}		
+		else if (unit->isLifted())
+		{
+			BWAPI::TilePosition landingPos = UnitManagerExt::Instance().getLandingPosition(unit);
+			if (!landingPos.isValid())
+			{
+				landingPos.makeValid();
+			}
+			BWAPI::Broodwar->printf("                                           DebExt: landing pos x = %d", landingPos.x());
+			BWAPI::Broodwar->printf("                                           DebExt: landing pos y = %d", landingPos.y());
+
+			unit->land(landingPos);
 		}
 	}
 

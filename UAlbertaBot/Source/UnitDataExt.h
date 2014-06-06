@@ -29,12 +29,16 @@ public:
 
 	bool isWaypointReached();						// True if current waypoint is reached
 
+	void setLandingPosition(BWAPI::TilePosition landingPos);
+	BWAPI::TilePosition getLandingPosition();
+
 private:
 	BWAPI::Position _destination;
 	std::vector<BWAPI::Position>  _waypoints;
 	const BWAPI::Unit* _unit;
 	State _state;	
 	int _waypointProximity;
+	BWAPI::TilePosition _landingPosition;
 
 };
 
