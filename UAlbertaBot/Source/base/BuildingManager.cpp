@@ -41,7 +41,11 @@ void BuildingManager::update()
 	checkForCompletedBuildings();
 
 	// Ext: Scanner Sweep
-	scannerSweep();	
+	if (BWAPI::Broodwar->getFrameCount() % 48 == 0)
+	{
+		scannerSweep();
+		buildingLiftLand();
+	}
 	// eof ext
 
 	// draw some debug information
@@ -693,5 +697,39 @@ void BuildingManager::scannerSweep()
 
 
 
+
+}
+
+void BuildingManager::buildingLiftLand()
+{
+	if (BWAPI::Broodwar->self()->getRace() != BWAPI::Races::Terran)
+	{
+		return;
+	}
+
+	// Set buildings as selectedUnits
+	std::set<BWAPI::Unit *>	selectedUnits;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType().isBuilding())
+		{
+			selectedUnits.insert(unit);			
+		}
+	}
+
+	if (selectedUnits.empty())
+	{
+		return;
+	}
+
+	BOOST_FOREACH(BWAPI::Unit * unit, selectedUnits)
+	{
+		if (unit->isUnderAttack())
+		{
+			unit->lift();
+		}
+	}
+
+	
 
 }
