@@ -69,6 +69,7 @@ void QueueConstructorExt::makeTestQueue()
 	//queueTerranMarines(0.5);
 	//queueTerranFirebats(0.5);
 	queueTerranWraiths(1.0);
+	queueTerranMarinesUpgrades();
 	queueTerranSCVs(1.0);
 }
 
@@ -99,23 +100,6 @@ void QueueConstructorExt::queueTerranMarines(double prodPercent)
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
 		}
 	}
-
-	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
-
-	//int marinesWanted = std::max(1, (int)ceil(numBarracks * prodPercent));
-
-	//if (numBarracks < 1)
-	//{
-	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
-	//}
-	//else
-	//{
-	//	for (int i = 0; i < marinesWanted; i++)
-	//	{
-	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-	//	}
-	//}
-
 }
 
 void QueueConstructorExt::queueTerranFirebats(double prodPercent)
@@ -140,28 +124,6 @@ void QueueConstructorExt::queueTerranFirebats(double prodPercent)
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
 		}
 	}
-
-	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
-	//int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
-	//
-	//int firebatsWanted = std::max(1, (int)ceil(numBarracks * prodPercent));
-
-	//if (numBarracks < 1)
-	//{
-	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
-	//}
-	//else if (numAcademies < 1)
-	//{
-	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Academy), true);
-	//}
-	//else
-	//{
-	//	for (int i = 0; i < firebatsWanted; i++)
-	//	{
-	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
-	//	}
-	//}
-
 }
 
 void QueueConstructorExt::queueTerranWraiths(double prodPercent)
@@ -180,33 +142,6 @@ void QueueConstructorExt::queueTerranWraiths(double prodPercent)
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
 		}
 	}
-
-	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
-	//int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
-	//int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-
-	//int wraithsWanted = std::max(1, (int)ceil(numStarports * prodPercent));
-
-	//if (numBarracks < 1)
-	//{
-	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
-	//}
-	//else if (numFactories < 1)
-	//{
-	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Factory), true);
-	//}
-	//else if (numStarports < 1)
-	//{
-	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
-	//}
-	//else
-	//{
-	//	for (int i = 0; i < wraithsWanted; i++)
-	//	{
-	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
-	//	}
-	//}
-
 }
 
 void QueueConstructorExt::queueTerranSCVs(double prodPercent)
@@ -384,7 +319,28 @@ void QueueConstructorExt::queueTerranTankUpgrades()
 
 void QueueConstructorExt::queueTerranMarinesUpgrades()
 {
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 
+	bool isStimpackResearched = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs);
+	bool isShellsUpgraded = (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells)
+		== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells));
+
+	if (numAcademies < 1)
+	{
+		queueTerranAcademies(1);
+	}
+	else
+	{
+		// Stimpacks and shells first
+		if (!isStimpackResearched)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Stim_Packs), true);
+		}
+		else if (!isShellsUpgraded)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::U_238_Shells), true);
+		}
+	}
 }
 
 void QueueConstructorExt::queueTerranGhostUpgrades()
