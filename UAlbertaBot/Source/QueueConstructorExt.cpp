@@ -65,9 +65,20 @@ void QueueConstructorExt::makeTestQueue()
 	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
 	//}
 
+	
 	queueTerranMarines(0.5);
 	queueTerranFirebats(0.5);
 	queueTerranSCVs(1.0);
+}
+
+void QueueConstructorExt::queueCommandCenters(int desiredNo)
+{
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+
+	for (int i = numBarracks; i <= desiredNo; i++)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Command_Center), true);
+	}
 }
 
 void QueueConstructorExt::queueTerranMarines(double prodPercent)
@@ -165,32 +176,111 @@ void QueueConstructorExt::queueTerranBCs(double prodPercent)
 
 }
 
-void QueueConstructorExt::queueTerranSupply(double prodPercent)
+void QueueConstructorExt::queueTerranSupply(int desiredNo)
+{
+	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+
+	for (int i = numSupply; i <= desiredNo; i++)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+	}
+}
+
+void QueueConstructorExt::queueTerranBunkers(int desiredNo)
+{
+	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+
+	if (numBarracks < 1)
+	{
+		queueTerranBarracks(1);
+	}
+	else
+	{
+		for (int i = numBunkers; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
+		}
+	}
+
+}
+
+void QueueConstructorExt::queueEngineeringBays(int desiredNo)
+{
+	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+}
+
+void QueueConstructorExt::queueTerranTurrets(int desiredNo)
 {
 
 }
 
-void QueueConstructorExt::queueTerranBunkers(double prodPercent)
+void QueueConstructorExt::queueTerranBarracks(int desiredNo)
 {
 
 }
 
-void QueueConstructorExt::queueTerranTurrets(double prodPercent)
+void QueueConstructorExt::queueTerranFactories(int desiredNo)
 {
 
 }
 
-void QueueConstructorExt::queueTerranBCUpgrades(double prodPercent)
+void QueueConstructorExt::queueTerranStarports(int desiredNo)
 {
 
 }
 
-void QueueConstructorExt::queueTerranTankUpgrades(double prodPercent)
+void QueueConstructorExt::queueTerranScienceFacilities(int desiredNo)
 {
 
 }
 
-void QueueConstructorExt::queueTerranBioUpgrades(double prodPercent)
+void QueueConstructorExt::queueTerranBCUpgrades()
+{
+
+}
+
+void QueueConstructorExt::queueTerranWraithUpgrades()
+{
+
+}
+
+void QueueConstructorExt::queueTerranTankUpgrades()
+{
+
+}
+
+void QueueConstructorExt::queueTerranMarinesUpgrades()
+{
+
+}
+
+void QueueConstructorExt::queueTerranGhostUpgrades()
+{
+
+}
+
+void QueueConstructorExt::queueTerranBioUpgrades()
+{
+
+}
+
+void QueueConstructorExt::queueTerranBioWeapons()
+{
+
+}
+
+void QueueConstructorExt::queueTerranBioArmor()
+{
+
+}
+
+void QueueConstructorExt::queueTerranAirWeapons()
+{
+
+}
+
+void QueueConstructorExt::queueTerranAirArmor()
 {
 
 }
