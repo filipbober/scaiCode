@@ -201,7 +201,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 		return;
 	}
 		
-	if (Options::Modules::USING_MACRO_SEARCH)
+	if (Options::Modules::USING_MACRO_SEARCH && isBuildOrderSearchOn)
 	{
 		// if it's a worker or a building, we need to re-search for the current goal
 		if ((unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding())

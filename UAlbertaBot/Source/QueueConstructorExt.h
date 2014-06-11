@@ -34,6 +34,7 @@ public:
 	void queueTerranFactories(int desiredNo);
 	void queueTerranStarports(int desiredNo);
 	void queueTerranScienceFacilities(int desiredNo);
+	void queueTerranArmory(int desiredNo);
 
 	void queueTerranBCUpgrades();
 	void queueTerranWraithUpgrades();

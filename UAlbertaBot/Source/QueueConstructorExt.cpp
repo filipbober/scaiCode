@@ -69,7 +69,8 @@ void QueueConstructorExt::makeTestQueue()
 	//queueTerranMarines(0.5);
 	//queueTerranFirebats(0.5);
 	queueTerranWraiths(1.0);
-	queueTerranMarinesUpgrades();
+	//queueTerranMarinesUpgrades();
+	queueTerranWraithUpgrades();
 	queueTerranSCVs(1.0);
 }
 
@@ -302,6 +303,24 @@ void QueueConstructorExt::queueTerranScienceFacilities(int desiredNo)
 
 }
 
+void QueueConstructorExt::queueTerranArmory(int desiredNo)
+{
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+
+	if (numFactories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else
+	{
+		for (int i = numArmory; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Armory), true);
+		}
+	}
+}
+
 void QueueConstructorExt::queueTerranBCUpgrades()
 {
 
@@ -309,7 +328,46 @@ void QueueConstructorExt::queueTerranBCUpgrades()
 
 void QueueConstructorExt::queueTerranWraithUpgrades()
 {
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
 
+	bool isCloakingFieldResearched = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field);
+	bool isApolloReactorUpgraded = (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Apollo_Reactor)		// Do not upgrade this one
+		>= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Apollo_Reactor));
+
+	int weaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons);
+	int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating);
+
+	bool maxWeaponReached = (weaponLevel >= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	bool maxArmorReached = (armorLevel >= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+
+	isApolloReactorUpgraded = true;		// to skip this upgrade
+	bool allUpgradesCompleted = isCloakingFieldResearched && isApolloReactorUpgraded && maxWeaponReached && maxArmorReached;
+
+	if (allUpgradesCompleted)
+	{
+		return;
+	}
+
+	if (numArmory < 1)
+	{
+		queueTerranAcademies(1);
+	}
+	else
+	{
+		// Cloaking field first, then weapons and armor last
+		if (!isCloakingFieldResearched)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Cloaking_Field), true);
+		}
+		else if (weaponLevel <= armorLevel)
+		{
+			queueTerranAirWeapons();
+		}
+		else
+		{
+			queueTerranAirArmor();
+		}
+	}
 }
 
 void QueueConstructorExt::queueTerranTankUpgrades()
@@ -323,7 +381,20 @@ void QueueConstructorExt::queueTerranMarinesUpgrades()
 
 	bool isStimpackResearched = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs);
 	bool isShellsUpgraded = (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells)
-		== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells));
+		>= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells));
+
+	int weaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
+	int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+
+	bool maxWeaponReached = (weaponLevel >= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	bool maxArmorReached = (armorLevel >= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+
+	bool allUpgradesCompleted = isStimpackResearched && isShellsUpgraded && maxWeaponReached && maxArmorReached;
+
+	if (allUpgradesCompleted)
+	{
+		return;
+	}
 
 	if (numAcademies < 1)
 	{
@@ -340,6 +411,14 @@ void QueueConstructorExt::queueTerranMarinesUpgrades()
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::U_238_Shells), true);
 		}
+		else if (weaponLevel <= armorLevel)
+		{
+			queueTerranBioWeapons();
+		}
+		else
+		{
+			queueTerranBioArmor();
+		}
 	}
 }
 
@@ -355,20 +434,78 @@ void QueueConstructorExt::queueTerranBioUpgrades()
 
 void QueueConstructorExt::queueTerranBioWeapons()
 {
+	int numEngineeringBays = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
+	if (numEngineeringBays < 1)
+	{
+		queueEngineeringBays(1);
+	}
+	else
+	{
+		int weaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
+
+		if (weaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Infantry_Weapons), true);
+		}
+
+	}
 }
 
 void QueueConstructorExt::queueTerranBioArmor()
 {
+	int numEngineeringBays = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
+	if (numEngineeringBays < 1)
+	{
+		queueEngineeringBays(1);
+	}
+	else
+	{
+		int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
+
+		if (armorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Infantry_Armor), true);
+		}
+
+	}
 }
 
 void QueueConstructorExt::queueTerranAirWeapons()
 {
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
 
+	if (numArmory < 1)
+	{
+		queueTerranArmory(1);
+	}
+	else
+	{
+		int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons);
+
+		if (armorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons))
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Ship_Weapons), true);
+		}
+	}
 }
 
 void QueueConstructorExt::queueTerranAirArmor()
 {
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
 
+	if (numArmory < 1)
+	{
+		queueTerranArmory(1);
+	}
+	else
+	{
+		int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating);
+
+		if (armorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating))
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Ship_Plating), true);
+		}
+	}
 }
