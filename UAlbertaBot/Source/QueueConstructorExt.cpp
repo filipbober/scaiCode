@@ -66,8 +66,9 @@ void QueueConstructorExt::makeTestQueue()
 	//}
 
 	
-	queueTerranMarines(0.5);
-	queueTerranFirebats(0.5);
+	//queueTerranMarines(0.5);
+	//queueTerranFirebats(0.5);
+	queueTerranWraiths(1.0);
 	queueTerranSCVs(1.0);
 }
 
@@ -128,23 +129,12 @@ void QueueConstructorExt::queueTerranFirebats(double prodPercent)
 
 void QueueConstructorExt::queueTerranWraiths(double prodPercent)
 {
-	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
-	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-
 	int wraithsWanted = std::max(1, (int)ceil(numStarports * prodPercent));
 
-	if (numBarracks < 1)
+	if (numStarports < 1)
 	{
-		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
-	}
-	else if (numFactories < 1)
-	{
-		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Factory), true);
-	}
-	else if (numStarports < 1)
-	{
-		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+		queueTerranStarports(1);
 	}
 	else
 	{
@@ -153,6 +143,32 @@ void QueueConstructorExt::queueTerranWraiths(double prodPercent)
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
 		}
 	}
+
+	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	//int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	//int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+
+	//int wraithsWanted = std::max(1, (int)ceil(numStarports * prodPercent));
+
+	//if (numBarracks < 1)
+	//{
+	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	//}
+	//else if (numFactories < 1)
+	//{
+	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Factory), true);
+	//}
+	//else if (numStarports < 1)
+	//{
+	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+	//}
+	//else
+	//{
+	//	for (int i = 0; i < wraithsWanted; i++)
+	//	{
+	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
+	//	}
+	//}
 
 }
 

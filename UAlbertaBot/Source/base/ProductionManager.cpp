@@ -131,8 +131,11 @@ void ProductionManager::update()
 		// eof Extension
 
 		BWAPI::Broodwar->drawTextScreen(150, 10, "Nothing left to build, new search!");
-		const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();
-		performBuildOrderSearch(newGoal);
+
+		// Ext - commented
+		//const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();	// ext
+		//performBuildOrderSearch(newGoal);																					// ext
+		// eof ext comment
 	}
 
 	//// detect if there's a build order deadlock once per second
