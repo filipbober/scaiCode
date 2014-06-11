@@ -617,7 +617,7 @@ void ProductionManager::queueDoSomething()
 	{
 		if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
 		{
-			//queueDoSomethingTerranWraithRush1Port();
+			queueDoSomethingTerranWraithRush1Port();
 		}
 		else
 		{

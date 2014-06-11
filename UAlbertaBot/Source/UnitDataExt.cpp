@@ -123,8 +123,7 @@ bool UnitDataExt::isWaypointReached()
 void UnitDataExt::setLandingPosition(BWAPI::TilePosition landingPos)
 {
 	// TilePosition is the top-left corner of the building. It should be bottom-left for landing to work properely (in the same location)
-	_landingPosition = BWAPI::TilePosition(landingPos.x(), landingPos.y()  + 5);
-	//_landingPosition = landingPos;
+	_landingPosition = BWAPI::TilePosition(landingPos.x(), landingPos.y() + 2);
 }
 
 BWAPI::TilePosition UnitDataExt::getLandingPosition()
