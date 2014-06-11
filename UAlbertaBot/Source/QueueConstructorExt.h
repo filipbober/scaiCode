@@ -17,6 +17,9 @@ public:
 	void clearQueue();
 
 	void makeTestQueue();
+
+	
+
 	// Specific units
 	void queueTerranMarines(double prodPercent);
 	void queueTerranFirebats(double prodPercent);
@@ -24,13 +27,32 @@ public:
 	void queueTerranSCVs(double prodPercent);
 	void queueTerranBCs(double prodPercent);
 
-	void queueTerranSupply(double prodPercent);
-	void queueTerranBunkers(double prodPercent);
-	void queueTerranTurrets(double prodPercent);
+	void queueCommandCenters(int desiredNo);
+	void queueTerranSupply(int desiredNo);
+	void queueTerranBunkers(int desiredNo);
+	void queueEngineeringBays(int desiredNo);
+	void queueTerranTurrets(int desiredNo);
+	void queueTerranBarracks(int desiredNo);
+	void queueTerranAcademies(int desiredNo);
+	void queueTerranFactories(int desiredNo);
+	void queueTerranStarports(int desiredNo);
+	void queueTerranScienceFacilities(int desiredNo);
+	void queueTerranArmory(int desiredNo);
 
-	void queueTerranBCUpgrades(double prodPercent);
-	void queueTerranTankUpgrades(double prodPercent);
-	void queueTerranBioUpgrades(double prodPercent);
+	void queueTerranBCUpgrades();
+	void queueTerranWraithUpgrades();
+	void queueTerranTankUpgrades();
+	void queueTerranMarinesUpgrades();
+	void queueTerranGhostUpgrades();
+
+	void queueTerranBioUpgrades();
+
+	void queueTerranBioWeapons();
+	void queueTerranBioArmor();
+
+	void queueTerranAirWeapons();
+	void queueTerranAirArmor();
+	
 
 
 private:

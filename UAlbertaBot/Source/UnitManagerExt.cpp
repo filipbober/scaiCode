@@ -19,7 +19,6 @@ void UnitManagerExt::update()
 		
 		if (!it->getUnit()->exists())
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: UnitManagerExt update unit it = %d", it->getUnit()->getID());
 			_unitsData.erase(it);
 		}
 		else
@@ -121,8 +120,28 @@ bool UnitManagerExt::isAttacking(BWAPI::Unit* unit)
 	}
 }
 
+void UnitManagerExt::setLandingPosition(BWAPI::Unit* unit, BWAPI::TilePosition landingPos)
+{
+	UnitManagerExt::Instance().addUnit(unit);
+
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+	unitData->setLandingPosition(landingPos);
+}
+
+BWAPI::TilePosition UnitManagerExt::getLandingPosition(BWAPI::Unit* unit)
+{
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+	if (unitData != NULL)
+	{
+		return unitData->getLandingPosition();
+	}
+}
+
 UnitManagerExt& UnitManagerExt::Instance()
 {	
 	static UnitManagerExt instance;
 	return instance;
 }
+

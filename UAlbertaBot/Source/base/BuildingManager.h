@@ -41,6 +41,7 @@ class BuildingManager {
 	// Ext
 	bool setAddonBuilding(Building &b);
 	void scannerSweep();
+	void buildingLiftLand();
 	// eof ext
 
 	// functions for performing tedious vector tasks

@@ -25,6 +25,8 @@ public:
 	void setUnitStateToAttack(BWAPI::Unit* unit);
 	bool isAttacking(BWAPI::Unit* unit);
 	
+	void setLandingPosition(BWAPI::Unit* unit, BWAPI::TilePosition landingPos);
+	BWAPI::TilePosition getLandingPosition(BWAPI::Unit* unit);
 
 private:
 	//UnitVector _units;

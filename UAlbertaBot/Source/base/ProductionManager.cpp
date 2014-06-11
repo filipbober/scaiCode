@@ -23,6 +23,7 @@ ProductionManager::ProductionManager()
 	, haveLocationForThisBuilding(false)
 	, enemyCloakedDetected(false)
 	, rushDetected(false)
+	, isBuildOrderSearchOn(false)		// ext
 {
 	populateTypeCharMap();
 
@@ -31,6 +32,7 @@ ProductionManager::ProductionManager()
 		setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
 
 		// Extension
+
 		
 		//BuildOrderTest buildOrder;
 		//setBuildOrder(buildOrder.GenerateTestQueue());
@@ -131,8 +133,14 @@ void ProductionManager::update()
 		// eof Extension
 
 		BWAPI::Broodwar->drawTextScreen(150, 10, "Nothing left to build, new search!");
-		const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();
-		performBuildOrderSearch(newGoal);
+
+		// Ext - commented
+		if (isBuildOrderSearchOn)
+		{
+			const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();	// ext
+			performBuildOrderSearch(newGoal);																					// ext
+		}
+		// eof ext comment
 	}
 
 	//// detect if there's a build order deadlock once per second
@@ -193,7 +201,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 		return;
 	}
 		
-	if (Options::Modules::USING_MACRO_SEARCH)
+	if (Options::Modules::USING_MACRO_SEARCH && isBuildOrderSearchOn)
 	{
 		// if it's a worker or a building, we need to re-search for the current goal
 		if ((unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding())
@@ -211,11 +219,28 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 void ProductionManager::manageBuildOrderQueue() 
 {
 	// if there is nothing in the queue, oh well
+	// Extension
 	if (queue.isEmpty()) 
-	{
-		queueDoSomething();
+	{		
+		queueDoSomething();		
 		return;
 	}
+
+	// Detect if a unit is not blocking the queue
+	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
+	if ( ((BWAPI::Broodwar->getFrameCount() % 1000) == 0)
+		&& !queue.isEmpty()
+		&& ((BWAPI::Broodwar->self()->allUnitCount(highestQueueItem.metaType.whatBuilds()) < 1)
+			|| ((highestQueueItem.metaType.mineralPrice() > BWAPI::Broodwar->self()->minerals())
+				&& (highestQueueItem.metaType.gasPrice() > BWAPI::Broodwar->self()->gas()))))
+	{
+		BWAPI::Broodwar->printf("                                           DebExt: Something is blocking the queue");
+		queue.clearAll();
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+		//queueDoSomething();
+	}
+
+	// eof ext
 
 	// the current item to be used
 	BuildOrderItem<PRIORITY_TYPE> & currentItem = queue.getHighestPriorityItem();
@@ -237,9 +262,16 @@ void ProductionManager::manageBuildOrderQueue()
 		}
 		
 		// Ext
-		if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
-			(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+		//if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
+		//	(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+		//{
+		//	queue.removeCurrentHighestPriorityItem();
+		//}
+
+		if (currentItem.metaType.isUnit()
+			&& isDuplicate(currentItem.metaType.unitType))
 		{
+			BWAPI::Broodwar->printf("                                           DebExt: Removing duplicates");
 			queue.removeCurrentHighestPriorityItem();
 		}
 		// eof ext
@@ -632,26 +664,6 @@ void ProductionManager::queueDoSomething()
 		}
 		
 	}
-
-
-
-	//if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
-	//{
-	//	std::vector<MetaType> buildOrder;
-
-	//	// If there are not too many workers or there are no barracks
-	//	if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56)
-	//		|| (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) > 0))
-	//	{
-	//		buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
-	//	}
-	//	else
-	//	{
-	//		buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
-	//	}
-
-	//	setBuildOrder(buildOrder);
-	//}
 }
 
 void ProductionManager::queueDoSomethingTerranWraithRush1Port()
@@ -659,41 +671,45 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 	QueueConstructorExt::Instance().clearQueue();
 	QueueConstructorExt::Instance().makeTestQueue();
 	queue = QueueConstructorExt::Instance().getQueue();
+}
 
-	//BWAPI::Broodwar->printf("                                           DebExt: doSomething invoked");
+bool ProductionManager::isDuplicate(BWAPI::UnitType unitType)
+{
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
+	int numEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
 
-	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//
-	//int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
-	//int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	//int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
 
-	//if (numBunkers <= (numMarines / 4))
-	//{
-	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
-	//}
 
-	//if (numStarports < 3)
-	//{
-	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
-	//}
+	// Remove additional Academies
+	if (numAcademies > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Academy)
+	{
+		return true;
+	}
 
-	//if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV) < 56))
-	//{
-	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
-	//}
+	// Remove additional Science Facilities
+	if (numScienceFacilities > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Science_Facility)
+	{
+		return true;
+	}
 
-	//if (numAcademies > 0)
-	//{
-	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
-	//}
+	// Remove additional Armory
+	if (numArmory > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Armory)
+	{
+		return true;
+	}
 
-	//queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
-	//queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+	// Remove additional Enginnering Bays
+	if (numEngineeringBay > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Engineering_Bay)
+	{
+		return true;
+	}
 
-	//for (int i = 0; i < numStarports; i++)
-	//{
-	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
-	//}
+	return false;
 
 }

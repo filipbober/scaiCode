@@ -4,6 +4,7 @@
 
 #include "Common.h"
 #include "BuildingManager.h"
+#include "../UnitManagerExt.h"
 
 
 BuildingManager::BuildingManager() 
@@ -41,7 +42,11 @@ void BuildingManager::update()
 	checkForCompletedBuildings();
 
 	// Ext: Scanner Sweep
-	scannerSweep();	
+	if (BWAPI::Broodwar->getFrameCount() % 48 == 0)
+	{
+		scannerSweep();
+		buildingLiftLand();
+	}
 	// eof ext
 
 	// draw some debug information
@@ -659,39 +664,50 @@ void BuildingManager::scannerSweep()
 		}
 	}
 	BWAPI::Broodwar->printf("                                           DebExt: 5");
+}
 
+void BuildingManager::buildingLiftLand()
+{
+	if (BWAPI::Broodwar->self()->getRace() != BWAPI::Races::Terran)
+	{
+		return;
+	}
 
+	// Set buildings as selectedUnits
+	std::set<BWAPI::Unit *>	selectedUnits;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType().isBuilding())
+		{
+			selectedUnits.insert(unit);			
+		}
+	}
 
+	if (selectedUnits.empty())
+	{
+		return;
+	}
 
+	BOOST_FOREACH(BWAPI::Unit * unit, selectedUnits)
+	{
+		// If Command Center is lifted it sometimes messes with build orders
+		if (unit->isUnderAttack())
+		{
+			UnitManagerExt::Instance().setLandingPosition(unit, unit->getTilePosition());			
+			unit->lift();
+		}		
+		else if (unit->isLifted())
+		{
+			BWAPI::TilePosition landingPos = UnitManagerExt::Instance().getLandingPosition(unit);
+			if (!landingPos.isValid())
+			{
+				landingPos.makeValid();
+			}
 
+			unit->land(landingPos);
+		}
+	}
 
-
-
-
-
-
-
-	//BWAPI::Player* enemy = BWAPI::Broodwar->enemy;
-	//std::set<BWAPI::Unit*> centers = BWAPI::Broodwar->self()->getUnits();
-	//for (std::set<BWAPI::Unit*>::iterator c = centers.begin(); c != centers.end
-	//	(); c++)
-	//{
-	//	if ((*c)->getType() == BWAPI::UnitTypes::Terran_Command_Center &&
-	//		(*c)->isCompleted() && (*c)->getAddon()->isCompleted())
-	//	{
-	//		if ((*c)->getAddon()->getEnergy() >= 50)
-	//		{
-	//			(*c)->getAddon()->useTech
-	//				(BWAPI::TechTypes::Scanner_Sweep, enemy->getPosition());
-	//			break;
-	//		}
-	//	}
-	//}
-
-
-
-
-
-
+	
 
 }

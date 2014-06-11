@@ -119,3 +119,19 @@ bool UnitDataExt::isWaypointReached()
 		return false;
 	}
 }
+
+void UnitDataExt::setLandingPosition(BWAPI::TilePosition landingPos)
+{
+	// TilePosition is the top-left corner of the building. It should be bottom-left for landing to work properely (in the same location)
+	_landingPosition = BWAPI::TilePosition(landingPos.x(), landingPos.y() + 2);
+}
+
+BWAPI::TilePosition UnitDataExt::getLandingPosition()
+{
+	if (!_landingPosition.isValid())
+	{
+		_landingPosition.makeValid();
+	}
+
+	return _landingPosition;
+}
