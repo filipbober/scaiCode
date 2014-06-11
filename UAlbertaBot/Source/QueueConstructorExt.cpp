@@ -76,6 +76,7 @@ void QueueConstructorExt::makeTestQueue()
 	//// ---
 
 	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	int numRefineries = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
 
 	if (numScvs < 10)
 	{
@@ -83,7 +84,13 @@ void QueueConstructorExt::makeTestQueue()
 	}
 	else
 	{
+		if (numRefineries < 1)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Refinery), true);
+		}
+
 		queueTerranWraiths(0.5);
+		queueTerranBCUpgrades();
 		queueTerranBCs(0.5);
 		queueTerranSCVs(1.0);
 	}
@@ -331,7 +338,8 @@ void QueueConstructorExt::queueTerranStarports(int desiredNo)
 
 void QueueConstructorExt::queueTerranScienceFacilities(int desiredNo)
 {
-	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility)
+		+ BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
 
 	if (numStarports < 1)
@@ -368,7 +376,76 @@ void QueueConstructorExt::queueTerranArmory(int desiredNo)
 
 void QueueConstructorExt::queueTerranBCUpgrades()
 {
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numPhysicsLab = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
 
+	bool isYamatoGunResearched = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun);
+	bool isColossusReactorUpgraded = (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Colossus_Reactor)		// Do not upgrade this one
+		>= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Colossus_Reactor));
+
+	int weaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons);
+	int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating);
+
+	bool maxWeaponReached = (weaponLevel >= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
+	bool maxArmorReached = (armorLevel >= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
+
+	bool allUpgradesCompleted = isYamatoGunResearched && isColossusReactorUpgraded && maxWeaponReached && maxArmorReached;
+
+	if (allUpgradesCompleted)
+	{
+		return;
+	}
+
+	// First added to the queue, so the priority is lower than the Yamato Gun
+	if (numArmory < 1)
+	{
+		queueTerranArmory(1);
+	}
+	else
+	{
+		if ((weaponLevel <= armorLevel)
+			&& !(maxWeaponReached))
+		{
+			queueTerranAirWeapons();
+		}
+		else if (!maxArmorReached)
+		{
+			queueTerranAirArmor();
+		}
+	}
+
+	// Queue Yamato Gun and Colossus Reactor
+	if (numScienceFacilities < 1)
+	{
+		queueTerranScienceFacilities(1);
+	}
+	else if (numPhysicsLab < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Physics_Lab), true);
+	}
+	else
+	{
+		// Yamato Gun first
+		if (!isYamatoGunResearched)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Yamato_Gun), true);
+		}
+		else if (!isColossusReactorUpgraded)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Colossus_Reactor), true);
+		}
+
+		
+		if (weaponLevel <= armorLevel)
+		{
+			queueTerranAirWeapons();
+		}
+		else
+		{
+			queueTerranAirArmor();
+		}
+	}
 }
 
 void QueueConstructorExt::queueTerranWraithUpgrades()
@@ -395,7 +472,7 @@ void QueueConstructorExt::queueTerranWraithUpgrades()
 
 	if (numArmory < 1)
 	{
-		queueTerranAcademies(1);
+		queueTerranArmory(1);
 	}
 	else
 	{

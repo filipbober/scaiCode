@@ -228,12 +228,16 @@ void ProductionManager::manageBuildOrderQueue()
 
 	// Detect if a unit is not blocking the queue
 	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
-	if ( (BWAPI::Broodwar->getFrameCount() % 1000)
-		&& (BWAPI::Broodwar->self()->allUnitCount(highestQueueItem.metaType.whatBuilds()) < 1)
-		&& (highestQueueItem.metaType.mineralPrice() > BWAPI::Broodwar->self()->minerals())
-		&& (highestQueueItem.metaType.gasPrice() > BWAPI::Broodwar->self()->gas()))
+	if ( ((BWAPI::Broodwar->getFrameCount() % 1000) == 0)
+		&& !queue.isEmpty()
+		&& ((BWAPI::Broodwar->self()->allUnitCount(highestQueueItem.metaType.whatBuilds()) < 1)
+			|| ((highestQueueItem.metaType.mineralPrice() > BWAPI::Broodwar->self()->minerals())
+				&& (highestQueueItem.metaType.gasPrice() > BWAPI::Broodwar->self()->gas()))))
 	{
-		queueDoSomething();
+		BWAPI::Broodwar->printf("                                           DebExt: Something is blocking the queue");
+		queue.clearAll();
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+		//queueDoSomething();
 	}
 
 	// eof ext
@@ -258,9 +262,16 @@ void ProductionManager::manageBuildOrderQueue()
 		}
 		
 		// Ext
-		if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
-			(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+		//if ((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Academy) &&
+		//	(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0) )
+		//{
+		//	queue.removeCurrentHighestPriorityItem();
+		//}
+
+		if (currentItem.metaType.isUnit()
+			&& isDuplicate(currentItem.metaType.unitType))
 		{
+			BWAPI::Broodwar->printf("                                           DebExt: Removing duplicates");
 			queue.removeCurrentHighestPriorityItem();
 		}
 		// eof ext
@@ -660,4 +671,45 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 	QueueConstructorExt::Instance().clearQueue();
 	QueueConstructorExt::Instance().makeTestQueue();
 	queue = QueueConstructorExt::Instance().getQueue();
+}
+
+bool ProductionManager::isDuplicate(BWAPI::UnitType unitType)
+{
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
+	int numEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+
+
+
+	// Remove additional Academies
+	if (numAcademies > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Academy)
+	{
+		return true;
+	}
+
+	// Remove additional Science Facilities
+	if (numScienceFacilities > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Science_Facility)
+	{
+		return true;
+	}
+
+	// Remove additional Armory
+	if (numArmory > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Armory)
+	{
+		return true;
+	}
+
+	// Remove additional Enginnering Bays
+	if (numEngineeringBay > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Engineering_Bay)
+	{
+		return true;
+	}
+
+	return false;
+
 }

@@ -690,6 +690,7 @@ void BuildingManager::buildingLiftLand()
 
 	BOOST_FOREACH(BWAPI::Unit * unit, selectedUnits)
 	{
+		// If Command Center is lifted it sometimes messes with build orders
 		if (unit->isUnderAttack())
 		{
 			UnitManagerExt::Instance().setLandingPosition(unit, unit->getTilePosition());			
@@ -702,8 +703,6 @@ void BuildingManager::buildingLiftLand()
 			{
 				landingPos.makeValid();
 			}
-			BWAPI::Broodwar->printf("                                           DebExt: landing pos x = %d", landingPos.x());
-			BWAPI::Broodwar->printf("                                           DebExt: landing pos y = %d", landingPos.y());
 
 			unit->land(landingPos);
 		}

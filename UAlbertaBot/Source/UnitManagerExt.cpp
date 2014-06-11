@@ -19,7 +19,6 @@ void UnitManagerExt::update()
 		
 		if (!it->getUnit()->exists())
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: UnitManagerExt update unit it = %d", it->getUnit()->getID());
 			_unitsData.erase(it);
 		}
 		else

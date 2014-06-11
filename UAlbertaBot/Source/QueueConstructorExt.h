@@ -17,6 +17,9 @@ public:
 	void clearQueue();
 
 	void makeTestQueue();
+
+	
+
 	// Specific units
 	void queueTerranMarines(double prodPercent);
 	void queueTerranFirebats(double prodPercent);
