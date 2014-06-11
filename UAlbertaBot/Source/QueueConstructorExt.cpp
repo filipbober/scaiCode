@@ -90,7 +90,7 @@ void QueueConstructorExt::queueTerranMarines(double prodPercent)
 
 	if (numBarracks < 1)
 	{
-		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+		queueTerranBarracks(1);
 	}
 	else
 	{
@@ -100,22 +100,38 @@ void QueueConstructorExt::queueTerranMarines(double prodPercent)
 		}
 	}
 
+	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+
+	//int marinesWanted = std::max(1, (int)ceil(numBarracks * prodPercent));
+
+	//if (numBarracks < 1)
+	//{
+	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	//}
+	//else
+	//{
+	//	for (int i = 0; i < marinesWanted; i++)
+	//	{
+	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Marine), true);
+	//	}
+	//}
+
 }
 
 void QueueConstructorExt::queueTerranFirebats(double prodPercent)
 {
 	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
-	
+
 	int firebatsWanted = std::max(1, (int)ceil(numBarracks * prodPercent));
 
 	if (numBarracks < 1)
 	{
-		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+		queueTerranBarracks(1);
 	}
 	else if (numAcademies < 1)
 	{
-		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Academy), true);
+		queueTerranAcademies(1);
 	}
 	else
 	{
@@ -124,6 +140,27 @@ void QueueConstructorExt::queueTerranFirebats(double prodPercent)
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
 		}
 	}
+
+	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	//int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	//
+	//int firebatsWanted = std::max(1, (int)ceil(numBarracks * prodPercent));
+
+	//if (numBarracks < 1)
+	//{
+	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	//}
+	//else if (numAcademies < 1)
+	//{
+	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Academy), true);
+	//}
+	//else
+	//{
+	//	for (int i = 0; i < firebatsWanted; i++)
+	//	{
+	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Firebat), true);
+	//	}
+	//}
 
 }
 
@@ -253,6 +290,24 @@ void QueueConstructorExt::queueTerranBarracks(int desiredNo)
 	for (int i = numBarracks; i <= desiredNo; i++)
 	{
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	}
+}
+
+void QueueConstructorExt::queueTerranAcademies(int desiredNo)
+{
+	int numAcademies = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+
+	if (numBarracks < 1)
+	{
+		queueTerranBarracks(1);
+	}
+	else
+	{
+		for (int i = numAcademies; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Academy), true);
+		}
 	}
 }
 

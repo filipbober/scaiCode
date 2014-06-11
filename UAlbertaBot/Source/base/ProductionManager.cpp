@@ -23,6 +23,7 @@ ProductionManager::ProductionManager()
 	, haveLocationForThisBuilding(false)
 	, enemyCloakedDetected(false)
 	, rushDetected(false)
+	, isBuildOrderSearchOn(false)		// ext
 {
 	populateTypeCharMap();
 
@@ -31,6 +32,7 @@ ProductionManager::ProductionManager()
 		setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
 
 		// Extension
+
 		
 		//BuildOrderTest buildOrder;
 		//setBuildOrder(buildOrder.GenerateTestQueue());
@@ -133,8 +135,11 @@ void ProductionManager::update()
 		BWAPI::Broodwar->drawTextScreen(150, 10, "Nothing left to build, new search!");
 
 		// Ext - commented
-		//const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();	// ext
-		//performBuildOrderSearch(newGoal);																					// ext
+		if (isBuildOrderSearchOn)
+		{
+			const std::vector< std::pair<MetaType, UnitCountType> > newGoal = StrategyManager::Instance().getBuildOrderGoal();	// ext
+			performBuildOrderSearch(newGoal);																					// ext
+		}
 		// eof ext comment
 	}
 

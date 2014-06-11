@@ -30,6 +30,7 @@ public:
 	void queueEngineeringBays(int desiredNo);
 	void queueTerranTurrets(int desiredNo);
 	void queueTerranBarracks(int desiredNo);
+	void queueTerranAcademies(int desiredNo);
 	void queueTerranFactories(int desiredNo);
 	void queueTerranStarports(int desiredNo);
 	void queueTerranScienceFacilities(int desiredNo);

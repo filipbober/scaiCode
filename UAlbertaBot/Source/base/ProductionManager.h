@@ -68,7 +68,7 @@ class ProductionManager
 	void queueDoSomething();
 	void queueDoSomethingTerranWraithRush1Port();
 
-	
+	bool isBuildOrderSearchOn;
 
 	// eof ext
 
