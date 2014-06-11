@@ -207,31 +207,92 @@ void QueueConstructorExt::queueTerranBunkers(int desiredNo)
 
 void QueueConstructorExt::queueEngineeringBays(int desiredNo)
 {
-	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	int numEngineeringBays = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 }
 
 void QueueConstructorExt::queueTerranTurrets(int desiredNo)
 {
+	int numTurrets = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
+	int numEngineeringBays = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+
+	if (numEngineeringBays < 1)
+	{
+		queueEngineeringBays(1);
+	}
+	else
+	{
+		for (int i = numTurrets; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Missile_Turret), true);
+		}
+	}
+
 
 }
 
 void QueueConstructorExt::queueTerranBarracks(int desiredNo)
 {
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 
+	for (int i = numBarracks; i <= desiredNo; i++)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
+	}
 }
 
 void QueueConstructorExt::queueTerranFactories(int desiredNo)
 {
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+
+	if (numBarracks < 1)
+	{
+		queueTerranBarracks(1);
+	}
+	else
+	{
+		for (int i = numFactories; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Factory), true);
+		}
+	}
 
 }
 
 void QueueConstructorExt::queueTerranStarports(int desiredNo)
 {
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 
+	if (numFactories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else
+	{
+		for (int i = numStarports; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
+		}
+	}
 }
 
 void QueueConstructorExt::queueTerranScienceFacilities(int desiredNo)
 {
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+
+	if (numStarports < 1)
+	{
+		queueTerranStarports(1);
+	}
+	else
+	{
+		for (int i = numScienceFacilities; i <= desiredNo; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Science_Facility), true);
+		}
+	}
 
 }
 
