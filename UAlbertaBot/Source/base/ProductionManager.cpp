@@ -219,11 +219,24 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 void ProductionManager::manageBuildOrderQueue() 
 {
 	// if there is nothing in the queue, oh well
+	// Extension
 	if (queue.isEmpty()) 
-	{
-		queueDoSomething();
+	{		
+		queueDoSomething();		
 		return;
 	}
+
+	// Detect if a unit is not blocking the queue
+	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
+	if ( (BWAPI::Broodwar->getFrameCount() % 1000)
+		&& (BWAPI::Broodwar->self()->allUnitCount(highestQueueItem.metaType.whatBuilds()) < 1)
+		&& (highestQueueItem.metaType.mineralPrice() > BWAPI::Broodwar->self()->minerals())
+		&& (highestQueueItem.metaType.gasPrice() > BWAPI::Broodwar->self()->gas()))
+	{
+		queueDoSomething();
+	}
+
+	// eof ext
 
 	// the current item to be used
 	BuildOrderItem<PRIORITY_TYPE> & currentItem = queue.getHighestPriorityItem();

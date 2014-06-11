@@ -75,10 +75,18 @@ void QueueConstructorExt::makeTestQueue()
 	//queueTerranSCVs(1.0);
 	//// ---
 
-	queueTerranWraiths(0.5);
-	queueTerranBCs(0.5);
-	queueTerranSCVs(1.0);
+	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 
+	if (numScvs < 10)
+	{
+		queueTerranSCVs(1.0);
+	}
+	else
+	{
+		queueTerranWraiths(0.5);
+		queueTerranBCs(0.5);
+		queueTerranSCVs(1.0);
+	}
 }
 
 void QueueConstructorExt::queueCommandCenters(int desiredNo)
