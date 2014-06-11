@@ -68,10 +68,17 @@ void QueueConstructorExt::makeTestQueue()
 	
 	//queueTerranMarines(0.5);
 	//queueTerranFirebats(0.5);
-	queueTerranWraiths(1.0);
-	//queueTerranMarinesUpgrades();
-	queueTerranWraithUpgrades();
+
+	//// Working well against default Protoss
+	//queueTerranWraiths(1.0);
+	//queueTerranWraithUpgrades();
+	//queueTerranSCVs(1.0);
+	//// ---
+
+	queueTerranWraiths(0.5);
+	queueTerranBCs(0.5);
 	queueTerranSCVs(1.0);
+
 }
 
 void QueueConstructorExt::queueCommandCenters(int desiredNo)
@@ -162,7 +169,37 @@ void QueueConstructorExt::queueTerranSCVs(double prodPercent)
 }
 void QueueConstructorExt::queueTerranBCs(double prodPercent)
 {
+	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numControltowers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Control_Tower);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numPhysicsLabs =  BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
 
+	int bcsWanted = std::max(1, (int)ceil(numBattlecruisers * prodPercent));
+
+	if (numStarports < 1)
+	{
+		queueTerranStarports(1);
+	}
+	else if (numControltowers < numStarports)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Control_Tower), true);
+	}
+	else if (numScienceFacilities < 1)
+	{
+		queueTerranScienceFacilities(1);
+	}
+	else if (numPhysicsLabs < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Physics_Lab), true);
+	}
+	else
+	{
+		for (int i = 0; i < bcsWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Battlecruiser), true);
+		}
+	}
 }
 
 void QueueConstructorExt::queueTerranSupply(int desiredNo)

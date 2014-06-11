@@ -164,10 +164,14 @@ void Squad::setManagerUnits()
 				//{		
 				//	WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
 				//}
-				UnitManagerExt::Instance().setWaypoints(unit, order.position, UnitManagerExt::WaypointMovementType_BorderMovement);
 				
-				// Setting waypoints sets unit state to attack
-				UnitManagerExt::Instance().setUnitStateToAttack(unit);
+				if (order.type == SquadOrder::Attack)
+				{
+					UnitManagerExt::Instance().setWaypoints(unit, order.position, UnitManagerExt::WaypointMovementType_BorderMovement);
+
+					// Setting waypoints sets unit state to attack
+					UnitManagerExt::Instance().setUnitStateToAttack(unit);
+				}
 
 				// eof unit data
 

@@ -2050,6 +2050,7 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 	//return isAttackOrderGranted;
 
 	return true;
+	//return false;
 }
 
 bool StrategyManager::doAttackTerranTriRaxMnMRush()

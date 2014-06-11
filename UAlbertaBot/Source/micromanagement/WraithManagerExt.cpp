@@ -64,7 +64,15 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 					// move to it	
 
 					// Border movement
-					BWAPI::Position movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					BWAPI::Position movePosition;
+					if (order.type == SquadOrder::Attack)
+					{
+						movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					}
+					else
+					{
+						movePosition = order.position;
+					}
 					// eof Border movement
 
 					smartAttackMove(selectedUnit, movePosition);
