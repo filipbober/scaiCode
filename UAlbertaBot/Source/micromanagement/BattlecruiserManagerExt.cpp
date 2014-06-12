@@ -40,9 +40,6 @@ void BattlecruiserManagerExt::executeMicro(const UnitVector & targets)
 	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
-		// Adjust cloak to the situation
-		manageCloak(selectedUnit, selectedUnitTargets);
-
 		// if the order is to attack or defend
 		if (order.type == order.Attack || order.type == order.Defend)
 		{
@@ -120,11 +117,13 @@ int BattlecruiserManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI
 	// Detectors are top priority but Photon Cannons are too strong
 	if (targetType == BWAPI::UnitTypes::Protoss_Carrier)
 	{
+		useYamatoGun(selectedUnit, target);
 		return 99;
 	}
 	else if (targetType.isDetector()
 		&& targetType != BWAPI::UnitTypes::Protoss_Photon_Cannon)
 	{
+		useYamatoGun(selectedUnit, target);
 		return 100;
 	}
 	// Larvas are low priority targets
@@ -228,6 +227,7 @@ BWAPI::Unit* BattlecruiserManagerExt::getTarget(BWAPI::Unit * selectedUnit, Unit
 
 void BattlecruiserManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
+	// Battlecruiser do not kite
 	int selectedUnitWeaponCooldown;
 	double selectedUnitRange;
 	if (target->getType().isFlyer())
@@ -243,72 +243,8 @@ void BattlecruiserManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit
 
 	double targetRange = getTargetWeaponRange(selectedUnit, target);
 
-	// Avoid
-
-	// Determine whether the target can be kited (can attack us and have greater or equal range)
-	if ((target->getType().airWeapon() == BWAPI::WeaponTypes::None)
-		|| (targetRange >= selectedUnitRange))
-	{
-		// If target is a turret and there are other viable targets then
-		// move closer but stay out of the turret range
-		if (isTurret(target)
-			&& (_noTurretTargetsNo > 0))
-		{
-			BWAPI::Position safePos = getSafeTurretPosition(selectedUnit, target, 10);
-			if (!safePos.isValid())
-			{
-				safePos.makeValid();
-			}
-
-			smartMove(selectedUnit, safePos);
-		}
-		// if we can't kite it, there's no point to do so
-		else if (selectedUnitWeaponCooldown > 0)
-		{
-			smartMove(selectedUnit, target->getPosition());
-		}
-		else
-		{
-			smartAttackUnit(selectedUnit, target);
-		}
-
-
-		return;
-	}
-
-	bool		kite(true);
-	double		dist(selectedUnit->getDistance(target));
-	double		speed(selectedUnit->getType().topSpeed());
-
-	int meleeRange = 15;
-
-	// If we are going to be out of range (melee range added just to ensure we are still in range)
-	// or if weapon is ready then attack
-	if ((selectedUnitWeaponCooldown == 0)
-		|| (dist >= (selectedUnitRange - meleeRange)))
-	{
-		smartAttackUnit(selectedUnit, target);
-	}
-	else
-	{
-		BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
-		if (!fleePosition.isValid())
-		{
-			fleePosition.makeValid();
-		}
-
-		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
-			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
-
-		if (target->getType().canAttack())
-		{
-			smartMove(selectedUnit, fleePosition);
-		}
-		else
-		{
-			smartAttackMove(selectedUnit, target->getPosition());
-		}
-	}
+	useYamatoGun(selectedUnit, target);
+	smartAttackMove(selectedUnit, target->getPosition());
 
 }
 
@@ -340,51 +276,6 @@ void BattlecruiserManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	}
 }
 
-void BattlecruiserManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets)
-{
-	//if (selectedUnit->isDetected()
-	//	|| !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)))
-	//{
-	//	selectedUnit->decloak();
-	//	return;
-	//}
-
-	//BOOST_FOREACH(BWAPI::Unit* target, targets)
-	//{
-	//	if (target->isInWeaponRange(selectedUnit))
-	//	{
-	//		selectedUnit->cloak();
-	//		break;
-	//	}
-	//}
-}
-
-bool BattlecruiserManagerExt::isInTurretRange(BWAPI::Position position, UnitVector & targets, BWAPI::Unit* selectedUnit)
-{
-	BWAPI::UnitType targetType;
-
-	if (targets.empty())
-	{
-		return false;
-	}
-
-	BOOST_FOREACH(BWAPI::Unit* target, targets)
-	{
-		targetType = target->getType();
-
-		// If target is a turret
-		if (isTurret(target))
-		{
-			// If our position is in turret range
-			if (getTargetWeaponRange(selectedUnit, target) >= target->getDistance(position))
-			{
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
 
 bool BattlecruiserManagerExt::isTurret(BWAPI::Unit* target)
 {
@@ -402,51 +293,6 @@ bool BattlecruiserManagerExt::isTurret(BWAPI::Unit* target)
 	}
 }
 
-BWAPI::Position BattlecruiserManagerExt::getSafeTurretPosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity)
-{
-	int safeX = target->getPosition().x();
-	int safeY = target->getPosition().y();
-
-	BWAPI::Position selectedUnitPosition = selectedUnit->getPosition();
-	BWAPI::Position targetPosition = target->getPosition();
-	int targetRange = getTargetWeaponRange(selectedUnit, target);
-
-	// Set X
-	if (selectedUnitPosition.x() < targetPosition.x())
-	{
-		safeX -= targetRange;
-	}
-	else if (selectedUnitPosition.x() > targetPosition.x())
-	{
-		safeX += targetRange;
-	}
-	else
-	{
-		safeX = target->getPosition().x();
-	}
-
-	// Set Y
-	if (selectedUnitPosition.y() < targetPosition.y())
-	{
-		safeY -= targetRange;
-	}
-	else if (selectedUnitPosition.y() > targetPosition.y())
-	{
-		safeY += targetRange;
-	}
-	else
-	{
-		safeY = target->getPosition().y();
-	}
-
-	BWAPI::Position safePos = BWAPI::Position(safeX, safeY);
-	if (!safePos.isValid())
-	{
-		safePos.makeValid();
-	}
-
-	return safePos;
-}
 
 int BattlecruiserManagerExt::getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
 {
@@ -457,5 +303,14 @@ int BattlecruiserManagerExt::getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWA
 	else
 	{
 		return target->getType().groundWeapon().maxRange();
+	}
+}
+
+void BattlecruiserManagerExt::useYamatoGun(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
+{
+	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)
+		&& selectedUnit->getEnergy() > 150)
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::Yamato_Gun, target);
 	}
 }
