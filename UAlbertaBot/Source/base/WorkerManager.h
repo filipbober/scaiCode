@@ -59,6 +59,7 @@ public:
 	
 	// Extensions
 	void setRepairWorker(BWAPI::Unit* worker);
+	void finishedWithRepairWorkers();
 	// eof Ext
 
 	void						smartAttackUnit(BWAPI::Unit * attacker, BWAPI::Unit * target);

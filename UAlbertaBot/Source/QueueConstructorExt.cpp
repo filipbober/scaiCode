@@ -65,7 +65,7 @@ void QueueConstructorExt::makeTestQueue()
 	//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Wraith), true);
 	//}
 
-	
+
 	//queueTerranMarines(0.5);
 	//queueTerranFirebats(0.5);
 
@@ -91,13 +91,13 @@ void QueueConstructorExt::makeTestQueue()
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Refinery), true);
 		}
-		
-		
+
+
 
 		if (numBcs > 0)
 		{
 			queueTerranBCs(1.0);
-			queueTerranBCUpgrades();			
+			queueTerranBCUpgrades();
 		}
 		else
 		{
@@ -107,7 +107,7 @@ void QueueConstructorExt::makeTestQueue()
 
 		queueTerranMarines(0.7);
 		queueTerranFirebats(0.3);
-		queueTerranSCVs(1.0);	
+		queueTerranSCVs(1.0);
 
 		if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 		{
@@ -210,7 +210,7 @@ void QueueConstructorExt::queueTerranBCs(double prodPercent)
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
 	int numControltowers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Control_Tower);
 	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
-	int numPhysicsLabs =  BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
+	int numPhysicsLabs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
 
 	int bcsWanted = std::max(1, (int)ceil(numBattlecruisers * prodPercent));
 
@@ -458,15 +458,15 @@ void QueueConstructorExt::queueTerranBCUpgrades()
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Colossus_Reactor), true);
 		}
 
-		
-		if (weaponLevel <= armorLevel)
-		{
-			queueTerranAirWeapons();
-		}
-		else
-		{
-			queueTerranAirArmor();
-		}
+
+		//if (weaponLevel <= armorLevel)
+		//{
+		//	queueTerranAirWeapons();
+		//}
+		//else
+		//{
+		//	queueTerranAirArmor();
+		//}
 	}
 }
 

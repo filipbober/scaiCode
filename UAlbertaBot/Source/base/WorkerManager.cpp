@@ -153,6 +153,17 @@ void WorkerManager::finishedWithCombatWorkers()
 	}
 }
 
+void WorkerManager::finishedWithRepairWorkers()
+{
+	BOOST_FOREACH(BWAPI::Unit * worker, workerData.getWorkers())
+	{
+		if (workerData.getWorkerJob(worker) == WorkerData::Repair)
+		{
+			setMineralWorker(worker);
+		}
+	}
+}
+
 BWAPI::Unit * WorkerManager::getClosestMineralWorkerTo(BWAPI::Unit * enemyUnit)
 {
     BWAPI::Unit * closestMineralWorker = NULL;
