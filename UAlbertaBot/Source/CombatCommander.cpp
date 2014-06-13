@@ -160,7 +160,7 @@ void CombatCommander::assignScoutDefenseSquads()
 		{
 			continue;
 		}
-
+		 
 		// all of the enemy units in this region
 		std::set<BWAPI::Unit *> enemyUnitsInRegion;
 		BOOST_FOREACH (BWAPI::Unit * enemyUnit, BWAPI::Broodwar->enemy()->getUnits())
@@ -192,6 +192,11 @@ void CombatCommander::assignScoutDefenseSquads()
 			return;
         }
 	}
+}
+
+void CombatCommander::assignRepairSquadsExt()
+{
+
 }
 
 void CombatCommander::assignDefenseSquads(std::set<BWAPI::Unit *> & unitsToAssign) 

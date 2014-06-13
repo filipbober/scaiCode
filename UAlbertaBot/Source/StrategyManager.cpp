@@ -56,7 +56,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22"; // base build
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27"; // base 2 ports
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27";
-	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 19 0 0 18 0 0 50 17 0 1 0 1 0 1 0 1 22 1 0 1 0 1 25 0 17 1 26 1 10 39";		// Against UAlberta Zealot
+	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 19 0 0 18 0 1 0 1 50 20 17 0 1 0 1 0 4 0 1 50 22 1 1 4 0 1 0 1 50 25 0 17 1 0 1 26 0 1 10 4 10 4 10 39 10 10";		// Against UAlberta Zealot
 	terranOpeningBook[TerranWraithRush2PortsTvZ] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 0 25 17 0 1 26 10 20 10 10 39 19 21 0 27";
 	terranOpeningBook[TerranWraithRush2PortsTvT] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 25 0 25 0 3 0 3 17 0 10 26 0 21";
 	
