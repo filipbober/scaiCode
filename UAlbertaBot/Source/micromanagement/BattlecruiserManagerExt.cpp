@@ -62,17 +62,18 @@ void BattlecruiserManagerExt::executeMicro(const UnitVector & targets)
 					// move to it	
 
 					// Border movement
-					BWAPI::Position movePosition;
-					if (order.type == SquadOrder::Attack)
-					{
-						movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
-					}
-					else
-					{
-						movePosition = order.position;
-					}
+					//BWAPI::Position movePosition;
+					//if (order.type == SquadOrder::Attack)
+					//{
+					//	movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
+					//}
+					//else
+					//{
+					//	movePosition = order.position;
+					//}
 					// eof Border movement
 
+					BWAPI::Position movePosition = order.position;
 					smartAttackMove(selectedUnit, movePosition);
 				}
 			}
@@ -243,8 +244,18 @@ void BattlecruiserManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit
 
 	double targetRange = getTargetWeaponRange(selectedUnit, target);
 
-	useYamatoGun(selectedUnit, target);
-	smartAttackMove(selectedUnit, target->getPosition());
+	if (target->getType() == BWAPI::UnitTypes::Protoss_Photon_Cannon
+		&& (selectedUnit->getEnergy() > 150))
+	{
+		useYamatoGun(selectedUnit, target);
+	} 
+	else
+	{
+		smartAttackUnit(selectedUnit, target);
+	}
+
+	//useYamatoGun(selectedUnit, target);
+	//smartAttackMove(selectedUnit, target->getPosition());
 
 }
 

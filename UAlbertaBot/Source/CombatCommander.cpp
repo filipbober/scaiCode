@@ -217,7 +217,7 @@ void CombatCommander::assignRepairSquadsExt()
 			// Unit should be repaired if it is a building or a Battlecruiser
 			BWAPI::UnitType selfUnitType = selfUnit->getType();
 			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser)
-				&& (selfUnit->getHitPoints() < selfUnitType.maxHitPoints())
+				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
 				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
 				&& !selfUnit->isLifted())
 			{
