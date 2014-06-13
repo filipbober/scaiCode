@@ -2062,9 +2062,9 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 	int numBCs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
 	if (isAttackOrderGranted
-		&& ((BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) > 0)
-		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) > 0)
-		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spore_Colony) > 0)))
+		&& ((BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) > 1)
+		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) > 1)
+		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spore_Colony) > 1)))
 	{
 		isAttackOrderGranted = false;
 	}
