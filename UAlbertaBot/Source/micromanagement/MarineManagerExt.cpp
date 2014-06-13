@@ -33,7 +33,8 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
-		if ((selectedUnit->getType() == BWAPI::UnitTypes::Terran_Marine)
+		if ((selectedUnit->getType() == BWAPI::UnitTypes::Terran_Marine
+			|| selectedUnit->getType() == BWAPI::UnitTypes::Terran_Firebat)
 			&& !(selectedUnit->isLoaded())
 			&& (hasBunkerSpace()))
 		{

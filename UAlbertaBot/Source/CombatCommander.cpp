@@ -27,6 +27,9 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
         
 		// Assign defense and attack squads
         assignScoutDefenseSquads();
+		// Extensions
+		assignRepairSquadsExt();				
+		// eof ext
 		assignDefenseSquads(unitsToAssign);
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);
@@ -196,7 +199,53 @@ void CombatCommander::assignScoutDefenseSquads()
 
 void CombatCommander::assignRepairSquadsExt()
 {
+	// for each of our occupied regions
+	BOOST_FOREACH(BWTA::Region * myRegion, InformationManager::Instance().getOccupiedRegions(BWAPI::Broodwar->self()))
+	{
+		BWAPI::Position regionCenter = myRegion->getCenter();
+		if (!regionCenter.isValid())
+		{
+			continue;
+		}
 
+		// all of the enemy units in this region
+		std::set<BWAPI::Unit *> damagedSelfUnits;
+		BOOST_FOREACH(BWAPI::Unit * selfUnit, BWAPI::Broodwar->self()->getUnits())
+		{
+			// Unit should be repaired if it is a building or a Battlecruiser
+			BWAPI::UnitType selfUnitType = selfUnit->getType();
+			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser)
+				&& (selfUnit->getHitPoints() < selfUnitType.maxHitPoints())
+				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion))
+			{
+				damagedSelfUnits.insert(selfUnit);
+			}
+		}
+
+		// special case: figure out if the only attacker is a worker, the enemy is scouting
+		if (!damagedSelfUnits.empty())
+		{
+			// the enemy worker that is attacking us
+			BWAPI::Unit* unitToRepair = *damagedSelfUnits.begin();
+
+			// get our worker unit that is mining that is closest to it
+			BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
+
+			// --
+			
+
+			BWAPI::Broodwar->printf("                                           DebExt: Repairing");
+			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
+			BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
+
+			workerDefender->repair(unitToRepair);
+			WorkerManager::Instance().setRepairWorker(workerDefender);
+
+			// finished with combat worker
+			// --
+			return;
+		}
+	}
 }
 
 void CombatCommander::assignDefenseSquads(std::set<BWAPI::Unit *> & unitsToAssign) 

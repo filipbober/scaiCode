@@ -56,6 +56,11 @@ public:
 
 	void						setMoveWorker(int m, int g, BWAPI::Position p);
 	void						setCombatWorker(BWAPI::Unit * worker);
+	
+	// Extensions
+	void setRepairWorker(BWAPI::Unit* worker);
+	// eof Ext
+
 	void						smartAttackUnit(BWAPI::Unit * attacker, BWAPI::Unit * target);
 
 	bool						willHaveResources(int mineralsRequired, int gasRequired, double distance);

@@ -459,6 +459,16 @@ void WorkerManager::setCombatWorker(BWAPI::Unit * worker)
 	workerData.setWorkerJob(worker, WorkerData::Combat, NULL);
 }
 
+void WorkerManager::setRepairWorker(BWAPI::Unit* worker)
+{
+	if (worker == NULL)
+	{
+		assert(false);
+	}
+
+	workerData.setWorkerJob(worker, WorkerData::Repair, NULL);
+}
+
 void WorkerManager::onUnitMorph(BWAPI::Unit * unit)
 {
 	if (unit == NULL) 
