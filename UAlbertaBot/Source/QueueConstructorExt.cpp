@@ -75,45 +75,69 @@ void QueueConstructorExt::makeTestQueue()
 	//queueTerranSCVs(1.0);
 	//// ---
 
-	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	int numBcs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
-	int numRefineries = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
+
+
+
+
+
+
+
+
+
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
-	if (numScvs < 10)
+	queueTerranWraiths(1.0);
+	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
-		queueTerranSCVs(1.0);
+		queueTerranSupply(numSupply + 1);
 	}
-	else
-	{
-		if (numRefineries < 1)
-		{
-			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Refinery), true);
-		}
+
+	queueTerranMarines(0.7);
+	queueTerranFirebats(0.3);
+	queueTerranSCVs(1.0);
 
 
 
-		if (numBcs > 0)
-		{
-			queueTerranBCs(1.0);
-			queueTerranBCUpgrades();
-		}
-		else
-		{
-			queueTerranWraiths(1.0);
-			queueTerranBCs(0.5);
-		}
+	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	//int numBcs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
-		queueTerranMarines(0.7);
-		queueTerranFirebats(0.3);
-		queueTerranSCVs(1.0);
+	//int numRefineries = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Refinery);
+	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
-		if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
-		{
-			queueTerranSupply(numSupply + 1);
-		}
-	}
+	//if (numScvs < 10)
+	//{
+	//	queueTerranSCVs(1.0);
+	//}
+	//else
+	//{
+	//	if (numRefineries < 1)
+	//	{
+	//		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Refinery), true);
+	//	}
+
+
+
+	//	if (numBcs > 0)
+	//	{
+	//		queueTerranBCs(1.0);
+	//		queueTerranBCUpgrades();
+	//	}
+	//	else
+	//	{
+	//		queueTerranWraiths(1.0);
+	//		queueTerranBCs(0.5);
+	//	}
+
+	//	queueTerranMarines(0.7);
+	//	queueTerranFirebats(0.3);
+	//	queueTerranSCVs(1.0);
+
+	//	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	//	{
+	//		queueTerranSupply(numSupply + 1);
+	//	}
+	//}
 
 	cleanQueue();
 }

@@ -157,6 +157,12 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 		{
 			return 1;
 		}
+	}	
+	else if (targetType == BWAPI::UnitTypes::Terran_Medic
+		|| targetType == BWAPI::UnitTypes::Protoss_High_Templar
+		|| targetType == BWAPI::UnitTypes::Protoss_Dark_Templar)
+	{
+		return selectedUnitWeaponRange + 15;
 	}
 	// Anti air units are top priority
 	else if (canAttackUs)
@@ -341,9 +347,11 @@ void WraithManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 
 void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets)
 {
-	if (selectedUnit->isDetected()
+	if ((BWAPI::Broodwar->getFrameCount() % 240 == 0)
+		&& selectedUnit->isDetected()
 		|| !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)))
 	{
+		BWAPI::Broodwar->printf("                                           DebExt: Wraith decloak");
 		selectedUnit->decloak();
 		return;
 	}
@@ -352,6 +360,7 @@ void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targe
 	{
 		if (target->isInWeaponRange(selectedUnit))
 		{
+			BWAPI::Broodwar->printf("                                           DebExt: Wraith cloak");
 			selectedUnit->cloak();
 			break;
 		}
