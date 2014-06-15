@@ -217,6 +217,8 @@ void CombatCommander::assignRepairSquadsExt()
 			// Unit should be repaired if it is a building or a Battlecruiser
 			BWAPI::UnitType selfUnitType = selfUnit->getType();
 			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser)
+				&& !(selfUnit->isBeingConstructed())
+				&& (selfUnit->isCompleted())
 				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
 				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
 				&& !selfUnit->isLifted())
@@ -245,6 +247,7 @@ void CombatCommander::assignRepairSquadsExt()
 
 			BWAPI::Broodwar->printf("                                           DebExt: Repairing");
 			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
+			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
 			BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
 
 			if (unitToRepair->exists())

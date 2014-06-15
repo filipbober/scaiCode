@@ -502,7 +502,8 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 		}
 		else if (currentStrategy == TerranWraithRush1Port)
 		{
-			return doAttackTerranWraithRush1Port();
+			//return doAttackTerranWraithRush1Port();
+			return true;
 		}
 		else if (currentStrategy == TerranWraithRush2PortsTvZ)
 		{
@@ -2055,6 +2056,7 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 
 	if (isAttackGrantedPermanently)
 	{
+		BWAPI::Broodwar->printf("                                           DebExt: Attack granted");
 		return true;
 	}
 
@@ -2067,14 +2069,15 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spore_Colony) > 1)))
 	{
 		isAttackOrderGranted = false;
+		BWAPI::Broodwar->printf("                                           DebExt: Attack not granted");
 	}
 
 	if ((numBCs > 4)
 		&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)))
 	{
+		BWAPI::Broodwar->printf("                                           DebExt: Attack granted");
 		isAttackGrantedPermanently = true;
 	}
-
 
 	return isAttackOrderGranted || isAttackGrantedPermanently;
 }
