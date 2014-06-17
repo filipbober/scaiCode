@@ -24,9 +24,14 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 
 		// give back combat workers to worker manager
 		WorkerManager::Instance().finishedWithCombatWorkers();
+
+		WorkerManager::Instance().finishedWithRepairWorkers();
         
 		// Assign defense and attack squads
         assignScoutDefenseSquads();
+		// Extensions
+		assignRepairSquadsExt();				
+		// eof ext
 		assignDefenseSquads(unitsToAssign);
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);
@@ -160,7 +165,7 @@ void CombatCommander::assignScoutDefenseSquads()
 		{
 			continue;
 		}
-
+		 
 		// all of the enemy units in this region
 		std::set<BWAPI::Unit *> enemyUnitsInRegion;
 		BOOST_FOREACH (BWAPI::Unit * enemyUnit, BWAPI::Broodwar->enemy()->getUnits())
@@ -191,6 +196,70 @@ void CombatCommander::assignScoutDefenseSquads()
             squadData.addSquad(Squad(workerDefenseForce, SquadOrder(SquadOrder::Defend, regionCenter, 1000, "Get That Scout!")));
 			return;
         }
+	}
+}
+
+void CombatCommander::assignRepairSquadsExt()
+{
+	// for each of our occupied regions
+	BOOST_FOREACH(BWTA::Region * myRegion, InformationManager::Instance().getOccupiedRegions(BWAPI::Broodwar->self()))
+	{
+		BWAPI::Position regionCenter = myRegion->getCenter();
+		if (!regionCenter.isValid())
+		{
+			continue;
+		}
+
+		// all of the enemy units in this region
+		std::set<BWAPI::Unit *> damagedSelfUnits;
+		BOOST_FOREACH(BWAPI::Unit * selfUnit, BWAPI::Broodwar->self()->getUnits())
+		{
+			// Unit should be repaired if it is a building or a Battlecruiser
+			BWAPI::UnitType selfUnitType = selfUnit->getType();
+			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser)
+				&& !(selfUnit->isBeingConstructed())
+				&& (selfUnit->isCompleted())
+				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
+				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
+				&& !selfUnit->isLifted())
+			{
+				damagedSelfUnits.insert(selfUnit);
+				BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit insested = %s", selfUnit->getType().c_str());
+			}
+		}
+
+		// special case: figure out if the only attacker is a worker, the enemy is scouting
+		if (!damagedSelfUnits.empty())
+		{
+			// the enemy worker that is attacking us
+			BWAPI::Unit* unitToRepair = *damagedSelfUnits.begin();
+
+			// get our worker unit that is mining that is closest to it
+			BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
+
+			if (workerDefender == NULL)
+			{
+				return;
+			}
+
+			// --
+			
+
+			BWAPI::Broodwar->printf("                                           DebExt: Repairing");
+			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
+			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
+			BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
+
+			if (unitToRepair->exists())
+			{
+				workerDefender->repair(unitToRepair);
+				WorkerManager::Instance().setRepairWorker(workerDefender);
+			}
+
+			// finished with combat worker
+			// --
+			return;
+		}
 	}
 }
 

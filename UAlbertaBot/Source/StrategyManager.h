@@ -144,6 +144,7 @@ private:
 
 	// Fields
 	bool isAttackOrderGranted;
+	bool isAttackGrantedPermanently;
 
 	// expand
 	const bool StrategyManager::expandTerranDoubleRaxMnM() const;

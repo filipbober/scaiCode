@@ -40,6 +40,7 @@ class CombatCommander
 
 	// Extensions
 	void assignAttackSquadsExt(std::set<BWAPI::Unit *> & unitsToAssign);
+	void assignRepairSquadsExt();
 	// eof ext
 
 public:

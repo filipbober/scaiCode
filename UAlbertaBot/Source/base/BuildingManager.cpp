@@ -691,7 +691,8 @@ void BuildingManager::buildingLiftLand()
 	BOOST_FOREACH(BWAPI::Unit * unit, selectedUnits)
 	{
 		// If Command Center is lifted it sometimes messes with build orders
-		if (unit->isUnderAttack())
+		if (unit->isUnderAttack()
+			&& (unit->getType() != BWAPI::UnitTypes::Terran_Command_Center))
 		{
 			UnitManagerExt::Instance().setLandingPosition(unit, unit->getTilePosition());			
 			unit->lift();

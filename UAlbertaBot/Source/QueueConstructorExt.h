@@ -18,7 +18,7 @@ public:
 
 	void makeTestQueue();
 
-	
+	void cleanQueue();
 
 	// Specific units
 	void queueTerranMarines(double prodPercent);
