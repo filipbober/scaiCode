@@ -22,10 +22,11 @@ private:
 
 	void setAverageEnemyPosition(const UnitVector& targets);
 
-	bool isAttackWraith1PortRush();
+	bool isAttack();
 	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
 
 	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
+	BWAPI::Position getMinePosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;

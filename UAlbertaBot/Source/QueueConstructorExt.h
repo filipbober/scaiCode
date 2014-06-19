@@ -23,9 +23,10 @@ public:
 	// Specific units
 	void queueTerranMarines(double prodPercent);
 	void queueTerranFirebats(double prodPercent);
+	void queueTerranVultures(double prodPercent);
 	void queueTerranWraiths(double prodPercent);
 	void queueTerranSCVs(double prodPercent);
-	void queueTerranBCs(double prodPercent);
+	void queueTerranBCs(double prodPercent);	
 
 	void queueCommandCenters(int desiredNo);
 	void queueTerranSupply(int desiredNo);
