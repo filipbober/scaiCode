@@ -154,6 +154,7 @@ void Squad::setManagerUnits()
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
 			{
 				terranVultures.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
 			}
 			// Select Terran Wraiths
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Wraith)

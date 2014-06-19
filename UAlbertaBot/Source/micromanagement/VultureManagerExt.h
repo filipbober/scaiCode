@@ -25,11 +25,13 @@ private:
 	bool isAttack();
 	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
 
-	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
+	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Position targetPosition);
 	BWAPI::Position getMinePosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
+
+	bool _isPuttingMine;
 
 };
 

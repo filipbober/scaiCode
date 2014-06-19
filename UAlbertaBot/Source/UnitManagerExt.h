@@ -28,6 +28,12 @@ public:
 	void setLandingPosition(BWAPI::Unit* unit, BWAPI::TilePosition landingPos);
 	BWAPI::TilePosition getLandingPosition(BWAPI::Unit* unit);
 
+	bool isPerformingAction(BWAPI::Unit* unit);
+	void setIsPerformingAction(BWAPI::Unit* unit, bool isPerforming);
+
+	bool isPuttingMine(BWAPI::Unit* unit);
+	void putMineFlagOn(BWAPI::Unit* unit);
+
 private:
 	//UnitVector _units;
 	UnitDataVector _unitsData;

@@ -1,6 +1,7 @@
 #include "VultureManagerExt.h"
 #include "Common.h"
 #include "StrategyManager.h"
+#include "UnitManagerExt.h"
 
 
 VultureManagerExt::VultureManagerExt()
@@ -192,6 +193,17 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 
 
 
+	// Put mine
+
+
+	// If action is already being performed, 
+	if (UnitManagerExt::Instance().isPuttingMine(selectedUnit))
+	{
+		return;
+	}
+
+	// eof put mine
+
 	// determine whether the target can be kited
 	if (selectedUnitRange <= targetRange)
 	{
@@ -210,11 +222,11 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
 	
-	putMine(selectedUnit, target);
+	//putMine(selectedUnit, target);
 
 	if ((selectedUnitWeaponCooldown == 0)
 		|| (dist >= (selectedUnitRange - meleeRange)))
-	{
+	{		
 		smartAttackUnit(selectedUnit, target);
 	}
 	else
@@ -229,6 +241,15 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 
 		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
+
+		// Put mine
+		if ((selectedUnit->getSpiderMineCount() > 0))
+		{
+			UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
+			putMine(selectedUnit, fleePosition);
+			return;
+		}
+		// eof put mine
 
 		if (target->getType().canAttack())
 		{
@@ -303,17 +324,33 @@ void VultureManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit,
 	}
 }
 
-void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Position position)
 {
 	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
 		&& (selectedUnit->getSpiderMineCount() > 0)))
 	{
+		
+
+		int proximity = 18;
+		//BWAPI::Position minePosition = getMinePosition(selectedUnit, target, proximity);
+		//BWAPI::Position minePosition = target->getPosition() = selectedUnit->getPosition();
+
+
 		BWAPI::Broodwar->printf("                                           DebExt: Vulture putMine");
 
-		int proximity = 10;
-		BWAPI::Position minePosition = getMinePosition(selectedUnit, target, proximity);
+		bool isValid = selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines, selectedUnit->getPosition());	
 
-		selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines, selectedUnit->getPosition());		
+		BWAPI::Broodwar->printf("                                           DebExt: Vulture mines left = %d", selectedUnit->getSpiderMineCount());
+
+		if (isValid)
+		{
+			BWAPI::Broodwar->printf("                                           DebExt: Tech valid!");
+		}
+		else
+		{
+			BWAPI::Broodwar->printf("                                           DebExt: Tech invalid!");
+		}
+
 	}
 }
 

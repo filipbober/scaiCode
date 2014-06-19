@@ -6,7 +6,7 @@
 class UnitDataExt
 {
 public:
-	enum State { State_Moving, State_Attacking, State_Idle };
+	enum State { State_Moving, State_Attacking, State_Idle, State_Putting_Mine };
 
 	UnitDataExt(const BWAPI::Unit* unit);
 	UnitDataExt(BWAPI::Position destination, const BWAPI::Unit* unit);
@@ -32,6 +32,14 @@ public:
 	void setLandingPosition(BWAPI::TilePosition landingPos);
 	BWAPI::TilePosition getLandingPosition();
 
+	bool isPerformingAction();
+	bool setIsPerformingAction(bool isPerforming);
+
+	bool isPuttingMine();
+	int getStartingMines();
+	void refreshStartingMines();
+	
+
 private:
 	BWAPI::Position _destination;
 	std::vector<BWAPI::Position>  _waypoints;
@@ -39,6 +47,8 @@ private:
 	State _state;	
 	int _waypointProximity;
 	BWAPI::TilePosition _landingPosition;
+	bool _isPerformingAction;				// Like putting a mine
+	int _startingMines;
 
 };
 
