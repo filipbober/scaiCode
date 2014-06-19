@@ -349,7 +349,7 @@ void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targe
 {
 	if ((BWAPI::Broodwar->getFrameCount() % 240 == 0)
 		&& selectedUnit->isDetected()
-		|| !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)))
+		&& selectedUnit->getEnergy() > 40)
 	{
 		BWAPI::Broodwar->printf("                                           DebExt: Wraith decloak");
 		selectedUnit->decloak();
@@ -358,7 +358,10 @@ void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targe
 
 	BOOST_FOREACH(BWAPI::Unit* target, targets)
 	{
-		if (target->isInWeaponRange(selectedUnit))
+		if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)
+			&& target->isInWeaponRange(selectedUnit)
+			&& !selectedUnit->isCloaked()
+			&& selectedUnit->getEnergy() > 50)			
 		{
 			BWAPI::Broodwar->printf("                                           DebExt: Wraith cloak");
 			selectedUnit->cloak();

@@ -4,8 +4,16 @@ UnitDataExt::UnitDataExt(const BWAPI::Unit* unit)
 : _unit(unit),
 isDestinationSet(false),
 _waypoints(),
-_waypointProximity(30)
+_waypointProximity(30),
+_isPerformingAction(false)
+
 {
+	// No mines if it's not Vulture
+	if (!unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+	{
+		_startingMines = 0;
+	}
+
 	_state = State_Idle;
 	//_waypoints.reserve(10);
 }
@@ -134,4 +142,39 @@ BWAPI::TilePosition UnitDataExt::getLandingPosition()
 	}
 
 	return _landingPosition;
+}
+
+bool UnitDataExt::isPerformingAction()
+{
+	return _isPerformingAction;
+}
+
+bool UnitDataExt::setIsPerformingAction(bool isPerforming)
+{
+	_isPerformingAction = isPerforming;
+}
+
+bool UnitDataExt::isPuttingMine()
+{
+	// Mine was already put
+	if (_unit->getSpiderMineCount() < _startingMines)
+	{
+		setState(State::State_Idle);
+		return false;
+	}
+	else
+	{		
+		return true;
+	}
+}
+
+int UnitDataExt::getStartingMines()
+{
+	return _startingMines;
+}
+
+void UnitDataExt::refreshStartingMines()
+{
+	setState(State::State_Putting_Mine);
+	_startingMines = _unit->getSpiderMineCount();
 }

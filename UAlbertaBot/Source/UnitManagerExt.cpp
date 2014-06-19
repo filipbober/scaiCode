@@ -145,3 +145,56 @@ UnitManagerExt& UnitManagerExt::Instance()
 	return instance;
 }
 
+bool UnitManagerExt::isPerformingAction(BWAPI::Unit* unit)
+{
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+	if (unitData != NULL)
+	{
+		return unitData->isPerformingAction();
+	}
+}
+
+void UnitManagerExt::setIsPerformingAction(BWAPI::Unit* unit, bool isPerforming)
+{
+	UnitManagerExt::Instance().addUnit(unit);
+
+	UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+	unitData->setIsPerformingAction(isPerforming);
+}
+
+bool UnitManagerExt::isPuttingMine(BWAPI::Unit* unit)
+{
+	if (unit->getType() != BWAPI::UnitTypes::Terran_Vulture)
+	{
+		return false;
+	}
+	else
+	{
+		UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+		if (unitData != NULL)
+		{
+			return unitData->isPuttingMine();
+		}
+	}
+}
+
+void UnitManagerExt::putMineFlagOn(BWAPI::Unit* unit)
+{
+	UnitManagerExt::Instance().addUnit(unit); 
+	if (unit->getType() != BWAPI::UnitTypes::Terran_Vulture)
+	{
+		return;
+	}
+	else
+	{
+		UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+		if (unitData != NULL)
+		{			
+			unitData->refreshStartingMines();
+		}
+	}
+}

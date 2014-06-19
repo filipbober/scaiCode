@@ -84,18 +84,41 @@ void QueueConstructorExt::makeTestQueue()
 
 
 
+	// Wraiths
+	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
+	//queueTerranWraiths(1.0);
+
+	//if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	//{
+	//	queueTerranSupply(numSupply + 1);
+	//}
+
+	//queueTerranMarines(0.7);
+	//queueTerranFirebats(0.3);
+	//queueTerranSCVs(1.0);
+
+
+
+
+
+
+
+
+	// Vultures
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
-	queueTerranWraiths(1.0);
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
 		queueTerranSupply(numSupply + 1);
 	}
 
-	queueTerranMarines(0.7);
-	queueTerranFirebats(0.3);
+	queueTerranMarines(1.0);
+	queueTerranVultures(1.0);
 	queueTerranSCVs(1.0);
+
+
+
 
 
 
@@ -195,6 +218,25 @@ void QueueConstructorExt::queueTerranFirebats(double prodPercent)
 	}
 }
 
+void QueueConstructorExt::queueTerranVultures(double prodPercent)
+{
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+
+	int vulturesWanted = std::max(1, (int)ceil(numFactories * prodPercent));
+
+	if (numFactories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else
+	{
+		for (int i = 0; i < vulturesWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Vulture), true);
+		}
+	}
+}
+
 void QueueConstructorExt::queueTerranWraiths(double prodPercent)
 {
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
@@ -267,7 +309,7 @@ void QueueConstructorExt::queueTerranSupply(int desiredNo)
 {
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
-	for (int i = numSupply; i <= desiredNo; i++)
+	for (int i = numSupply; i < desiredNo; i++)
 	{
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
 	}
@@ -284,7 +326,7 @@ void QueueConstructorExt::queueTerranBunkers(int desiredNo)
 	}
 	else
 	{
-		for (int i = numBunkers; i <= desiredNo; i++)
+		for (int i = numBunkers; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
 		}
@@ -308,7 +350,7 @@ void QueueConstructorExt::queueTerranTurrets(int desiredNo)
 	}
 	else
 	{
-		for (int i = numTurrets; i <= desiredNo; i++)
+		for (int i = numTurrets; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Missile_Turret), true);
 		}
@@ -321,7 +363,7 @@ void QueueConstructorExt::queueTerranBarracks(int desiredNo)
 {
 	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
 
-	for (int i = numBarracks; i <= desiredNo; i++)
+	for (int i = numBarracks; i < desiredNo; i++)
 	{
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Barracks), true);
 	}
@@ -338,7 +380,7 @@ void QueueConstructorExt::queueTerranAcademies(int desiredNo)
 	}
 	else
 	{
-		for (int i = numAcademies; i <= desiredNo; i++)
+		for (int i = numAcademies; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Academy), true);
 		}
@@ -356,7 +398,7 @@ void QueueConstructorExt::queueTerranFactories(int desiredNo)
 	}
 	else
 	{
-		for (int i = numFactories; i <= desiredNo; i++)
+		for (int i = numFactories; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Factory), true);
 		}
@@ -375,7 +417,7 @@ void QueueConstructorExt::queueTerranStarports(int desiredNo)
 	}
 	else
 	{
-		for (int i = numStarports; i <= desiredNo; i++)
+		for (int i = numStarports; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Starport), true);
 		}
@@ -394,7 +436,7 @@ void QueueConstructorExt::queueTerranScienceFacilities(int desiredNo)
 	}
 	else
 	{
-		for (int i = numScienceFacilities; i <= desiredNo; i++)
+		for (int i = numScienceFacilities; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Science_Facility), true);
 		}
@@ -413,7 +455,7 @@ void QueueConstructorExt::queueTerranArmory(int desiredNo)
 	}
 	else
 	{
-		for (int i = numArmory; i <= desiredNo; i++)
+		for (int i = numArmory; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Armory), true);
 		}

@@ -46,7 +46,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 		// if the order is to attack or defend
 		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
-			&& !isAttackWraith1PortRush())
+			&& !isAttack())
 		{
 			executeTerranWraithRush1Port(selectedUnit, selectedUnitTargets);
 		}
@@ -328,9 +328,17 @@ bool MarineManagerExt::hasBunkerSpace()
 	return false;
 }
 
-bool MarineManagerExt::isAttackWraith1PortRush()
+bool MarineManagerExt::isAttack()
 {
-	return false;
+	// Marines should only defend if Wraith Rush 1 Port is the current strategy
+	if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void MarineManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
