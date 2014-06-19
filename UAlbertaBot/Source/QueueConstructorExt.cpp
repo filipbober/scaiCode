@@ -87,7 +87,8 @@ void QueueConstructorExt::makeTestQueue()
 
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
-	queueTerranWraiths(1.0);
+	//queueTerranWraiths(1.0);
+
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
 		queueTerranSupply(numSupply + 1);

@@ -11,7 +11,7 @@ public:
 
 	void executeMicro(const UnitVector & targets);
 
-private:	
+private:
 	void executeAttack(BWAPI::Unit* selectedUnit, UnitVector& targets);
 	void executeDefend(BWAPI::Unit* vultureUnit, UnitVector& targets);
 	void executeAdvanceToPosition(BWAPI::Unit* selectedUnit, UnitVector& targets);
@@ -21,7 +21,11 @@ private:
 	void kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
 
 	void setAverageEnemyPosition(const UnitVector& targets);
-	void putMine(BWAPI::Unit * selectedUnit);
+
+	bool isAttackWraith1PortRush();
+	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+
+	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
