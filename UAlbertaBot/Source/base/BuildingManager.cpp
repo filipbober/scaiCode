@@ -705,6 +705,7 @@ void BuildingManager::buildingLiftLand()
 				landingPos.makeValid();
 			}
 
+			BWAPI::Broodwar->printf("                                           DebExt: landing, building name = %s", unit->getType().c_str());
 			unit->land(landingPos);
 		}
 	}

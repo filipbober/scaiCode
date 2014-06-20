@@ -24,7 +24,8 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 	for (size_t i(0); i<targets.size(); i++)
 	{
 		// conditions for targeting
-		if (targets[i]->isVisible())
+		if (targets[i]->isVisible()
+			&& !targets[i]->getType().isFlyer())
 		{
 			selectedUnitTargets.push_back(targets[i]);
 		}
@@ -195,7 +196,6 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 		return;
 	}
 
-
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());	
 
@@ -203,24 +203,7 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	if (selectedUnitRange <= targetRange)
 	{
 		// if we can't kite it, there's no point to do so
-
 		attackOrMine(selectedUnit, target);
-
-		//// Put mine
-		//if ((selectedUnit->getSpiderMineCount() > 0))
-		//{
-		//	UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
-		//	putMine(selectedUnit, target);
-		//	return;
-		//}
-		//// eof put mine
-		//else
-		//{
-
-		//	smartAttackUnit(selectedUnit, target);
-		//	return;
-		//}
-
 		return;
 	}
 
@@ -237,7 +220,6 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	if ((selectedUnitWeaponCooldown == 0)
 		&& (dist >= 72))
 	{		
-		//smartAttackUnit(selectedUnit, target);
 		attackOrMine(selectedUnit, target);
 	}
 	else
@@ -251,25 +233,7 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
 
-		//// Put mine
-		//if ((selectedUnit->getSpiderMineCount() > 0))
-		//{
-		//	UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
-		//	putMine(selectedUnit, target, fleePosition);
-		//	return;
-		//}
-		//// eof put mine
-
 		fleeOrMine(selectedUnit, fleePosition);
-
-		//if (target->getType().canAttack())
-		//{
-		//	smartMove(selectedUnit, fleePosition);
-		//}
-		//else
-		//{
-		//	smartAttackMove(selectedUnit, target->getPosition());
-		//}
 	}
 
 }
