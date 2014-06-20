@@ -220,7 +220,7 @@ void CombatCommander::assignRepairSquadsExt()
 				&& !(selfUnit->isBeingConstructed())
 				&& (selfUnit->isCompleted())
 				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
-				//&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
+				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
 				&& !selfUnit->isLifted())
 			{
 				damagedSelfUnits.insert(selfUnit);

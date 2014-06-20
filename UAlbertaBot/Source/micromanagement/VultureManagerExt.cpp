@@ -346,7 +346,7 @@ void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target)
 	{
 		
 
-		int proximity = 10;
+		int proximity = 18;
 		BWAPI::Position minePosition = getMinePosition(selectedUnit, target, proximity);
 		//BWAPI::Position minePosition =  selectedUnit->getPosition();
 
