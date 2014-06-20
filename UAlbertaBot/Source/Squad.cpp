@@ -156,6 +156,11 @@ void Squad::setManagerUnits()
 				terranVultures.push_back(unit);
 				UnitManagerExt::Instance().addUnit(unit);
 			}
+			// Do not add mines to the manager
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
+			{
+				continue;
+			}
 			// Select Terran Wraiths
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Wraith)
 			{
