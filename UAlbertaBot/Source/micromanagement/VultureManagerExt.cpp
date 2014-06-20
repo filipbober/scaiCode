@@ -216,7 +216,6 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	if (UnitManagerExt::Instance().isPuttingMine(selectedUnit)
 		|| selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount())
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: Putting mine!");
 		return;
 	}
 
@@ -240,11 +239,6 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	int meleeRange = 15;
 
 
-	if (BWAPI::Broodwar->getFrameCount() % 48 == 0)
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Distance = %d", dist);
-	}
-
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
 	int keepDistance = 100;
@@ -253,10 +247,6 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 		&& target->getDistance(selectedUnit) > keepDistance)
 	{				
 		//BWAPI::Broodwar->printf("                                           DebExt: Smart attack, closest enemy = %d", dist);
-		if (BWAPI::Broodwar->getFrameCount() % 48 == 0)
-		{
-			BWAPI::Broodwar->printf("                                           DebExt: Attacking!!");
-		}
 		attackOrMine(selectedUnit, target);
 		//smartAttackUnit(selectedUnit, target);		
 	}
@@ -301,7 +291,6 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 
 		//BWAPI::Broodwar->printf("                                           DebExt: Smart move x = %d, y = %d", fleePosition.x(), fleePosition.y());
 		//BWAPI::Broodwar->printf("                                           DebExt: current pos: x = %d, y = %d", selectedUnit->getPosition().x(), selectedUnit->getPosition().y());
-		BWAPI::Broodwar->printf("                                           DebExt: Kiting!");
 
 
 		
