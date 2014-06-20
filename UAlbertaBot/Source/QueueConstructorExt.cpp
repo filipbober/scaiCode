@@ -189,8 +189,6 @@ void QueueConstructorExt::makeTestQueue()
 	//}
 
 	cleanQueue();
-
-	//_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Ion_Thrusters), true);
 }
 
 void QueueConstructorExt::queueCommandCenters(int desiredNo)
@@ -790,29 +788,24 @@ void QueueConstructorExt::queueTechVultures()
 	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 	int numFactiories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory);
 
-	BWAPI::Broodwar->printf("                                           DebExt: queueTechVultures");
 	if (numFactiories < 1)
 	{
 		// Ensure that there is at least one factory
 		queueTerranFactories(1);
-		BWAPI::Broodwar->printf("                                           DebExt: queueTechVultures: factories");
 	}
 	else if (numMachineShops < 1)
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: queueTechVultures: machine shops");
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
 	}
 	else if ( !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines))
 		&& !(BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Spider_Mines)) )
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: queueTechVultures: spider mines");
 		_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Spider_Mines), true);
 	}
 	else if ( (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Ion_Thrusters) 
 				< BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Ion_Thrusters))
 			&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Ion_Thrusters)))
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: queueTechVultures: ion thrusters");
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Ion_Thrusters), true);
 	}
 }

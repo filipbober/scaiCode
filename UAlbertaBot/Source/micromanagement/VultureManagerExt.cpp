@@ -61,8 +61,13 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 		}
 
 		// eof avg eveeny pos
-
-		if (order.type == order.Attack || order.type == order.Defend)
+		// if the order is to attack or defend
+		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
+			&& !isAttack())
+		{
+			executeTerranWraithRush1Port(selectedUnit, selectedUnitTargets);
+		}
+		else if (order.type == order.Attack || order.type == order.Defend)
 		{
 			// if there are targets
 			if (!selectedUnitTargets.empty())
@@ -222,16 +227,7 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());	
 
-	//// determine whether the target can be kited
-	//if (selectedUnitRange <= targetRange)
-	//{
-	//	// if we can't kite it, there's no point to do so
-	//	attackOrMine(selectedUnit, target);
-	//	return;
-	//}
-
 	bool		kite(true);
-	//double		dist(selectedUnit->getDistance(target));
 	double dist = closestEnemyDist(selectedUnit);
 	double		speed(selectedUnit->getType().topSpeed());
 
@@ -246,24 +242,10 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 		&& (dist > keepDistance)
 		&& target->getDistance(selectedUnit) > keepDistance)
 	{				
-		//BWAPI::Broodwar->printf("                                           DebExt: Smart attack, closest enemy = %d", dist);
-		attackOrMine(selectedUnit, target);
-		//smartAttackUnit(selectedUnit, target);		
+		attackOrMine(selectedUnit, target);		
 	}
 	else
 	{
-
-
-		
-
-		
-
-
-
-
-		//BWAPI::Position fleePosition(selectedUnit->getPosition() - target->getPosition() + selectedUnit->getPosition());
-
-
 		BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
 		if (!fleePosition.isValid())
 		{
@@ -273,28 +255,7 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
 
-
-		fleeOrMine(selectedUnit, fleePosition);
-		
-
-		//smartMove(selectedUnit, fleePosition);
-
-
-
-
-		//BWAPI::Position fleePosition(selectedUnit->getPosition() - target->getPosition() + selectedUnit->getPosition());
-
-		//BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
-		//	fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
-
-		//smartMove(selectedUnit, fleePosition);
-
-		//BWAPI::Broodwar->printf("                                           DebExt: Smart move x = %d, y = %d", fleePosition.x(), fleePosition.y());
-		//BWAPI::Broodwar->printf("                                           DebExt: current pos: x = %d, y = %d", selectedUnit->getPosition().x(), selectedUnit->getPosition().y());
-
-
-		
-
+		fleeOrMine(selectedUnit, fleePosition);		
 	}
 
 }
@@ -340,6 +301,27 @@ bool VultureManagerExt::isAttack()
 	}
 }
 
+void VultureManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+{
+	// Code below is used for units (like marines) if they are not supposed to attack and should defend the base only
+	if (order.type == order.Attack || order.type == order.Defend)
+	{
+		if (!selectedUnitTargets.empty())
+		{
+			BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
+
+			if (selectedUnit->getDistance(target) < 300)
+			{
+				kiteTarget(selectedUnit, target);
+			}
+			else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
+			{
+				smartAttackMove(selectedUnit, order.position);
+			}
+		}
+	}
+}
+
 
 void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target)
 {
@@ -350,14 +332,8 @@ void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target)
 
 		int proximity = 18;
 		BWAPI::Position minePosition = getMinePosition(selectedUnit, target, proximity);
-		//BWAPI::Position minePosition =  selectedUnit->getPosition();
 
-
-		BWAPI::Broodwar->printf("                                           DebExt: Vulture putMine target");
-	
 		bool isValid = selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines, minePosition);
-
-		BWAPI::Broodwar->printf("                                           DebExt: Vulture mines left = %d", selectedUnit->getSpiderMineCount());
 	}
 }
 
@@ -366,7 +342,6 @@ void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Position targ
 	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
 		&& (selectedUnit->getSpiderMineCount() > 0)))
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: Vulture putMine position");
 		bool isValid = selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines, targetPosition);
 	}
 }
@@ -434,7 +409,6 @@ void VultureManagerExt::attackOrMine(BWAPI::Unit* selectedUnit, BWAPI::Unit* tar
 	}
 	else
 	{
-		//BWAPI::Broodwar->printf("                                           DebExt: Vulture attackOrMine: smartAttack");
 		smartAttackUnit(selectedUnit, target);
 		return;
 	}
