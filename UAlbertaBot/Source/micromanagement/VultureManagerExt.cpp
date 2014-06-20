@@ -459,7 +459,8 @@ double VultureManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
 
 		if ((unitDist <= dist)
 			&& enemyUnit->getType().canAttack()
-			&& enemyUnit->isVisible())
+			&& enemyUnit->isVisible()
+			&& !enemyUnit->getType().isFlyer())		// ignore Flyers - Vultures cant attack them anyway
 		{
 			dist = unitDist;
 		}
