@@ -20,6 +20,8 @@ public:
 
 	void cleanQueue();
 
+	void makeExpansion();
+
 	// Specific units
 	void queueTerranMarines(double prodPercent);
 	void queueTerranFirebats(double prodPercent);
@@ -53,6 +55,11 @@ public:
 
 	void queueTerranAirWeapons();
 	void queueTerranAirArmor();
+
+	// Tech
+	void queueTechVultures();
+	void queueTechTanks();
+	void queueTechBattlecruisers();
 	
 
 

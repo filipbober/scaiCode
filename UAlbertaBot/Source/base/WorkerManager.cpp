@@ -157,7 +157,8 @@ void WorkerManager::finishedWithRepairWorkers()
 {
 	BOOST_FOREACH(BWAPI::Unit * worker, workerData.getWorkers())
 	{
-		if (workerData.getWorkerJob(worker) == WorkerData::Repair)
+		if (workerData.getWorkerJob(worker) == WorkerData::Repair
+			&& worker->isIdle())
 		{
 			setMineralWorker(worker);
 		}

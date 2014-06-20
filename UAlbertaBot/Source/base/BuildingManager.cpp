@@ -655,7 +655,7 @@ void BuildingManager::scannerSweep()
 						&& (chosenTarget->exists()))
 					{
 						bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
-						if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
+						//if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
 						break;
 					}
 									
@@ -663,7 +663,7 @@ void BuildingManager::scannerSweep()
 			}
 		}
 	}
-	BWAPI::Broodwar->printf("                                           DebExt: 5");
+	//BWAPI::Broodwar->printf("                                           DebExt: 5");
 }
 
 void BuildingManager::buildingLiftLand()
@@ -705,6 +705,7 @@ void BuildingManager::buildingLiftLand()
 				landingPos.makeValid();
 			}
 
+			BWAPI::Broodwar->printf("                                           DebExt: landing, building name = %s", unit->getType().c_str());
 			unit->land(landingPos);
 		}
 	}

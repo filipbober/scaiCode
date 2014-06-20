@@ -5,14 +5,16 @@ UnitDataExt::UnitDataExt(const BWAPI::Unit* unit)
 isDestinationSet(false),
 _waypoints(),
 _waypointProximity(30),
-_isPerformingAction(false)
+_isPerformingAction(false),
+_startingMines(0)
 
 {
 	// No mines if it's not Vulture
-	if (!unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
-	{
-		_startingMines = 0;
-	}
+	//if (!unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+	//{
+	//	_startingMines = 0;
+	//}
+
 
 	_state = State_Idle;
 	//_waypoints.reserve(10);
@@ -162,9 +164,13 @@ bool UnitDataExt::isPuttingMine()
 		setState(State::State_Idle);
 		return false;
 	}
-	else
+	else if (_state == State::State_Putting_Mine)
 	{		
 		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
