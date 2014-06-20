@@ -178,6 +178,11 @@ bool UnitManagerExt::isPuttingMine(BWAPI::Unit* unit)
 		{
 			return unitData->isPuttingMine();
 		}
+		else
+		{
+			addUnit(unit);
+			return false;
+		}
 	}
 }
 

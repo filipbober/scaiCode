@@ -23,7 +23,6 @@ private:
 	void setAverageEnemyPosition(const UnitVector& targets);
 
 	bool isAttack();
-	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
 
 	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target);
 	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Position targetPosition);
@@ -33,7 +32,7 @@ private:
 	void fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position fleePosition);
 	bool isMineProximity(BWAPI::Unit* selectedUnit);
 
-	int closestEnemyDist(BWAPI::Unit* selectedUnit);
+	double closestEnemyDist(BWAPI::Unit* selectedUnit);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
