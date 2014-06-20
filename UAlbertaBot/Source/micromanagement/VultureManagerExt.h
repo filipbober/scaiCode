@@ -33,11 +33,14 @@ private:
 	void fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position fleePosition);
 	bool isMineProximity(BWAPI::Unit* selectedUnit);
 
+	int closestEnemyDist(BWAPI::Unit* selectedUnit);
+
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
 
 	bool _isPuttingMine;
 	int _putMineFrame;
+	
 
 };
 

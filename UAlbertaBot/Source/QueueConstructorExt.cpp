@@ -27,6 +27,23 @@ void QueueConstructorExt::clearQueue()
 	_queue.clearAll();
 }
 
+void QueueConstructorExt::makeExpansion()
+{
+	int frame = BWAPI::Broodwar->getFrameCount();
+	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+
+	if ((numCommandCenters < 2)
+		&& (frame > 6000))
+	{
+		queueCommandCenters(2);
+	}
+	else if ((numCommandCenters < 3)
+		&& (frame > 10000))
+	{
+		queueCommandCenters(3);
+	}
+}
+
 void QueueConstructorExt::makeTestQueue()
 {
 	BWAPI::Broodwar->printf("                                           DebExt: doSomething invoked");
@@ -113,9 +130,13 @@ void QueueConstructorExt::makeTestQueue()
 		queueTerranSupply(numSupply + 1);
 	}
 
+	queueTechVultures();
+
 	queueTerranMarines(1.0);
 	queueTerranVultures(1.0);
 	queueTerranSCVs(1.0);
+
+	makeExpansion();
 
 
 
@@ -167,9 +188,9 @@ void QueueConstructorExt::makeTestQueue()
 
 void QueueConstructorExt::queueCommandCenters(int desiredNo)
 {
-	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 
-	for (int i = numBarracks; i <= desiredNo; i++)
+	for (int i = numCommandCenters; i < desiredNo; i++)
 	{
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Command_Center), true);
 	}
@@ -751,4 +772,57 @@ void QueueConstructorExt::cleanQueue()
 
 	_queue.clearAll();
 	_queue = cleanedQueue;
+}
+
+void QueueConstructorExt::queueTechVultures()
+{
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numFactiories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory);
+
+	if (numFactiories < 1)
+	{
+		// Ensure that there is at least one factory
+		queueTerranFactories(1);
+	}
+	else if (numMachineShops < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
+	}
+	else if ( !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines))
+		&& !(BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Spider_Mines)) )
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Spider_Mines), true);
+	}
+	else if ( (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Ion_Thrusters) 
+				< BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Ion_Thrusters))
+			&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Ion_Thrusters)))
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Ion_Thrusters), true);
+	}
+}
+
+void QueueConstructorExt::queueTechTanks()
+{
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numFactiories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	
+	if (numFactiories < 1)
+	{
+		// Ensure that there is at least one factory
+		queueTerranFactories(1);
+	}
+	if (numMachineShops < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
+	}
+	else if ( !(BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+		&& !(BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Tank_Siege_Mode)))
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Tank_Siege_Mode), true);
+	}
+}
+
+void QueueConstructorExt::queueTechBattlecruisers()
+{
+
 }

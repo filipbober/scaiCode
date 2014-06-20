@@ -220,11 +220,11 @@ void CombatCommander::assignRepairSquadsExt()
 				&& !(selfUnit->isBeingConstructed())
 				&& (selfUnit->isCompleted())
 				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
-				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
+				//&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
 				&& !selfUnit->isLifted())
 			{
 				damagedSelfUnits.insert(selfUnit);
-				BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit insested = %s", selfUnit->getType().c_str());
+				//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit inserted = %s", selfUnit->getType().c_str());
 			}
 		}
 
@@ -246,9 +246,9 @@ void CombatCommander::assignRepairSquadsExt()
 			
 
 			BWAPI::Broodwar->printf("                                           DebExt: Repairing");
-			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
-			BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
-			BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
+			//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
+			//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
+			//BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
 
 			if (unitToRepair->exists())
 			{
