@@ -216,23 +216,37 @@ BWAPI::Unit* TankManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & 
 
 void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
-	// If mine is being put or we have issued a command this frame, return
-	if (UnitManagerExt::Instance().isPuttingMine(selectedUnit)
-		|| selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount())
-	{
-		return;
-	}
-
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());
 
-	bool		kite(true);
 	double dist = closestEnemyDist(selectedUnit);
-	double		speed(selectedUnit->getType().topSpeed());
 
 	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
+	
 	int meleeRange = 15;
 
+	int tankModeMaxRange = BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode.groundWeapon().maxRange();
+	int siegeModeMinRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().minRange();
+	int siegeModeMaxRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().maxRange();
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack

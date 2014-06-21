@@ -49,6 +49,7 @@ void Squad::update()
 		vultureManager.regroup(regroupPosition);
 		wraithManager.regroup(regroupPosition);
 		bcManager.regroup(regroupPosition);
+		tankManager.regroup(regroupPosition);
 		// eof ext
 	}
 	else // otherwise, execute micro
@@ -64,6 +65,7 @@ void Squad::update()
 		vultureManager.execute(order);
 		wraithManager.execute(order);
 		bcManager.execute(order);
+		tankManager.execute(order);
 		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
@@ -134,6 +136,7 @@ void Squad::setManagerUnits()
 	UnitVector terranComsatStations;
 	UnitVector terranWraiths;
 	UnitVector terranBCs;
+	UnitVector terranTanks;
 	// eof ext
 
 	// add units to micro managers
@@ -190,6 +193,13 @@ void Squad::setManagerUnits()
 			{
 				terranBCs.push_back(unit);
 			}
+			// Set tanks
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode
+				|| unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
+			{
+				terranTanks.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
+			}
 			// select detector units
 			else if (unit->getType().isDetector() && !unit->getType().isBuilding())
 			{
@@ -223,6 +233,7 @@ void Squad::setManagerUnits()
 	vultureManager.setUnits(terranVultures);
 	wraithManager.setUnits(terranWraiths);
 	bcManager.setUnits(terranBCs);
+	tankManager.setUnits(terranTanks);
 	// eof ext
 
 }

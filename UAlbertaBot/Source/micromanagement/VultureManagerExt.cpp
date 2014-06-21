@@ -227,13 +227,9 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());	
 
-	bool		kite(true);
 	double dist = closestEnemyDist(selectedUnit);
-	double		speed(selectedUnit->getType().topSpeed());
 
 	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
-	int meleeRange = 15;
-
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
