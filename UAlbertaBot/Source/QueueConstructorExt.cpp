@@ -118,7 +118,7 @@ void QueueConstructorExt::makeTestQueue()
 
 
 
-
+	
 
 
 
@@ -131,26 +131,31 @@ void QueueConstructorExt::makeTestQueue()
 	int gas = BWAPI::Broodwar->self()->gas();
 	int frame = BWAPI::Broodwar->getFrameCount();
 
+	if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
+	{
+		return;
+	}
+
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
 		queueTerranSupply(numSupply + 1);
 	}
 
-	if (minerals > 300)
-	{
-		queueTerranFactories(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1);
-		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
-	}
+	//if (minerals > 300)
+	//{
+	//	queueTerranFactories(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1), 5));
+	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
+	//}
 
-	if (frame > 10000)
+	if (frame > 14000)
 	{
 		queueTerranGoliaths(0.3);
 		queueTechGoliaths();
 	}
 
 	queueTerranMarines(1.0);
-	queueTerranVultures(0.8);
-	queueTerranTanks(0.2);
+	queueTerranVultures(1.0);
+	queueTerranTanks(0.5);
 
 	if (numScvs < 48)
 	{
@@ -158,18 +163,20 @@ void QueueConstructorExt::makeTestQueue()
 		queueTerranSCVs(1.0);
 	}
 
-	if (frame > 8000)
+	if (frame > 10000)
 	{
 		queueTechVultures();
+		queueTerranFactories(3);
 	}
 
 	if (frame > 12000)
 	{
-		queueTechTanks();
+		queueTerranFactories(4);
 	}
 
-	makeExpansion();
+	queueTechTanks();
 
+	makeExpansion();
 
 	// eof tanks
 
@@ -359,6 +366,7 @@ void QueueConstructorExt::queueTerranGoliaths(double prodPercent)
 	}
 	else if (numArmory < 1)
 	{
+		BWAPI::Broodwar->printf("                                           DebExt: queue Armory - Goliaths may crash SC");
 		queueTerranArmory(1);
 	}
 	else
@@ -530,10 +538,15 @@ void QueueConstructorExt::queueTerranFactories(int desiredNo)
 {
 	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 
 	if (numBarracks < 1)
 	{
 		queueTerranBarracks(1);
+	}
+	if (numMachineShops < numFactories)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
 	}
 	else
 	{
@@ -873,8 +886,8 @@ void QueueConstructorExt::cleanQueue()
 	{
 		if (_queue[i].metaType.isUnit())
 		{
-			if (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Armory
-				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Science_Facility && numArmory > 1)
+			if (
+				 (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Armory && numArmory > 1)
 				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Academy && numAcademies > 1)
 				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Engineering_Bay && numEngineeringBays > 1)
 				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Science_Facility && numScienceFaciliteis > 1))

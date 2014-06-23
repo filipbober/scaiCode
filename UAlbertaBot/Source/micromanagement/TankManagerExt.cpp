@@ -6,6 +6,7 @@
 
 TankManagerExt::TankManagerExt()
 {
+	_siegeModeFrame = 96;
 }
 
 
@@ -212,28 +213,31 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 	// If an enemy if farther than normal mode range but within siege mode + 10 (if not building)
 
 	// If target is farther than normal mode range
-	if (dist > tankModeMaxRange)
+	if ((BWAPI::Broodwar->getFrameCount() % _siegeModeFrame) == 0)
 	{
-		// If target is farther than siege mode range but is approaching
-		if ((dist <= (siegeModeMaxRange + 100))
-			&& isTargetApproaching)
+		if (dist > tankModeMaxRange)
 		{
-			siegeModeOn(selectedUnit);
+			// If target is farther than siege mode range but is approaching
+			if ((dist <= (siegeModeMaxRange + 100))
+				&& isTargetApproaching)
+			{
+				siegeModeOn(selectedUnit);
+			}
+			else if (dist <= siegeModeMaxRange
+				&& target->getType().isBuilding())
+			{
+				siegeModeOn(selectedUnit);
+			}
+			// Target too far away
+			else
+			{
+				siegeModeOff(selectedUnit);
+			}
 		}
-		else if (dist <= siegeModeMaxRange
-			&& target->getType().isBuilding())
-		{
-			siegeModeOn(selectedUnit);
-		}
-		// Target too far away
-		else
+		else if (dist < siegeModeMinRange)
 		{
 			siegeModeOff(selectedUnit);
 		}
-	}
-	else if (dist < siegeModeMinRange)
-	{
-		siegeModeOff(selectedUnit);
 	}
 
 

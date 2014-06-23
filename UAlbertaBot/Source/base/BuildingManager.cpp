@@ -296,7 +296,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 		else if (b.type == BWAPI::UnitTypes::Terran_Machine_Shop)
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Factory)
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;
@@ -306,7 +306,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 		else if (b.type == BWAPI::UnitTypes::Terran_Control_Tower)
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Starport)
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;
@@ -317,7 +317,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 			|| (b.type == BWAPI::UnitTypes::Terran_Covert_Ops))
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Science_Facility)
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;

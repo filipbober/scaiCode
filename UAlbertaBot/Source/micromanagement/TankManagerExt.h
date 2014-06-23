@@ -32,5 +32,6 @@ private:
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
+	int _siegeModeFrame;
 };
 
