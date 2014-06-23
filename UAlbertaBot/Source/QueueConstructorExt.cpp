@@ -33,12 +33,12 @@ void QueueConstructorExt::makeExpansion()
 	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 
 	if ((numCommandCenters < 2)
-		&& (frame > 6000))
+		&& (frame > 8000))
 	{
 		queueCommandCenters(2);
 	}
 	else if ((numCommandCenters < 3)
-		&& (frame > 10000))
+		&& (frame > 14000))
 	{
 		queueCommandCenters(3);
 	}
@@ -147,13 +147,16 @@ void QueueConstructorExt::makeTestQueue()
 	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
 	//}
 
-	if (frame > 14000)
+	if (isAirThreat())
 	{
 		queueTerranGoliaths(0.3);
 		queueTechGoliaths();
 	}
 
 	queueTerranMarines(1.0);
+	queueTerranMarines(1.0);
+	queueTerranMarines(1.0);
+
 	queueTerranVultures(1.0);
 	queueTerranTanks(0.5);
 
@@ -371,11 +374,11 @@ void QueueConstructorExt::queueTerranGoliaths(double prodPercent)
 	}
 	else
 	{
-		// This may crash the game -----------------
-		for (int i = 0; i < goliathsWanted; i++)
-		{
-			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Goliath), true);
-		}
+		//// This may crash the game -----------------
+		//for (int i = 0; i < goliathsWanted; i++)
+		//{
+		//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Goliath), true);
+		//}
 	}
 }
 
@@ -983,4 +986,29 @@ void QueueConstructorExt::queueTechGoliaths()
 	{
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Charon_Boosters), true);
 	}
+}
+
+bool QueueConstructorExt::isAirThreat()
+{
+	int numEnemyStargates = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Stargate);
+	int numEnemyStarports = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numEnemySpires = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spire);
+
+
+	if ((numEnemyStargates > 0)
+		|| (numEnemyStarports > 0)
+		|| (numEnemySpires > 0))
+	{
+		return true;
+	}
+	
+	BOOST_FOREACH(BWAPI::Unit* enemyUnit , BWAPI::Broodwar->enemy()->getUnits())
+	{
+		if (enemyUnit->getType().isFlyer())
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

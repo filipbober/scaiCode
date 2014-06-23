@@ -385,7 +385,22 @@ void BuildingManager::checkForStartedConstruction()
 }
 
 // STEP 5: IF WE ARE TERRAN, THIS MATTERS, SO: LOL
-void BuildingManager::checkForDeadTerranBuilders() {}
+void BuildingManager::checkForDeadTerranBuilders() 
+{
+	// TODO
+
+	buildingData.begin(ConstructionData::UnderConstruction);
+	while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
+	{
+
+		Building & b = buildingData.getNextBuilding(ConstructionData::UnderConstruction);
+
+		if (!b.builderUnit->exists())
+		{
+			buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
+		}
+	}
+}
 
 // STEP 6: CHECK FOR COMPLETED BUILDINGS
 void BuildingManager::checkForCompletedBuildings() {

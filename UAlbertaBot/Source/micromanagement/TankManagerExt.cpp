@@ -87,6 +87,7 @@ void TankManagerExt::executeMicro(const UnitVector & targets)
 				if (selectedUnit->getDistance(order.position) > 100)
 				{
 					// move to it
+					siegeModeOff(selectedUnit);
 					smartAttackMove(selectedUnit, order.position);
 				}
 			}
@@ -218,9 +219,9 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 		if (dist > tankModeMaxRange)
 		{
 			// If target is farther than siege mode range but is approaching
-			if ( ((dist <= (siegeModeMaxRange + 100))
+			if ( ((dist <= (siegeModeMaxRange + 50))
 					&& isTargetApproaching)
-				|| (dist <= siegeModeMaxRange))
+				|| (target->getDistance(selectedUnit) <= siegeModeMaxRange))
 			{
 				siegeModeOn(selectedUnit);
 			}
