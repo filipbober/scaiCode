@@ -147,6 +147,8 @@ void QueueConstructorExt::makeTestQueue()
 	queueTechTanks();
 	makeExpansion();
 
+	queueTerranMarinesUpgrades();		// test	
+
 	// eof tanks
 
 	//// Vultures
