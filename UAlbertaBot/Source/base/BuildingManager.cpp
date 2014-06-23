@@ -388,7 +388,10 @@ void BuildingManager::checkForStartedConstruction()
 void BuildingManager::checkForDeadTerranBuilders() 
 {
 	// TODO
-
+	if (!(BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran))
+	{
+		return;
+	}
 	buildingData.begin(ConstructionData::UnderConstruction);
 	while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
 	{
