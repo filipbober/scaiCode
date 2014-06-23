@@ -371,6 +371,7 @@ void QueueConstructorExt::queueTerranGoliaths(double prodPercent)
 	}
 	else
 	{
+		// This may crash the game -----------------
 		for (int i = 0; i < goliathsWanted; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Goliath), true);
