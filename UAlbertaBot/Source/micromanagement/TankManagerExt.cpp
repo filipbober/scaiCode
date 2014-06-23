@@ -218,13 +218,9 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 		if (dist > tankModeMaxRange)
 		{
 			// If target is farther than siege mode range but is approaching
-			if ((dist <= (siegeModeMaxRange + 100))
-				&& isTargetApproaching)
-			{
-				siegeModeOn(selectedUnit);
-			}
-			else if (dist <= siegeModeMaxRange
-				&& target->getType().isBuilding())
+			if ( ((dist <= (siegeModeMaxRange + 100))
+					&& isTargetApproaching)
+				|| (dist <= siegeModeMaxRange))
 			{
 				siegeModeOn(selectedUnit);
 			}
