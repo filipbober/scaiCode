@@ -26,6 +26,7 @@ public:
 	void queueTerranMarines(double prodPercent);
 	void queueTerranFirebats(double prodPercent);
 	void queueTerranVultures(double prodPercent);
+	void queueTerranTanks(double prodPercent);
 	void queueTerranWraiths(double prodPercent);
 	void queueTerranSCVs(double prodPercent);
 	void queueTerranBCs(double prodPercent);	

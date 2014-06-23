@@ -122,7 +122,8 @@ void QueueConstructorExt::makeTestQueue()
 
 
 
-	// Vultures
+
+	// Tanks
 	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
@@ -131,10 +132,11 @@ void QueueConstructorExt::makeTestQueue()
 		queueTerranSupply(numSupply + 1);
 	}
 
-	
+
 
 	queueTerranMarines(1.0);
-	queueTerranVultures(1.0);
+	queueTerranVultures(0.5);
+	queueTerranTanks(0.5);
 
 	if (numScvs < 48)
 	{
@@ -142,8 +144,38 @@ void QueueConstructorExt::makeTestQueue()
 	}
 
 	queueTechVultures();
+	queueTechTanks();
 	makeExpansion();
+
+	// eof tanks
+
+	//// Vultures
+	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+
+	//if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	//{
+	//	queueTerranSupply(numSupply + 1);
+	//}
+
+	//
+
+	//queueTerranMarines(1.0);
+	//queueTerranVultures(1.0);
+
+	//if (numScvs < 48)
+	//{
+	//	queueTerranSCVs(1.0);
+	//}
+
+	//queueTechVultures();
+	//makeExpansion();
 	
+	//// eof Vultures
+
+
+
+
 
 
 
@@ -259,6 +291,33 @@ void QueueConstructorExt::queueTerranVultures(double prodPercent)
 		for (int i = 0; i < vulturesWanted; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Vulture), true);
+		}
+	}
+}
+
+void QueueConstructorExt::queueTerranTanks(double prodPercent)
+{
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+
+	int tanksWanted = std::max(1, (int)ceil( std::min(numFactories, numMachineShops) * prodPercent));
+
+	if (numFactories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else if (numMachineShops < numFactories)
+	{
+		for (int i = numMachineShops; i < numFactories; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
+		}
+	}	
+	else
+	{
+		for (int i = 0; i < tanksWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode), true);
 		}
 	}
 }

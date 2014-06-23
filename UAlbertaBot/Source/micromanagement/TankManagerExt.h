@@ -27,6 +27,9 @@ private:
 
 	double closestEnemyDist(BWAPI::Unit* selectedUnit);
 
+	void siegeModeOn(BWAPI::Unit* selectedUnit);
+	void siegeModeOff(BWAPI::Unit* selectedUnit);
+
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
 };

@@ -229,33 +229,43 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 	int siegeModeMinRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().minRange();
 	int siegeModeMaxRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().maxRange();
 
-	
+	bool isSiegeModeOn = selectedUnit->isSieged();
+	bool isTargetApproaching = !target->getType().isBuilding() && !target->getType().isFlyer();
 
+	int keepDistance = 200;
 
+	// If an enemy if farther than normal mode range but within siege mode + 10 (if not building)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-	// If we are going to be out of range (melee range added just to ensure we are still in range)
-	// or if weapon is ready then attack
-	int keepDistance = 100;
-	if ((selectedUnitWeaponCooldown == 0)
-		&& (dist > keepDistance)
-		&& target->getDistance(selectedUnit) > keepDistance)
+	// If target is farther than normal mode range
+	if (dist > tankModeMaxRange)
 	{
-		//attackOrMine(selectedUnit, target);
+		// If target is farther than siege mode range but is approaching
+		if ((dist < (siegeModeMaxRange + 100))
+			&& isTargetApproaching)
+		{
+			siegeModeOn(selectedUnit);
+		}
+		// Target too far away
+		else
+		{
+			siegeModeOff(selectedUnit);
+		}
+	}
+	else if (dist < siegeModeMinRange)
+	{
+		siegeModeOff(selectedUnit);
+	}
+
+
+	// If an order was issued this frame (like siege off), return
+	if (selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount())
+	{
+		return;
+	}
+	
+	if ((dist > keepDistance)
+		|| (selectedUnitWeaponCooldown == 0))
+	{
 		smartAttackUnit(selectedUnit, target);
 	}
 	else
@@ -272,6 +282,43 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 		//fleeOrMine(selectedUnit, fleePosition);
 		smartMove(selectedUnit, fleePosition);
 	}
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	//// If we are going to be out of range (melee range added just to ensure we are still in range)
+	//// or if weapon is ready then attack
+	//int keepDistance = 100;
+	//if ((selectedUnitWeaponCooldown == 0)
+	//	&& (dist > keepDistance)
+	//	&& target->getDistance(selectedUnit) > keepDistance)
+	//{
+	//	//attackOrMine(selectedUnit, target);
+	//	smartAttackUnit(selectedUnit, target);
+	//}
+	//else
+	//{
+	//	BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
+	//	if (!fleePosition.isValid())
+	//	{
+	//		fleePosition.makeValid();
+	//	}
+
+	//	BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
+	//		fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
+
+	//	//fleeOrMine(selectedUnit, fleePosition);
+	//	smartMove(selectedUnit, fleePosition);
+	//}
 
 }
 
@@ -355,4 +402,22 @@ double TankManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
 	}
 
 	return dist;
+}
+
+void TankManagerExt::siegeModeOn(BWAPI::Unit* selectedUnit)
+{
+	if (!selectedUnit->isSieged()
+		&& BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	{
+		selectedUnit->siege();
+	}
+}
+
+void TankManagerExt::siegeModeOff(BWAPI::Unit* selectedUnit)
+{
+	if (selectedUnit->isSieged()
+		&& BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	{
+		selectedUnit->siege();
+	}
 }
