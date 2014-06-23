@@ -240,19 +240,27 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 	if (dist > tankModeMaxRange)
 	{
 		// If target is farther than siege mode range but is approaching
-		if ((dist < (siegeModeMaxRange + 100))
+		if ((dist <= (siegeModeMaxRange + 10))
 			&& isTargetApproaching)
+		{
+			BWAPI::Broodwar->printf("                                           DebExt: Tank: siegeMode On");
+			siegeModeOn(selectedUnit);
+		}
+		else if (dist <= siegeModeMaxRange
+			&& target->getType().isBuilding())
 		{
 			siegeModeOn(selectedUnit);
 		}
 		// Target too far away
 		else
 		{
+			BWAPI::Broodwar->printf("                                           DebExt: Tank: siegeMode Off");
 			siegeModeOff(selectedUnit);
 		}
 	}
 	else if (dist < siegeModeMinRange)
 	{
+		BWAPI::Broodwar->printf("                                           DebExt: Tank: siegeMode Off");
 		siegeModeOff(selectedUnit);
 	}
 
@@ -268,7 +276,7 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 	{
 		smartAttackUnit(selectedUnit, target);
 	}
-	else
+	else if (!isSiegeModeOn)
 	{
 		BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
 		if (!fleePosition.isValid())
@@ -281,6 +289,10 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 
 		//fleeOrMine(selectedUnit, fleePosition);
 		smartMove(selectedUnit, fleePosition);
+	}
+	else
+	{
+		siegeModeOff(selectedUnit);
 	}
 
 
@@ -418,6 +430,6 @@ void TankManagerExt::siegeModeOff(BWAPI::Unit* selectedUnit)
 	if (selectedUnit->isSieged()
 		&& BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
 	{
-		selectedUnit->siege();
+		selectedUnit->unsiege();
 	}
 }

@@ -147,7 +147,6 @@ void QueueConstructorExt::makeTestQueue()
 	queueTechTanks();
 	makeExpansion();
 
-	queueTerranMarinesUpgrades();		// test	
 
 	// eof tanks
 
@@ -424,6 +423,12 @@ void QueueConstructorExt::queueTerranBunkers(int desiredNo)
 void QueueConstructorExt::queueEngineeringBays(int desiredNo)
 {
 	int numEngineeringBays = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	
+	for (int i = numEngineeringBays; i < desiredNo; i++)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Engineering_Bay), true);
+	}
+
 }
 
 void QueueConstructorExt::queueTerranTurrets(int desiredNo)
