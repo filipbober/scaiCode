@@ -133,39 +133,14 @@ int TankManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * 
 	{
 		return 1;
 	}
-	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
+	else if (targetType.isFlyer())
 	{
-		return 2;
+		return 1;
 	}
-	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
-	{
-		return selectedUnitWeaponRange + 5;
-	}
-	// Templars are extremely dangerous to bio units and should be eliminated asap.
-	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar
-		|| targetType == BWAPI::UnitTypes::Terran_Medic)
-	{
-		return selectedUnitWeaponRange + 10;
-	}
-	// Faster than Marine (without Stimpack)
-	else if ((targetType.topSpeed() >= selectedUnitType.topSpeed())
-		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot)
-		&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
-	{
-		return selectedUnitWeaponRange;		// return 160
-	}
-	// Slower than Vulture
 	else
 	{
-		int priority = selectedUnitWeaponRange - targetWeaponRange;
-		if (priority <= 0)
-		{
-			priority = 1;
-		}
-
-		return priority;
+		return  std::max((1000 - selectedUnit->getDistance(target)), 1);
 	}
-
 }
 
 BWAPI::Unit* TankManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
@@ -240,10 +215,9 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 	if (dist > tankModeMaxRange)
 	{
 		// If target is farther than siege mode range but is approaching
-		if ((dist <= (siegeModeMaxRange + 10))
+		if ((dist <= (siegeModeMaxRange + 100))
 			&& isTargetApproaching)
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: Tank: siegeMode On");
 			siegeModeOn(selectedUnit);
 		}
 		else if (dist <= siegeModeMaxRange
@@ -254,13 +228,11 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 		// Target too far away
 		else
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: Tank: siegeMode Off");
 			siegeModeOff(selectedUnit);
 		}
 	}
 	else if (dist < siegeModeMinRange)
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: Tank: siegeMode Off");
 		siegeModeOff(selectedUnit);
 	}
 
@@ -289,10 +261,6 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 
 		//fleeOrMine(selectedUnit, fleePosition);
 		smartMove(selectedUnit, fleePosition);
-	}
-	else
-	{
-		siegeModeOff(selectedUnit);
 	}
 
 
