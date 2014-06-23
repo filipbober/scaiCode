@@ -239,6 +239,15 @@ void ProductionManager::manageBuildOrderQueue()
 		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
 		//queueDoSomething();
 	}
+	
+	// Remove upgrades and research from the queue (otherwise they would block)
+	if (
+		(highestQueueItem.metaType.isTech() && (BWAPI::Broodwar->self()->isResearching(highestQueueItem.metaType.techType)))
+		|| (highestQueueItem.metaType.isUpgrade() && (BWAPI::Broodwar->self()->isUpgrading(highestQueueItem.metaType.upgradeType)))
+		)
+	{
+		queue.removeCurrentHighestPriorityItem();
+	}
 
 	// eof ext
 

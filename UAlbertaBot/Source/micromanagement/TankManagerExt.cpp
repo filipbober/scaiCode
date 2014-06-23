@@ -1,20 +1,20 @@
-#include "VultureManagerExt.h"
+#include "TankManagerExt.h"
 #include "Common.h"
 #include "StrategyManager.h"
 #include "UnitManagerExt.h"
 
 
-VultureManagerExt::VultureManagerExt()
+TankManagerExt::TankManagerExt()
 {
-	_putMineFrame = 96;
+	_siegeModeFrame = 96;
 }
 
 
-VultureManagerExt::~VultureManagerExt()
+TankManagerExt::~TankManagerExt()
 {
 }
 
-void VultureManagerExt::executeMicro(const UnitVector & targets)
+void TankManagerExt::executeMicro(const UnitVector & targets)
 {
 	const UnitVector & selectedUnits = getUnits();
 
@@ -101,24 +101,24 @@ void VultureManagerExt::executeMicro(const UnitVector & targets)
 
 }
 
-void VultureManagerExt::executeAttack(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
+void TankManagerExt::executeAttack(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
 {
 
 }
 
-void VultureManagerExt::executeDefend(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
+void TankManagerExt::executeDefend(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
 {
 
 }
 
-void VultureManagerExt::executeAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets)
+void TankManagerExt::executeAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets)
 {
 
 }
 
 /// Returns target attack priority.
 /// Returned value must be greater than 0
-int VultureManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+int TankManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
 	BWAPI::UnitType selectedUnitType = selectedUnit->getType();
 	BWAPI::UnitType targetType = target->getType();
@@ -134,42 +134,17 @@ int VultureManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	{
 		return 1;
 	}
-	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
+	else if (targetType.isFlyer())
 	{
-		return 2;
+		return 1;
 	}
-	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
-	{
-		return selectedUnitWeaponRange + 5;
-	}
-	// Templars are extremely dangerous to bio units and should be eliminated asap.
-	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar
-		|| targetType == BWAPI::UnitTypes::Terran_Medic)
-	{
-		return selectedUnitWeaponRange + 10;
-	}
-	// Faster than Marine (without Stimpack)
-	else if ((targetType.topSpeed() >= selectedUnitType.topSpeed())
-		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot)
-		&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
-	{
-		return selectedUnitWeaponRange;		// return 160
-	}
-	// Slower than Vulture
 	else
 	{
-		int priority = selectedUnitWeaponRange - targetWeaponRange;
-		if (priority <= 0)
-		{
-			priority = 1;
-		}
-
-		return priority;
+		return  std::max((1000 - selectedUnit->getDistance(target)), 1);
 	}
-
 }
 
-BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
+BWAPI::Unit* TankManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
 {
 	int range(selectedUnit->getType().groundWeapon().maxRange());
 
@@ -215,49 +190,123 @@ BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector
 	return (highestInRangePriority >= highestNotInRangePriority) ? inRangeTarget : notInRangeTarget;
 }
 
-void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
-	// If mine is being put or we have issued a command this frame, return
-	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
-		&& (UnitManagerExt::Instance().isPuttingMine(selectedUnit)
-		|| selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount()))
-	{
-		return;
-	}
-
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
-	double targetRange(target->getType().groundWeapon().maxRange());	
+	double targetRange(target->getType().groundWeapon().maxRange());
 
 	double dist = closestEnemyDist(selectedUnit);
 
 	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
+	
+	int meleeRange = 15;
 
-	// If we are going to be out of range (melee range added just to ensure we are still in range)
-	// or if weapon is ready then attack
-	int keepDistance = 100;
-	if ((selectedUnitWeaponCooldown == 0)
-		&& (dist > keepDistance)
-		&& target->getDistance(selectedUnit) > keepDistance)
-	{				
-		attackOrMine(selectedUnit, target);		
+	int tankModeMaxRange = BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode.groundWeapon().maxRange();
+	int siegeModeMinRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().minRange();
+	int siegeModeMaxRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().maxRange();
+
+	bool isSiegeModeOn = selectedUnit->isSieged();
+	bool isTargetApproaching = !target->getType().isBuilding() && !target->getType().isFlyer();
+
+	int keepDistance = 200;
+
+	// If an enemy if farther than normal mode range but within siege mode + 10 (if not building)
+
+	// If target is farther than normal mode range
+	if ((BWAPI::Broodwar->getFrameCount() % _siegeModeFrame) == 0)
+	{
+		if (dist > tankModeMaxRange)
+		{
+			// If target is farther than siege mode range but is approaching
+			if ((dist <= (siegeModeMaxRange + 100))
+				&& isTargetApproaching)
+			{
+				siegeModeOn(selectedUnit);
+			}
+			else if (dist <= siegeModeMaxRange
+				&& target->getType().isBuilding())
+			{
+				siegeModeOn(selectedUnit);
+			}
+			// Target too far away
+			else
+			{
+				siegeModeOff(selectedUnit);
+			}
+		}
+		else if (dist < siegeModeMinRange)
+		{
+			siegeModeOff(selectedUnit);
+		}
 	}
-	else
+
+
+	// If an order was issued this frame (like siege off), return
+	if (selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount())
+	{
+		return;
+	}
+	
+	if ((dist > keepDistance)
+		|| (selectedUnitWeaponCooldown == 0))
+	{
+		smartAttackUnit(selectedUnit, target);
+	}
+	else if (!isSiegeModeOn)
 	{
 		BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
 		if (!fleePosition.isValid())
 		{
 			fleePosition.makeValid();
-		}		
+		}
 
 		BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
 			fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
 
-		fleeOrMine(selectedUnit, fleePosition);		
+		//fleeOrMine(selectedUnit, fleePosition);
+		smartMove(selectedUnit, fleePosition);
 	}
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	//// If we are going to be out of range (melee range added just to ensure we are still in range)
+	//// or if weapon is ready then attack
+	//int keepDistance = 100;
+	//if ((selectedUnitWeaponCooldown == 0)
+	//	&& (dist > keepDistance)
+	//	&& target->getDistance(selectedUnit) > keepDistance)
+	//{
+	//	//attackOrMine(selectedUnit, target);
+	//	smartAttackUnit(selectedUnit, target);
+	//}
+	//else
+	//{
+	//	BWAPI::Position fleePosition(selectedUnit->getPosition() - _averageEnemyPosition + selectedUnit->getPosition());
+	//	if (!fleePosition.isValid())
+	//	{
+	//		fleePosition.makeValid();
+	//	}
+
+	//	BWAPI::Broodwar->drawLineMap(selectedUnit->getPosition().x(), selectedUnit->getPosition().y(),
+	//		fleePosition.x(), fleePosition.y(), BWAPI::Colors::Cyan);
+
+	//	//fleeOrMine(selectedUnit, fleePosition);
+	//	smartMove(selectedUnit, fleePosition);
+	//}
 
 }
 
-void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
+void TankManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 {
 	if (targets.empty())
 	{
@@ -285,9 +334,9 @@ void VultureManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	}
 }
 
-bool VultureManagerExt::isAttack()
+bool TankManagerExt::isAttack()
 {
-	// Vultures attack no matter what strategy is
+	// Tanks attack no matter what the strategy is
 	if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
 	{
 		return true;
@@ -298,7 +347,7 @@ bool VultureManagerExt::isAttack()
 	}
 }
 
-void VultureManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+void TankManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
 {
 	// Code below is used for units (like marines) if they are not supposed to attack and should defend the base only
 	if (order.type == order.Attack || order.type == order.Defend)
@@ -319,134 +368,7 @@ void VultureManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit,
 	}
 }
 
-
-void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target)
-{
-	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
-		&& (selectedUnit->getSpiderMineCount() > 0)))
-	{
-		
-
-		int proximity = 18;
-		BWAPI::Position minePosition = getMinePosition(selectedUnit, target, proximity);
-
-		bool isValid = selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines, minePosition);
-	}
-}
-
-void VultureManagerExt::putMine(BWAPI::Unit * selectedUnit, BWAPI::Position targetPosition)
-{
-	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
-		&& (selectedUnit->getSpiderMineCount() > 0)))
-	{
-		bool isValid = selectedUnit->useTech(BWAPI::TechTypes::Spider_Mines, targetPosition);
-	}
-}
-
-BWAPI::Position VultureManagerExt::getMinePosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity)
-{
-	int posX = selectedUnit->getPosition().x();
-	int posY = selectedUnit->getPosition().y();
-
-	BWAPI::Position selectedUnitPosition = selectedUnit->getPosition();
-	BWAPI::Position targetPosition = target->getPosition();
-
-	// Set X
-	if (selectedUnitPosition.x() < targetPosition.x())
-	{
-		posX -= proximity;
-	}
-	else if (selectedUnitPosition.x() > targetPosition.x())
-	{
-		posX += proximity;
-	}
-	else
-	{
-		posX = selectedUnit->getPosition().x();
-	}
-
-	// Set Y
-	if (selectedUnitPosition.y() < targetPosition.y())
-	{
-		posY -= proximity;
-	}
-	else if (selectedUnitPosition.y() > targetPosition.y())
-	{
-		posY += proximity;
-	}
-	else
-	{
-		posY = selectedUnit->getPosition().y();
-	}
-
-	BWAPI::Position minePos = BWAPI::Position(posX, posY);
-	if (!minePos.isValid())
-	{
-		minePos.makeValid();
-	}
-
-	return minePos;
-}
-
-void VultureManagerExt::attackOrMine(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
-{
-	int minDistToTarget = 200;
-
-	// Put mine
-	if ((selectedUnit->getSpiderMineCount() > 0)
-		&& (selectedUnit->getDistance(target) <= 200)
-		&& (BWAPI::Broodwar->getFrameCount() % _putMineFrame ==  0
-		&& (selectedUnit->getSpellCooldown() == 0))
-		&& !isMineProximity(selectedUnit))
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Vulture attackOrMine: putMine");
-		UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
-		putMine(selectedUnit, target);
-		return;
-	}
-	else
-	{
-		smartAttackUnit(selectedUnit, target);
-		return;
-	}
-}
-
-void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position fleePosition)
-{
-	if ((selectedUnit->getSpiderMineCount() > 0)
-		&& (selectedUnit->getSpellCooldown() == 0)
-		&& (BWAPI::Broodwar->getFrameCount() % _putMineFrame == 0))
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Vulture fleeOrMine: putMine");
-		UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
-		putMine(selectedUnit, selectedUnit->getPosition());
-	}
-	else
-	{
-		//BWAPI::Broodwar->printf("                                           DebExt: Vulture fleeOrMine: smartMove");
-		smartMove(selectedUnit, fleePosition);
-	}
-}
-
-bool VultureManagerExt::isMineProximity(BWAPI::Unit* selectedUnit)
-{
-	int proximity = 100;
-
-	BOOST_FOREACH(BWAPI::Unit* mine, BWAPI::Broodwar->self()->getUnits())
-	{
-		if (mine->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
-		{
-			if (mine->getDistance(selectedUnit) <= proximity)
-			{
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-double VultureManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
+double TankManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
 {
 	double dist = 1000;
 
@@ -464,4 +386,22 @@ double VultureManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
 	}
 
 	return dist;
+}
+
+void TankManagerExt::siegeModeOn(BWAPI::Unit* selectedUnit)
+{
+	if (!selectedUnit->isSieged()
+		&& BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	{
+		selectedUnit->siege();
+	}
+}
+
+void TankManagerExt::siegeModeOff(BWAPI::Unit* selectedUnit)
+{
+	if (selectedUnit->isSieged()
+		&& BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	{
+		selectedUnit->unsiege();
+	}
 }

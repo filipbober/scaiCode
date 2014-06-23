@@ -26,6 +26,8 @@ public:
 	void queueTerranMarines(double prodPercent);
 	void queueTerranFirebats(double prodPercent);
 	void queueTerranVultures(double prodPercent);
+	void queueTerranTanks(double prodPercent);
+	void queueTerranGoliaths(double prodPercent);
 	void queueTerranWraiths(double prodPercent);
 	void queueTerranSCVs(double prodPercent);
 	void queueTerranBCs(double prodPercent);	
@@ -60,6 +62,7 @@ public:
 	void queueTechVultures();
 	void queueTechTanks();
 	void queueTechBattlecruisers();
+	void queueTechGoliaths();
 	
 
 

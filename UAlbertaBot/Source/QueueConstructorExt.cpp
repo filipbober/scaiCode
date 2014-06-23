@@ -118,32 +118,95 @@ void QueueConstructorExt::makeTestQueue()
 
 
 
+	
 
 
 
 
-	// Vultures
+	// Tanks
 	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+
+	int minerals = BWAPI::Broodwar->self()->minerals();
+	int gas = BWAPI::Broodwar->self()->gas();
+	int frame = BWAPI::Broodwar->getFrameCount();
+
+	if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
+	{
+		return;
+	}
 
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
 		queueTerranSupply(numSupply + 1);
 	}
 
-	
+	//if (minerals > 300)
+	//{
+	//	queueTerranFactories(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1), 5));
+	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
+	//}
+
+	if (frame > 14000)
+	{
+		queueTerranGoliaths(0.3);
+		queueTechGoliaths();
+	}
 
 	queueTerranMarines(1.0);
 	queueTerranVultures(1.0);
+	queueTerranTanks(0.5);
 
 	if (numScvs < 48)
 	{
 		queueTerranSCVs(1.0);
+		queueTerranSCVs(1.0);
 	}
 
-	queueTechVultures();
+	if (frame > 10000)
+	{
+		queueTechVultures();
+		queueTerranFactories(3);
+	}
+
+	if (frame > 12000)
+	{
+		queueTerranFactories(4);
+	}
+
+	queueTechTanks();
+
 	makeExpansion();
+
+	// eof tanks
+
+	//// Vultures
+	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+
+	//if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	//{
+	//	queueTerranSupply(numSupply + 1);
+	//}
+
+	//
+
+	//queueTerranMarines(1.0);
+	//queueTerranVultures(1.0);
+
+	//if (numScvs < 48)
+	//{
+	//	queueTerranSCVs(1.0);
+	//}
+
+	//queueTechVultures();
+	//makeExpansion();
 	
+	//// eof Vultures
+
+
+
+
 
 
 
@@ -263,6 +326,59 @@ void QueueConstructorExt::queueTerranVultures(double prodPercent)
 	}
 }
 
+void QueueConstructorExt::queueTerranTanks(double prodPercent)
+{
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+
+	int tanksWanted = std::max(1, (int)ceil( std::min(numFactories, numMachineShops) * prodPercent));
+
+	if (numFactories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else if (numMachineShops < numFactories)
+	{
+		for (int i = numMachineShops; i < numFactories; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
+		}
+	}	
+	else
+	{
+		for (int i = 0; i < tanksWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode), true);
+		}
+	}
+}
+
+void QueueConstructorExt::queueTerranGoliaths(double prodPercent)
+{
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
+
+	int goliathsWanted = std::max(1, (int)ceil(numFactories * prodPercent));
+
+	if (numFactories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else if (numArmory < 1)
+	{
+		BWAPI::Broodwar->printf("                                           DebExt: queue Armory - Goliaths may crash SC");
+		queueTerranArmory(1);
+	}
+	else
+	{
+		// This may crash the game -----------------
+		for (int i = 0; i < goliathsWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Goliath), true);
+		}
+	}
+}
+
 void QueueConstructorExt::queueTerranWraiths(double prodPercent)
 {
 	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
@@ -363,6 +479,12 @@ void QueueConstructorExt::queueTerranBunkers(int desiredNo)
 void QueueConstructorExt::queueEngineeringBays(int desiredNo)
 {
 	int numEngineeringBays = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
+	
+	for (int i = numEngineeringBays; i < desiredNo; i++)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Engineering_Bay), true);
+	}
+
 }
 
 void QueueConstructorExt::queueTerranTurrets(int desiredNo)
@@ -417,10 +539,15 @@ void QueueConstructorExt::queueTerranFactories(int desiredNo)
 {
 	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
 
 	if (numBarracks < 1)
 	{
 		queueTerranBarracks(1);
+	}
+	if (numMachineShops < numFactories)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
 	}
 	else
 	{
@@ -760,8 +887,8 @@ void QueueConstructorExt::cleanQueue()
 	{
 		if (_queue[i].metaType.isUnit())
 		{
-			if (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Armory
-				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Science_Facility && numArmory > 1)
+			if (
+				 (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Armory && numArmory > 1)
 				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Academy && numAcademies > 1)
 				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Engineering_Bay && numEngineeringBays > 1)
 				|| (_queue[i].metaType.unitType == BWAPI::UnitTypes::Terran_Science_Facility && numScienceFaciliteis > 1))
@@ -834,4 +961,26 @@ void QueueConstructorExt::queueTechTanks()
 void QueueConstructorExt::queueTechBattlecruisers()
 {
 
+}
+
+void QueueConstructorExt::queueTechGoliaths()
+{
+	int numMachineShops = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numFactiories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory);
+
+	if (numFactiories < 1)
+	{
+		// Ensure that there is at least one factory
+		queueTerranFactories(1);
+	}
+	else if (numMachineShops < 1)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Machine_Shop), true);
+	}
+	else if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Charon_Boosters)
+		< BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Charon_Boosters))
+		&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Charon_Boosters)))
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Charon_Boosters), true);
+	}
 }

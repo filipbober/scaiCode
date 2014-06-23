@@ -137,6 +137,10 @@ BWAPI::TilePosition UnitManagerExt::getLandingPosition(BWAPI::Unit* unit)
 	{
 		return unitData->getLandingPosition();
 	}
+	else
+	{
+		return BWAPI::Broodwar->self()->getStartLocation().makeValid();
+	}
 }
 
 UnitManagerExt& UnitManagerExt::Instance()
