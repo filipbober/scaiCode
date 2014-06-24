@@ -123,29 +123,32 @@ void QueueConstructorExt::makeTestQueue()
 
 
 
-	//// Tanks
-	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+	// Tanks
+	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 
-	//int minerals = BWAPI::Broodwar->self()->minerals();
-	//int gas = BWAPI::Broodwar->self()->gas();
-	//int frame = BWAPI::Broodwar->getFrameCount();
+	int minerals = BWAPI::Broodwar->self()->minerals();
+	int gas = BWAPI::Broodwar->self()->gas();
+	int frame = BWAPI::Broodwar->getFrameCount();
 
-	////if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
-	////{
-	////	return;
-	////}
-
-	//if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	//if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
 	//{
-	//	queueTerranSupply(numSupply + 1);
+	//	return;
 	//}
 
-	////if (minerals > 300)
-	////{
-	////	queueTerranFactories(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1), 5));
-	////	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
-	////}
+	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	{
+		queueTerranSupply(numSupply + 1);
+	}
+
+	bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory) > 0) 
+		|| (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
+	if ((minerals > 300)
+		&& (!underConstruction))
+	{
+		queueTerranFactories(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1), 5));
+		queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
+	}
 
 	//if (isAirThreat())
 	//{
@@ -153,68 +156,71 @@ void QueueConstructorExt::makeTestQueue()
 	//	queueTechGoliaths();
 	//}
 
-	//queueTerranMarines(1.0);
-	//queueTerranMarines(1.0);
-	//queueTerranMarines(1.0);
-
-	//queueTerranVultures(1.0);
-	//queueTerranTanks(0.5);
-
-	//if (numScvs < 48)
-	//{
-	//	queueTerranSCVs(1.0);
-	//	queueTerranSCVs(1.0);
-	//}
-
-	//if (frame > 10000)
-	//{
-	//	queueTechVultures();
-	//	queueTerranFactories(3);
-	//}
-
-	//if (frame > 12000)
-	//{
-	//	queueTerranFactories(4);
-	//}
-
-	//queueTechTanks();
-
-	//makeExpansion();
-
-	//// eof tanks
-
-
-
-
-
-
-
-
-
-
-	// Vultures
-	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
-
-	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
-	{
-		queueTerranSupply(numSupply + 1);
-	}
-
-	
-
 	queueTerranMarines(1.0);
+	queueTerranMarines(1.0);
+	queueTerranMarines(1.0);
+
 	queueTerranVultures(1.0);
+	queueTerranTanks(0.3);
 
 	if (numScvs < 48)
 	{
 		queueTerranSCVs(1.0);
+		queueTerranSCVs(1.0);
 	}
 
-	queueTechVultures();
+	if (frame > 10000)
+	{
+		queueTechVultures();
+		queueTerranFactories(3);
+	}
+
+	if (frame > 12000)
+	{
+		queueTerranFactories(4);
+	}
+
+	if (frame > 13000)
+	{
+		queueTechTanks();
+	}
+
 	makeExpansion();
-	
-	// eof Vultures
+
+	// eof tanks
+
+
+
+
+
+
+
+
+
+
+	//// Vultures
+	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+
+	//if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	//{
+	//	queueTerranSupply(numSupply + 1);
+	//}
+
+	//
+
+	//queueTerranMarines(1.0);
+	//queueTerranVultures(1.0);
+
+	//if (numScvs < 48)
+	//{
+	//	queueTerranSCVs(1.0);
+	//}
+
+	//queueTechVultures();
+	//makeExpansion();
+	//
+	//// eof Vultures
 
 
 

@@ -136,7 +136,7 @@ int VultureManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	}
 	else if (targetType == BWAPI::UnitTypes::Protoss_Pylon)
 	{
-		return 4;
+		return 3;
 	}
 	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
 	{
@@ -144,7 +144,7 @@ int VultureManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	}
 	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
 	{
-		return 3;
+		return 4;
 	}
 	// Templars are extremely dangerous to bio units and should be eliminated asap.
 	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar
