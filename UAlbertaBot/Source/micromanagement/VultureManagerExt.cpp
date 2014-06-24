@@ -134,13 +134,17 @@ int VultureManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	{
 		return 1;
 	}
+	else if (targetType == BWAPI::UnitTypes::Protoss_Pylon)
+	{
+		return 4;
+	}
 	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
 	{
 		return 2;
 	}
 	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
 	{
-		return selectedUnitWeaponRange + 5;
+		return 3;
 	}
 	// Templars are extremely dangerous to bio units and should be eliminated asap.
 	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar
@@ -392,9 +396,15 @@ BWAPI::Position VultureManagerExt::getMinePosition(BWAPI::Unit* selectedUnit, BW
 
 	BWAPI::Position minePos = BWAPI::Position(posX, posY);
 	if (!minePos.isValid())
-	{
-		minePos.makeValid();
+	{		
+		minePos = selectedUnit->getPosition();
+
+		if (!minePos.isValid())
+		{
+			minePos.makeValid();
+		}
 	}
+
 
 	return minePos;
 }
@@ -430,12 +440,12 @@ void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position f
 	{
 		BWAPI::Broodwar->printf("                                           DebExt: Vulture fleeOrMine: putMine");
 		UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
-		//putMine(selectedUnit, selectedUnit->getPosition());
+		putMine(selectedUnit, selectedUnit->getPosition());
 
 
-		BWAPI::Position minePosition = getMinePosition(selectedUnit, fleePosition, 18);
+		//BWAPI::Position minePosition = getMinePosition(selectedUnit, fleePosition, 18);
 		//putMine(selectedUnit, fleePosition);
-		putMine(selectedUnit, minePosition);
+		//putMine(selectedUnit, minePosition);
 
 
 	}
