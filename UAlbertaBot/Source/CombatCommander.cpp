@@ -216,8 +216,8 @@ void CombatCommander::assignRepairSquadsExt()
 		{
 			// Unit should be repaired if it is a building or a Battlecruiser or a tank
 			BWAPI::UnitType selfUnitType = selfUnit->getType();
-			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser 
-				|| selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode || selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
+			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser )
+				//|| selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode || selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
 				&& !(selfUnit->isBeingConstructed())
 				&& (selfUnit->isCompleted())
 				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
@@ -240,6 +240,8 @@ void CombatCommander::assignRepairSquadsExt()
 
 				// get our worker unit that is mining that is closest to it
 				//BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
+
+				// Code below should take different worker every time. Now it probably takes one and the same each iteration
 				BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
 
 				if (workerDefender == NULL)

@@ -136,9 +136,19 @@ void QueueConstructorExt::makeTestQueue()
 	//	return;
 	//}
 
-	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	// To prevent performance issues
+	if (BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed())
 	{
 		queueTerranSupply(numSupply + 1);
+		cleanQueue();
+		return;
+	}
+	else if (BWAPI::Broodwar->self()->supplyUsed() > (190 * 2))
+	{
+		// TODO tech, upgrade etc.
+		// TODO - control supply while building units (ensure there is enough)
+		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
+		return;
 	}
 
 
@@ -190,6 +200,14 @@ void QueueConstructorExt::makeTestQueue()
 	}
 
 	makeExpansion();
+
+	// TODO: if supply is higher than 110 -> go for battlecruisers 
+
+	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)
+	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	{
+		queueTerranSupply(numSupply + 1);
+	}
 
 	// eof tanks
 
