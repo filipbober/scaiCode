@@ -235,9 +235,14 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
 	int keepDistance = 100;
+	if (target->getType().isBuilding()
+		&& !target->getType().canAttack())
+	{
+		attackOrMine(selectedUnit, target);
+	}	
 	if ((selectedUnitWeaponCooldown == 0)
 		&& (dist > keepDistance)
-		&& target->getDistance(selectedUnit) > keepDistance)
+		&& (target->getDistance(selectedUnit) > keepDistance))
 	{				
 		attackOrMine(selectedUnit, target);		
 	}

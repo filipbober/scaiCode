@@ -131,10 +131,10 @@ void QueueConstructorExt::makeTestQueue()
 	int gas = BWAPI::Broodwar->self()->gas();
 	int frame = BWAPI::Broodwar->getFrameCount();
 
-	if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
-	{
-		return;
-	}
+	//if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
+	//{
+	//	return;
+	//}
 
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{

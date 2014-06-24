@@ -75,6 +75,10 @@ class ProductionManager
 
 public:
 
+	// Extensions
+	void resetQueue();
+	// eof ext
+
 	static ProductionManager &	Instance();
 
 	void						drawQueueInformation(std::map<BWAPI::UnitType, int> & numUnits, int x, int y, int index);

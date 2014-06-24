@@ -214,9 +214,10 @@ void CombatCommander::assignRepairSquadsExt()
 		std::set<BWAPI::Unit *> damagedSelfUnits;
 		BOOST_FOREACH(BWAPI::Unit * selfUnit, BWAPI::Broodwar->self()->getUnits())
 		{
-			// Unit should be repaired if it is a building or a Battlecruiser
+			// Unit should be repaired if it is a building or a Battlecruiser or a tank
 			BWAPI::UnitType selfUnitType = selfUnit->getType();
-			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser)
+			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser 
+				|| selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode || selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
 				&& !(selfUnit->isBeingConstructed())
 				&& (selfUnit->isCompleted())
 				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())

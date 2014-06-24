@@ -6,6 +6,8 @@
 #include "BuildingManager.h"
 #include "../UnitManagerExt.h"
 
+#include "ProductionManager.h"
+
 
 BuildingManager::BuildingManager() 
 	: debugMode(false)
@@ -725,6 +727,8 @@ void BuildingManager::buildingLiftLand()
 
 			BWAPI::Broodwar->printf("                                           DebExt: landing, building name = %s", unit->getType().c_str());
 			unit->land(landingPos);
+
+			ProductionManager::Instance().resetQueue();
 		}
 	}
 
