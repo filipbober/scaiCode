@@ -238,7 +238,8 @@ void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * tar
 	if (target->getType().isBuilding()
 		&& !target->getType().canAttack())
 	{
-		attackOrMine(selectedUnit, target);
+		//attackOrMine(selectedUnit, target);
+		smartAttackUnit(selectedUnit, target);
 	}	
 	if ((selectedUnitWeaponCooldown == 0)
 		&& (dist > keepDistance)
