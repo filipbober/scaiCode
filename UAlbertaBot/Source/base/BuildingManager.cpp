@@ -6,6 +6,8 @@
 #include "BuildingManager.h"
 #include "../UnitManagerExt.h"
 
+#include "ProductionManager.h"
+
 
 BuildingManager::BuildingManager() 
 	: debugMode(false)
@@ -387,22 +389,22 @@ void BuildingManager::checkForStartedConstruction()
 // STEP 5: IF WE ARE TERRAN, THIS MATTERS, SO: LOL
 void BuildingManager::checkForDeadTerranBuilders() 
 {
-	// TODO
-	if (!(BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran))
-	{
-		return;
-	}
-	buildingData.begin(ConstructionData::UnderConstruction);
-	while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
-	{
+	//// TODO
+	//if (!(BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran))
+	//{
+	//	return;
+	//}
+	//buildingData.begin(ConstructionData::UnderConstruction);
+	//while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
+	//{
 
-		Building & b = buildingData.getNextBuilding(ConstructionData::UnderConstruction);
+	//	Building & b = buildingData.getNextBuilding(ConstructionData::UnderConstruction);
 
-		if (!b.builderUnit->exists())
-		{
-			buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
-		}
-	}
+	//	if (!b.builderUnit->exists())
+	//	{
+	//		buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
+	//	}
+	//}
 }
 
 // STEP 6: CHECK FOR COMPLETED BUILDINGS
@@ -686,18 +688,22 @@ void BuildingManager::scannerSweep()
 
 void BuildingManager::buildingLiftLand()
 {
-	if (BWAPI::Broodwar->self()->getRace() != BWAPI::Races::Terran)
+	if ((BWAPI::Broodwar->self()->getRace() != BWAPI::Races::Terran)
+		|| (BWAPI::Broodwar->getFrameCount() % 240 != 0))
 	{
 		return;
 	}
 
 	// Set buildings as selectedUnits
-	std::set<BWAPI::Unit *>	selectedUnits;
+	//std::set<BWAPI::Unit *>	selectedUnits;
+	UnitVector selectedUnits;
 	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
-		if (unit->getType().isBuilding())
+		if (unit->getType().isBuilding()
+			&& unit->getType().isFlyingBuilding())
 		{
-			selectedUnits.insert(unit);			
+			//selectedUnits.insert(unit);			
+			selectedUnits.push_back(unit);
 		}
 	}
 
@@ -709,8 +715,11 @@ void BuildingManager::buildingLiftLand()
 	BOOST_FOREACH(BWAPI::Unit * unit, selectedUnits)
 	{
 		// If Command Center is lifted it sometimes messes with build orders
-		if (unit->isUnderAttack()
-			&& (unit->getType() != BWAPI::UnitTypes::Terran_Command_Center))
+		// Update: Every lift messes with build orders
+		//if (unit->isUnderAttack()
+		//	&& (unit->getType() != BWAPI::UnitTypes::Terran_Command_Center))
+		if (unit-> isUnderAttack() 
+			&& (unit->getType() == BWAPI::UnitTypes::Terran_Barracks))
 		{
 			UnitManagerExt::Instance().setLandingPosition(unit, unit->getTilePosition());			
 			unit->lift();
@@ -725,6 +734,8 @@ void BuildingManager::buildingLiftLand()
 
 			BWAPI::Broodwar->printf("                                           DebExt: landing, building name = %s", unit->getType().c_str());
 			unit->land(landingPos);
+
+			ProductionManager::Instance().resetQueue();
 		}
 	}
 

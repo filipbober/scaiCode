@@ -207,6 +207,8 @@ void MicroManager::smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targe
 									BWAPI::Colors::Orange );
 }
 
+
+// Legacy code. WaypointCreatorExt is responsible for border movement
 void MicroManager::smartBorderMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const
 {
 	assert(attacker);
@@ -463,6 +465,52 @@ void MicroManager::smartMove(BWAPI::Unit * attacker, BWAPI::Position targetPosit
 	{
 		BWAPI::Broodwar->drawLineMap(attacker->getPosition().x(), attacker->getPosition().y(),
 									 targetPosition.x(), targetPosition.y(), BWAPI::Colors::Orange);
+	}
+}
+
+void MicroManager::smartGroupMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition, int proximity, UnitVector& unitsGroup) const
+{
+	assert(attacker);
+
+	// if we have issued a command to this unit already this frame, ignore this one
+	if (attacker->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount() || attacker->isAttackFrame())
+	{
+		if (attacker->isSelected())
+		{
+			BWAPI::Broodwar->printf("Attack Frame");
+		}
+		return;
+	}
+
+	// get the unit's current command
+	BWAPI::UnitCommand currentCommand(attacker->getLastCommand());
+
+	// if we've already told this unit to attack this target, ignore this command
+	if ((currentCommand.getType() == BWAPI::UnitCommandTypes::Move)
+		&& (currentCommand.getTargetPosition() == targetPosition)
+		&& (BWAPI::Broodwar->getFrameCount() - attacker->getLastCommandFrame() < 5)
+		&& attacker->isMoving())
+	{
+		if (attacker->isSelected())
+		{
+			BWAPI::Broodwar->printf("Previous Command Frame=%d Pos=(%d, %d)", attacker->getLastCommandFrame(), currentCommand.getTargetPosition().x(), currentCommand.getTargetPosition().y());
+		}
+		return;
+	}
+
+	// if nothing prevents it, attack the target
+
+	// Group movement
+
+
+
+	attacker->move(targetPosition);
+	// eof group movement
+
+	if (Options::Debug::DRAW_UALBERTABOT_DEBUG)
+	{
+		BWAPI::Broodwar->drawLineMap(attacker->getPosition().x(), attacker->getPosition().y(),
+			targetPosition.x(), targetPosition.y(), BWAPI::Colors::Orange);
 	}
 }
 

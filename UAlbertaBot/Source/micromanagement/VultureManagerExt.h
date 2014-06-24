@@ -27,7 +27,7 @@ private:
 
 	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target);
 	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Position targetPosition);
-	BWAPI::Position getMinePosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity);
+	BWAPI::Position getMinePosition(BWAPI::Unit* selectedUnit, BWAPI::Position targetPosition, int proximity);
 
 	void attackOrMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target);
 	void fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position fleePosition);

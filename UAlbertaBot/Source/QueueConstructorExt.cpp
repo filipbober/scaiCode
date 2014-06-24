@@ -37,11 +37,11 @@ void QueueConstructorExt::makeExpansion()
 	{
 		queueCommandCenters(2);
 	}
-	else if ((numCommandCenters < 3)
-		&& (frame > 14000))
-	{
-		queueCommandCenters(3);
-	}
+	//else if ((numCommandCenters < 3)
+	//	&& (frame > 14000))
+	//{
+	//	queueCommandCenters(3);
+	//}
 }
 
 void QueueConstructorExt::makeTestQueue()
@@ -131,17 +131,33 @@ void QueueConstructorExt::makeTestQueue()
 	int gas = BWAPI::Broodwar->self()->gas();
 	int frame = BWAPI::Broodwar->getFrameCount();
 
-	if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
+	//if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
+	//{
+	//	return;
+	//}
+
+	// To prevent performance issues
+	if (BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed())
 	{
+		queueTerranSupply(numSupply + 1);
+		cleanQueue();
+		return;
+	}
+	else if (BWAPI::Broodwar->self()->supplyUsed() > (190 * 2))
+	{
+		// TODO tech, upgrade etc.
+		// TODO - control supply while building units (ensure there is enough)
+		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		return;
 	}
 
-	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
-	{
-		queueTerranSupply(numSupply + 1);
-	}
 
-	//if (minerals > 300)
+
+	// Code below does slow the game in late game! <------------------------------------------------------------------------------------
+	//bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory) > 0) 
+	//	|| (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
+	//if ((minerals > 300)
+	//	&& (!underConstruction))
 	//{
 	//	queueTerranFactories(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1), 5));
 	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
@@ -149,8 +165,9 @@ void QueueConstructorExt::makeTestQueue()
 
 	if (isAirThreat())
 	{
-		queueTerranGoliaths(0.3);
-		queueTechGoliaths();
+		//queueTerranGoliaths(0.3);
+		//queueTechGoliaths();
+		queueTerranWraiths(1.0);
 	}
 
 	queueTerranMarines(1.0);
@@ -158,7 +175,7 @@ void QueueConstructorExt::makeTestQueue()
 	queueTerranMarines(1.0);
 
 	queueTerranVultures(1.0);
-	queueTerranTanks(0.5);
+	queueTerranTanks(0.3);
 
 	if (numScvs < 48)
 	{
@@ -177,11 +194,31 @@ void QueueConstructorExt::makeTestQueue()
 		queueTerranFactories(4);
 	}
 
-	queueTechTanks();
+	if (frame > 13000)
+	{
+		queueTechTanks();
+	}
 
 	makeExpansion();
 
+	// TODO: if supply is higher than 110 -> go for battlecruisers 
+
+	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)
+	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	{
+		queueTerranSupply(numSupply + 3);
+	}
+
 	// eof tanks
+
+
+
+
+
+
+
+
+
 
 	//// Vultures
 	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
@@ -204,7 +241,7 @@ void QueueConstructorExt::makeTestQueue()
 
 	//queueTechVultures();
 	//makeExpansion();
-	
+	//
 	//// eof Vultures
 
 

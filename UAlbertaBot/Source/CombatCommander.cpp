@@ -214,9 +214,10 @@ void CombatCommander::assignRepairSquadsExt()
 		std::set<BWAPI::Unit *> damagedSelfUnits;
 		BOOST_FOREACH(BWAPI::Unit * selfUnit, BWAPI::Broodwar->self()->getUnits())
 		{
-			// Unit should be repaired if it is a building or a Battlecruiser
+			// Unit should be repaired if it is a building or a Battlecruiser or a tank
 			BWAPI::UnitType selfUnitType = selfUnit->getType();
-			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser)
+			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser )
+				//|| selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode || selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
 				&& !(selfUnit->isBeingConstructed())
 				&& (selfUnit->isCompleted())
 				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
@@ -231,29 +232,36 @@ void CombatCommander::assignRepairSquadsExt()
 		// special case: figure out if the only attacker is a worker, the enemy is scouting
 		if (!damagedSelfUnits.empty())
 		{
-			// the enemy worker that is attacking us
-			BWAPI::Unit* unitToRepair = *damagedSelfUnits.begin();
-
-			// get our worker unit that is mining that is closest to it
-			BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
-
-			if (workerDefender == NULL)
+			BOOST_FOREACH(BWAPI::Unit* unitToRepair, damagedSelfUnits)
 			{
-				return;
-			}
 
-			// --
-			
+				// the enemy worker that is attacking us
+				//BWAPI::Unit* unitToRepair = *damagedSelfUnits.begin();
 
-			BWAPI::Broodwar->printf("                                           DebExt: Repairing");
-			//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
-			//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
-			//BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
+				// get our worker unit that is mining that is closest to it
+				//BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
 
-			if (unitToRepair->exists())
-			{
-				workerDefender->repair(unitToRepair);
-				WorkerManager::Instance().setRepairWorker(workerDefender);
+				// Code below should take different worker every time. Now it probably takes one and the same each iteration
+				BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
+
+				if (workerDefender == NULL)
+				{
+					return;
+				}
+
+				// --
+
+
+				BWAPI::Broodwar->printf("                                           DebExt: Repairing");
+				//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
+				//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
+				//BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
+
+				if (unitToRepair->exists())
+				{
+					workerDefender->repair(unitToRepair);
+					WorkerManager::Instance().setRepairWorker(workerDefender);
+				}
 			}
 
 			// finished with combat worker

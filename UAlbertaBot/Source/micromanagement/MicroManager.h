@@ -43,6 +43,8 @@ protected:
 	int nextCounterclockwiseBorderIdx(int borderId) const;
 	int clockwiseSteps(int attackerBorder, int enemyBorder) const;
 	int counterclockwiseSteps(int attackerBorder, int enemyBorder) const;
+
+	void smartGroupMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition, int proximity, UnitVector& unitsGroup) const;
 	// eof ext
 
 public:

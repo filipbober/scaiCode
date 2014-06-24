@@ -722,3 +722,8 @@ bool ProductionManager::isDuplicate(BWAPI::UnitType unitType)
 	return false;
 
 }
+
+void ProductionManager::resetQueue()
+{
+	queue.clearAll();
+}
