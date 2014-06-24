@@ -206,7 +206,7 @@ void QueueConstructorExt::makeTestQueue()
 	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
-		queueTerranSupply(numSupply + 1);
+		queueTerranSupply(numSupply + 3);
 	}
 
 	// eof tanks
