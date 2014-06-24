@@ -2067,6 +2067,16 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 	//return true;
 
 
+	if (BWAPI::Broodwar->getFrameCount() < 10000)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+
+
 
 
 

@@ -274,9 +274,11 @@ bool Squad::needsToRegroup()
 		return false;
 	}
 
-	CombatSimulation sim;
-	sim.setCombatUnits(unitClosest->getPosition(), Options::Micro::COMBAT_REGROUP_RADIUS + InformationManager::Instance().lastFrameRegroup*300);
-	ScoreType score = sim.simulateCombat();
+	// Ext comment v
+	//CombatSimulation sim;
+	//sim.setCombatUnits(unitClosest->getPosition(), Options::Micro::COMBAT_REGROUP_RADIUS + InformationManager::Instance().lastFrameRegroup*300);
+	//ScoreType score = sim.simulateCombat();
+	ScoreType score = 0;
 
     bool retreat = score < 0;
     int switchTime = 100;
