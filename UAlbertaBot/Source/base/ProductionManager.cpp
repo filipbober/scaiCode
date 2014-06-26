@@ -660,6 +660,10 @@ void ProductionManager::queueDoSomething()
 		{
 			queueDoSomethingTerranWraithRush1Port();
 		}
+		else if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranVulturesAndTanks)
+		{
+			queueDoSomethingTerranVulturesAndTanks();
+		}
 		else
 		{
 			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
@@ -679,6 +683,13 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 {
 	QueueConstructorExt::Instance().clearQueue();
 	QueueConstructorExt::Instance().makeTestQueue();
+	queue = QueueConstructorExt::Instance().getQueue();
+}
+
+void ProductionManager::queueDoSomethingTerranVulturesAndTanks()
+{
+	QueueConstructorExt::Instance().clearQueue();
+	QueueConstructorExt::Instance().makeTerranVulturesAndTanksQueue();
 	queue = QueueConstructorExt::Instance().getQueue();
 }
 

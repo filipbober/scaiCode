@@ -67,6 +67,7 @@ class ProductionManager
 	// Extensions
 	void queueDoSomething();
 	void queueDoSomethingTerranWraithRush1Port();
+	void queueDoSomethingTerranVulturesAndTanks();
 	bool isDuplicate(BWAPI::UnitType unitType);
 
 	bool isBuildOrderSearchOn;

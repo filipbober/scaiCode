@@ -75,8 +75,9 @@ public:
 		Terran2FactMechBuild = 8,
 		TerranGoliathBuild = 9, TerranGoliathDrop = 10,
 		Terran1FastPortBuild = 11, TerranWraithRush1Port = 12, 
-		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,	
-		NumTerranStrategies=15 };
+		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,
+		TerranVulturesAndTanks = 15,
+		NumTerranStrategies=16 };
 	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
 	
 	enum { ZergCerver4PoolRush = 0, Zerg9PoolHatch = 1, Zerg7PoolRush = 2,
@@ -140,6 +141,7 @@ private:
 	bool doAttackTerranDoubleRaxMnM();
 	bool doAttackTerran3FactoryVultureRush();	
 	bool doAttackTerranWraithRush1Port();
+	bool doAttackTerranVulturesAndTanks();
 	bool doAttackTerranTriRaxMnMRush();
 
 	// Fields

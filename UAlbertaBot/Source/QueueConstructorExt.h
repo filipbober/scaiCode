@@ -18,6 +18,9 @@ public:
 
 	void makeTestQueue();
 
+	// Terran queues
+	void makeTerranVulturesAndTanksQueue();
+
 	void cleanQueue();
 
 	void makeExpansion();
