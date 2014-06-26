@@ -163,12 +163,7 @@ void QueueConstructorExt::makeTestQueue()
 	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
 	//}
 
-	if (isAirThreat())
-	{
-		//queueTerranGoliaths(0.3);
-		//queueTechGoliaths();
-		queueTerranWraiths(1.0);
-	}
+	
 
 	queueTerranMarines(1.0);
 	queueTerranMarines(1.0);
@@ -202,6 +197,13 @@ void QueueConstructorExt::makeTestQueue()
 	makeExpansion();
 
 	// TODO: if supply is higher than 110 -> go for battlecruisers 
+
+	if (isAirThreat())
+	{
+		//queueTerranGoliaths(0.3);
+		//queueTechGoliaths();
+		queueTerranWraiths(1.0);
+	}
 
 	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)
 	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
