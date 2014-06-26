@@ -306,13 +306,14 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	int gas = BWAPI::Broodwar->self()->gas();
 	int frame = BWAPI::Broodwar->getFrameCount();
 
+
 	//if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
 	//{
 	//	return;
 	//}
 
 	// To prevent performance issues
-	if (BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed())
+	if (BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 5)
 	{
 		queueTerranSupply(numSupply + 1);
 		cleanQueue();
@@ -328,7 +329,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 
 
-	// Code below does slow the game in late game! <------------------------------------------------------------------------------------
 	//bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory) > 0) 
 	//	|| (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
 	//if ((minerals > 300)
@@ -338,7 +338,23 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
 	//}
 
+	if (minerals > 600)
+	{
+		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount((BWAPI::UnitTypes::Terran_Bunker) + 1));
+	}
 
+	// causing crash
+	if (minerals > 1000)
+	{
+		queueTerranBCUpgrades();
+	}
+
+	// causing crash
+	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)
+	//	&& BWAPI::Broodwar->self()->completedUnitCount((BWAPI::UnitTypes::Terran_Science_Facility)) > 0)
+	//{
+	//	queueTerranBCs(1.0);
+	//}
 
 	queueTerranMarines(1.0);
 	queueTerranMarines(1.0);
@@ -753,12 +769,13 @@ void QueueConstructorExt::queueTerranArmory(int desiredNo)
 void QueueConstructorExt::queueTerranBCUpgrades()
 {
 	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
-	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
-	int numPhysicsLab = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numPhysicsLab = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
 
 	bool isYamatoGunResearched = BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun);
 	bool isColossusReactorUpgraded = (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Colossus_Reactor)		// Do not upgrade this one
-		>= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Colossus_Reactor));
+		>= BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Colossus_Reactor)) 
+		&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Colossus_Reactor));
 
 	int weaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons);
 	int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating);
@@ -792,22 +809,30 @@ void QueueConstructorExt::queueTerranBCUpgrades()
 	//}
 
 	// Queue Yamato Gun and Colossus Reactor
+	if ( (numScienceFacilities > 1)
+		|| ( (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Science_Facility) > 0)) )
+	{
+		return;
+	}
 	if (numScienceFacilities < 1)
 	{
 		queueTerranScienceFacilities(1);
 	}
-	else if (numPhysicsLab < 1)
+	else if ((numPhysicsLab < 1)
+		&& (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Science_Facility) > 0))
 	{
 		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Physics_Lab), true);
 	}
 	else
 	{
 		// Yamato Gun first
-		if (!isYamatoGunResearched)
+		if (!isYamatoGunResearched
+			&& !BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Yamato_Gun))
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::TechTypes::Yamato_Gun), true);
 		}
-		else if (!isColossusReactorUpgraded)
+		else if (!isColossusReactorUpgraded
+			&& isYamatoGunResearched)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Colossus_Reactor), true);
 		}
