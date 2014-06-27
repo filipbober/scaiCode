@@ -373,7 +373,8 @@ double TankManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
 		if ((unitDist <= dist)
 			&& enemyUnit->getType().canAttack()
 			&& enemyUnit->isVisible()
-			&& !enemyUnit->getType().isFlyer())		// ignore Flyers - Vultures cant attack them anyway
+			&& !enemyUnit->getType().isFlyer() // ignore Flyers - Vultures cant attack them anyway
+			&& !enemyUnit->isCloaked())		
 		{
 			dist = unitDist;
 		}

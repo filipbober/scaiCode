@@ -300,14 +300,14 @@ void QueueConstructorExt::makeTestQueue()
 
 void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 {
-	if (_lastInvoked + 240 > BWAPI::Broodwar->getFrameCount())
-	{
-		return;
-	}
-	else
-	{
-		_lastInvoked = BWAPI::Broodwar->getFrameCount();
-	}
+	//if (_lastInvoked + 240 > BWAPI::Broodwar->getFrameCount())
+	//{
+	//	return;
+	//}
+	//else
+	//{
+	//	_lastInvoked = BWAPI::Broodwar->getFrameCount();
+	//}
 
 
 
@@ -362,7 +362,8 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	}
 
 	// causing crash
-	if (minerals > 1000)
+	//if (minerals > 1000)
+	if (minerals > 300)
 	{
 		//queueTerranBCUpgrades();
 		queueTerranTankUpgrades();
@@ -958,6 +959,7 @@ void QueueConstructorExt::queueTerranTankUpgrades()
 {
 	int numFactiories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory);
 	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory) + BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Armory);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
 
 	if (numFactiories < 1)
 	{
@@ -985,7 +987,15 @@ void QueueConstructorExt::queueTerranTankUpgrades()
 		{
 			if ((weaponLevel <= armorLevel))
 			{
-				_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons), true);
+				if ( ((weaponLevel > 0) || (armorLevel > 0))
+					&& (numScienceFacilities < 1 ))
+				{
+					queueTerranScienceFacilities(1);
+				}
+				else
+				{
+					_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Vehicle_Weapons), true);
+				}
 			}
 			else
 			{

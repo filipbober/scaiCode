@@ -282,6 +282,7 @@ void ProductionManager::manageBuildOrderQueue()
 		{
 			BWAPI::Broodwar->printf("                                           DebExt: Removing duplicates");
 			queue.removeCurrentHighestPriorityItem();
+			break;
 		}
 		// eof ext
 
@@ -702,33 +703,33 @@ bool ProductionManager::isDuplicate(BWAPI::UnitType unitType)
 
 
 
-	//// Remove additional Academies
-	//if (numAcademies > 0
-	//	&& unitType == BWAPI::UnitTypes::Terran_Academy)
-	//{
-	//	return true;
-	//}
+	// Remove additional Academies
+	if (numAcademies > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Academy)
+	{
+		return true;
+	}
 
-	//// Remove additional Science Facilities
-	//if (numScienceFacilities > 0
-	//	&& unitType == BWAPI::UnitTypes::Terran_Science_Facility)
-	//{
-	//	return true;
-	//}
+	// Remove additional Science Facilities
+	if (numScienceFacilities > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Science_Facility)
+	{
+		return true;
+	}
 
-	//// Remove additional Armory
-	//if (numArmory > 0
-	//	&& unitType == BWAPI::UnitTypes::Terran_Armory)
-	//{
-	//	return true;
-	//}
+	// Remove additional Armory
+	if (numArmory > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Armory)
+	{
+		return true;
+	}
 
-	//// Remove additional Enginnering Bays
-	//if (numEngineeringBay > 0
-	//	&& unitType == BWAPI::UnitTypes::Terran_Engineering_Bay)
-	//{
-	//	return true;
-	//}
+	// Remove additional Enginnering Bays
+	if (numEngineeringBay > 0
+		&& unitType == BWAPI::UnitTypes::Terran_Engineering_Bay)
+	{
+		return true;
+	}
 
 	return false;
 
