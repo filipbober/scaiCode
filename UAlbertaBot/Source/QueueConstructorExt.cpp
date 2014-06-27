@@ -414,8 +414,8 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	if (isAirThreat())
 	{
-		//queueTerranGoliaths(0.3);
-		//queueTechGoliaths();
+		queueTerranGoliaths(0.5);
+		queueTechGoliaths();
 		queueTerranWraiths(1.0);
 	}
 
@@ -546,10 +546,10 @@ void QueueConstructorExt::queueTerranGoliaths(double prodPercent)
 	else
 	{
 		//// This may crash the game -----------------
-		//for (int i = 0; i < goliathsWanted; i++)
-		//{
-		//	_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Goliath), true);
-		//}
+		for (int i = 0; i < goliathsWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Goliath), true);
+		}
 	}
 }
 
