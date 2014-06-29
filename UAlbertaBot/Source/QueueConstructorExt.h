@@ -67,7 +67,9 @@ public:
 	void queueTechBattlecruisers();
 	void queueTechGoliaths();
 
+	// Other
 	bool isAirThreat();
+	int getQueueSupply();
 	
 
 

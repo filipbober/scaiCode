@@ -328,7 +328,8 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	//}
 
 	// To prevent performance issues
-	if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 5))
+	if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 7)
+		&& (BWAPI::Broodwar->self()->supplyUsed() <= (190 * 2)))
 	{
 
 		queueTerranSupply(numSupply + 1);
@@ -341,7 +342,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	{
 		// TODO tech, upgrade etc.
 		// TODO - control supply while building units (ensure there is enough)
-		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
+		//queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		return;
 	}
 
@@ -349,20 +350,13 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	//bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory) > 0) 
 	//	|| (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
-	//if ((minerals > 300)
-	//	&& (!underConstruction))
-	//{
-	//	queueTerranFactories(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory) + 1), 5));
-	//	queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
-	//}
-
-	if (minerals > 600)
+	bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
+	if ((minerals > 300)
+		&& (!underConstruction))
 	{
-		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount((BWAPI::UnitTypes::Terran_Bunker) + 1));
+		queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
 	}
 
-	// causing crash
-	//if (minerals > 1000)
 	if (minerals > 300)
 	{
 		//queueTerranBCUpgrades();
@@ -419,11 +413,16 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranWraiths(1.0);
 	}
 
-	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)
-	if (BWAPI::Broodwar->self()->supplyTotal() < BWAPI::Broodwar->self()->supplyUsed() + 5)
+	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)	
+	int totalSupplyRequired = BWAPI::Broodwar->self()->supplyUsed() + getQueueSupply();
+	if (totalSupplyRequired >= BWAPI::Broodwar->self()->supplyTotal())
 	{
-		queueTerranSupply(numSupply + 3);
+		int supplyRequired = totalSupplyRequired - BWAPI::Broodwar->self()->supplyTotal();
+		int supplyDepotsRequired = std::min(1, (int)std::ceil(supplyRequired / 8.0));
+		queueTerranSupply(numSupply + supplyDepotsRequired);
 	}
+	
+	
 
 	cleanQueue();
 }
@@ -1279,4 +1278,19 @@ bool QueueConstructorExt::isAirThreat()
 	}
 
 	return false;
+}
+
+int QueueConstructorExt::getQueueSupply()
+{
+	int supply = 0;
+
+	for (int i = 0; i < _queue.size(); i++)
+	{
+		if (_queue[i].metaType.isUnit())
+		{
+			supply += _queue[i].metaType.supplyRequired();
+		}
+	}
+
+	return supply;
 }
