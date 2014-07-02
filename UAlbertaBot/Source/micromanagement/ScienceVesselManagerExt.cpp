@@ -49,7 +49,8 @@ void ScienceVesselManagerExt::executeMicro(const UnitVector & targets)
 		// send him to scout around the map
 		else
 		{
-			BWAPI::Position explorePosition = MapGrid::Instance().getLeastExplored();
+			//BWAPI::Position explorePosition = MapGrid::Instance().getLeastExplored();
+			BWAPI::Position explorePosition = order.position;
 			smartMove(detectorUnit, explorePosition);
 		}
 	}

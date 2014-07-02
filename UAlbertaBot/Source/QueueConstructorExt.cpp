@@ -6,6 +6,7 @@ QueueConstructorExt::QueueConstructorExt()
 :
 _lastInvoked(BWAPI::Broodwar->getFrameCount())
 , _airThreatExists(false)
+, _isDetectorNeeded(false)
 {
 }
 
@@ -301,14 +302,14 @@ void QueueConstructorExt::makeTestQueue()
 
 void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 {
-	//if (_lastInvoked + 240 > BWAPI::Broodwar->getFrameCount())
-	//{
-	//	return;
-	//}
-	//else
-	//{
-	//	_lastInvoked = BWAPI::Broodwar->getFrameCount();
-	//}
+	if (_lastInvoked + 240 > BWAPI::Broodwar->getFrameCount())
+	{
+		return;
+	}
+	else
+	{
+		_lastInvoked = BWAPI::Broodwar->getFrameCount();
+	}
 
 
 
@@ -330,9 +331,8 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	// To prevent performance issues
 	if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 7)
-		&& (BWAPI::Broodwar->self()->supplyUsed() <= (190 * 2)))
+		&& (BWAPI::Broodwar->self()->supplyUsed() <= (200 * 2)))
 	{
-
 		queueTerranSupply(numSupply + 1);
 		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		cleanQueue();
@@ -346,8 +346,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		//queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		return;
 	}
-
-
 
 	//bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory) > 0) 
 	//	|| (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
@@ -401,6 +399,14 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	if (frame > 13000)
 	{
 		queueTechTanks();
+	}
+
+	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	if (frame > 10000
+		&& numScienceVessels < 1)
+	{
+		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
 	}
 
 	makeExpansion();
@@ -594,7 +600,7 @@ void QueueConstructorExt::queueTerranBCs(double prodPercent)
 	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
 	int numPhysicsLabs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Physics_Lab);
 
-	int bcsWanted = std::max(1, (int)ceil(numBattlecruisers * prodPercent));
+	int bcsWanted = std::max(1, (int)ceil(std::min(numStarports, numControltowers) * prodPercent));
 
 	if (numStarports < 1)
 	{
@@ -617,6 +623,36 @@ void QueueConstructorExt::queueTerranBCs(double prodPercent)
 		for (int i = 0; i < bcsWanted; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Battlecruiser), true);
+		}
+	}
+}
+
+void QueueConstructorExt::queueTerranScienceVessels(double prodPercent)
+{
+	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+	int numControltowers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Control_Tower);
+
+	int scienceVesselsWanted = std::max(1, (int)ceil(std::min(numStarports, numControltowers) * prodPercent));
+
+	if (numStarports < 1)
+	{
+		queueTerranStarports(1);
+	}
+	else if (numControltowers < numStarports)
+	{
+		_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Control_Tower), true);
+	}
+	else if (numScienceFacilities < 1)
+	{
+		queueTerranScienceFacilities(1);
+	}
+	else
+	{
+		for (int i = 0; i < scienceVesselsWanted; i++)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Science_Vessel), true);
 		}
 	}
 }
@@ -1173,7 +1209,8 @@ void QueueConstructorExt::cleanQueue()
 		}
 		else
 		{
-			cleanedQueue.queueAsHighestPriority(_queue[i].metaType, true);
+			//cleanedQueue.queueAsHighestPriority(_queue[i].metaType, true);
+			cleanedQueue.queueAsLowestPriority(_queue[i].metaType, true);
 		}
 	}
 
@@ -1286,6 +1323,27 @@ bool QueueConstructorExt::isAirThreat()
 	}
 
 	return _airThreatExists;
+}
+
+bool QueueConstructorExt::isDetectorNeeded()
+{
+	if (_isDetectorNeeded)
+	{
+		return true;
+	}
+
+	BOOST_FOREACH(BWAPI::Unit* enemyUnit, BWAPI::Broodwar->enemy()->getUnits())
+	{
+		if (enemyUnit->getType().isCloakable()
+			|| enemyUnit->isCloaked()
+			|| enemyUnit->isBurrowed())
+		{
+			//return true;
+			_isDetectorNeeded = true;
+		}
+	}
+
+	return _isDetectorNeeded;
 }
 
 int QueueConstructorExt::getQueueSupply()

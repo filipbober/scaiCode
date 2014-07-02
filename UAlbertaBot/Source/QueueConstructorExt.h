@@ -34,6 +34,7 @@ public:
 	void queueTerranWraiths(double prodPercent);
 	void queueTerranSCVs(double prodPercent);
 	void queueTerranBCs(double prodPercent);	
+	void queueTerranScienceVessels(double prodPercent);
 
 	void queueCommandCenters(int desiredNo);
 	void queueTerranSupply(int desiredNo);
@@ -69,6 +70,7 @@ public:
 
 	// Other
 	bool isAirThreat();
+	bool isDetectorNeeded();
 	int getQueueSupply();
 	
 
@@ -77,6 +79,7 @@ private:
 	BuildOrderQueue _queue;
 	int _lastInvoked;
 	bool _airThreatExists;
+	bool _isDetectorNeeded;
 
 
 };
