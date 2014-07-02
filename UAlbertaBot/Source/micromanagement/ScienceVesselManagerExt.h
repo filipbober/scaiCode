@@ -3,19 +3,28 @@
 class ScienceVesselManagerExt :
 	public MicroManager
 {
-	std::map<BWAPI::Unit *, bool>	cloakedUnitMap;
-
-	bool isAssigned(BWAPI::Unit * unit);
-
-	BWAPI::Unit * unitClosestToEnemy;
-
 public:
 	ScienceVesselManagerExt();
-	~ScienceVesselManagerExt() {}
+	~ScienceVesselManagerExt();
 
-	void setUnitClosestToEnemy(BWAPI::Unit * unit) { unitClosestToEnemy = unit; }
 	void executeMicro(const UnitVector & targets);
 
-	BWAPI::Unit * closestCloakedUnit(const UnitVector & cloakedUnits, BWAPI::Unit * detectorUnit);
+private:
+	void executeAttack(BWAPI::Unit* selectedUnit, UnitVector& targets);
+	void executeDefend(BWAPI::Unit* vultureUnit, UnitVector& targets);
+	void executeAdvanceToPosition(BWAPI::Unit* selectedUnit, UnitVector& targets);
+
+	int getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
+	BWAPI::Unit * getTarget(BWAPI::Unit * selectedUnit, UnitVector& targets);
+	void kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
+
+	void setAverageEnemyPosition(const UnitVector& targets);
+
+	bool isAttack();
+	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+	void executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+
+	//Fields
+	BWAPI::Position _averageEnemyPosition;
 };
 

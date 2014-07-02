@@ -69,15 +69,11 @@ void Squad::update()
 		bcManager.execute(order);
 		tankManager.execute(order);
 		goliathManager.execute(order);
+		scienceVesselManager.execute(order);
 		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
 		detectorManager.execute(order);
-
-		// Extensions
-		scienceVesselManager.setUnitClosestToEnemy(unitClosestToEnemy());
-		detectorManager.execute(order);
-		//eof ext
 	}
 }
 

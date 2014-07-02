@@ -1209,8 +1209,8 @@ void QueueConstructorExt::cleanQueue()
 		}
 		else
 		{
-			//cleanedQueue.queueAsHighestPriority(_queue[i].metaType, true);
-			cleanedQueue.queueAsLowestPriority(_queue[i].metaType, true);
+			cleanedQueue.queueAsHighestPriority(_queue[i].metaType, true);
+			//cleanedQueue.queueAsLowestPriority(_queue[i].metaType, true);
 		}
 	}
 
