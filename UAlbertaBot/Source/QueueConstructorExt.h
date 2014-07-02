@@ -76,6 +76,7 @@ public:
 private:
 	BuildOrderQueue _queue;
 	int _lastInvoked;
+	bool _airThreatExists;
 
 
 };

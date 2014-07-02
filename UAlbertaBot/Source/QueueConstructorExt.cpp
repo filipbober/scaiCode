@@ -5,6 +5,7 @@
 QueueConstructorExt::QueueConstructorExt()
 :
 _lastInvoked(BWAPI::Broodwar->getFrameCount())
+, _airThreatExists(false)
 {
 }
 
@@ -1257,6 +1258,11 @@ void QueueConstructorExt::queueTechGoliaths()
 
 bool QueueConstructorExt::isAirThreat()
 {
+	if (_airThreatExists)
+	{
+		return true;
+	}
+
 	int numEnemyStargates = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Stargate);
 	int numEnemyStarports = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
 	int numEnemySpires = BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spire);
@@ -1266,18 +1272,20 @@ bool QueueConstructorExt::isAirThreat()
 		|| (numEnemyStarports > 0)
 		|| (numEnemySpires > 0))
 	{
-		return true;
+		//return true;
+		_airThreatExists = true;
 	}
 	
 	BOOST_FOREACH(BWAPI::Unit* enemyUnit , BWAPI::Broodwar->enemy()->getUnits())
 	{
 		if (enemyUnit->getType().isFlyer())
 		{
-			return true;
+			//return true;
+			_airThreatExists = true;
 		}
 	}
 
-	return false;
+	return _airThreatExists;
 }
 
 int QueueConstructorExt::getQueueSupply()
