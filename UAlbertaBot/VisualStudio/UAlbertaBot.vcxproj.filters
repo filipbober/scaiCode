@@ -207,6 +207,7 @@
     <ClCompile Include="..\Source\micromanagement\TankManagerExt.cpp">
       <Filter>game\combat\micro\specific</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\micromanagement\GoliathManagerExt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -374,5 +375,6 @@
     <ClInclude Include="..\Source\micromanagement\TankManagerExt.h">
       <Filter>game\combat\micro\specific</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\micromanagement\GoliathManagerExt.h" />
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@
 #include "micromanagement/WraithManagerExt.h"
 #include "micromanagement/BattlecruiserManagerExt.h"
 #include"micromanagement/TankManagerExt.h"
+#include "micromanagement/GoliathManagerExt.h"
 #include "UnitManagerExt.h"
 
 class ZealotManager;
@@ -46,6 +47,7 @@ class Squad
 	WraithManagerExt wraithManager;
 	BattlecruiserManagerExt bcManager;
 	TankManagerExt tankManager;
+	GoliathManagerExt goliathManager;
 	// eof ext
 
 	std::map<BWAPI::Unit *, bool>	nearEnemy;
