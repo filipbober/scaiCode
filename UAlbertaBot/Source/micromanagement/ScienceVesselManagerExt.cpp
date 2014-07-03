@@ -72,6 +72,11 @@ void ScienceVesselManagerExt::executeMicro(const UnitVector & targets)
 				smartMove(selectedUnit, explorePosition);
 			}
 		}
+		else
+		{
+			BWAPI::Position explorePosition = MapGrid::Instance().getLeastExplored();
+			smartMove(selectedUnit, explorePosition);
+		}
 
 		if (Options::Debug::DRAW_UALBERTABOT_DEBUG)
 		{

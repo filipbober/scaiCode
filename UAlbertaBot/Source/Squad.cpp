@@ -213,7 +213,6 @@ void Squad::setManagerUnits()
 			}
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Science_Vessel)
 			{
-				BWAPI::Broodwar->printf("                                           DebExt: Science Vessel: Added!");
 				terranScienceVessels.push_back(unit);
 				UnitManagerExt::Instance().addUnit(unit);
 			}
@@ -362,6 +361,8 @@ bool Squad::unitNearEnemy(BWAPI::Unit * unit)
 
 BWAPI::Position Squad::calcCenter()
 {
+
+
 	BWAPI::Position accum(0,0);
 	BOOST_FOREACH(BWAPI::Unit * unit, units)
 	{

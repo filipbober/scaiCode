@@ -23,10 +23,17 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Production);
 
 	timerManager.startTimer(TimerManager::Building);
-	if (BWAPI::Broodwar->getFrameCount() % 240 == 0)
+	// Extension
+	//BuildingManager::Instance().update(); // ext cmt
+	if (BWAPI::Broodwar->getFrameCount() < 6000)
 	{
 		BuildingManager::Instance().update();
 	}
+	else if (BWAPI::Broodwar->getFrameCount() % 240 == 0)
+	{
+		BuildingManager::Instance().update();
+	}
+	// eof ext
 	timerManager.stopTimer(TimerManager::Building);
 
 	
