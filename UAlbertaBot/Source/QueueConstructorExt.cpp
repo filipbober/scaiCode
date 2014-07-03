@@ -425,7 +425,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	if (totalSupplyRequired >= BWAPI::Broodwar->self()->supplyTotal())
 	{
 		int supplyRequired = totalSupplyRequired - BWAPI::Broodwar->self()->supplyTotal();
-		int supplyDepotsRequired = std::min(1, (int)std::ceil(supplyRequired / 8.0));
+		int supplyDepotsRequired = std::max(1, (int)std::ceil(supplyRequired / 8.0));
 		queueTerranSupply(numSupply + supplyDepotsRequired);
 	}
 	
