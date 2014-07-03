@@ -64,7 +64,8 @@ void ScienceVesselManagerExt::executeMicro(const UnitVector & targets)
 				if (selectedUnit->getDistance(order.position) > 100)
 				{
 					// move to it
-					smartMove(selectedUnit, order.position);
+					//smartMove(selectedUnit, order.position);
+					smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
 				}
 			}
 		}
@@ -168,15 +169,6 @@ void ScienceVesselManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().airWeapon().maxRange());
 
-	// determine whether the target can be kited
-	if (selectedUnitRange <= targetRange)
-	{
-		// if we can't kite it, there's no point to do so
-		smartAttackUnit(selectedUnit, target);
-		return;
-	}
-
-	bool		kite(true);
 	double		dist(selectedUnit->getDistance(target));
 
 	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
@@ -187,7 +179,8 @@ void ScienceVesselManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	
 	if (dist > targetRange + 30)
 	{
-		smartMove(selectedUnit, target->getPosition());
+		//smartMove(selectedUnit, target->getPosition());
+		smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
 	}
 	else
 	{
@@ -206,7 +199,8 @@ void ScienceVesselManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit
 		}
 		else
 		{
-			smartMove(selectedUnit, target->getPosition());
+			//smartMove(selectedUnit, target->getPosition());
+			smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
 		}
 	}
 
@@ -238,6 +232,29 @@ void ScienceVesselManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	{
 		_averageEnemyPosition.makeValid();
 	}
+}
+
+BWAPI::Position ScienceVesselManagerExt::closestFriendlyUnitPos(BWAPI::Unit* selectedUnit)
+{
+	double dist = 10000;	
+	BWAPI::Position closestUnitPos = order.position;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		double distFromTarget = unit->getDistance(order.position);
+
+		if (distFromTarget <= dist)
+		{
+			dist = distFromTarget;
+			closestUnitPos = unit->getPosition();
+		}
+	}
+
+	if (!closestUnitPos.isValid())
+	{
+		closestUnitPos.makeValid();
+	}
+
+	return closestUnitPos;
 }
 
 

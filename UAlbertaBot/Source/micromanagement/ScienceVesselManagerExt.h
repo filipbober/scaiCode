@@ -23,6 +23,7 @@ private:
 	bool isAttack();
 	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
 	void executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+	BWAPI::Position closestFriendlyUnitPos(BWAPI::Unit* selectedUnit);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
