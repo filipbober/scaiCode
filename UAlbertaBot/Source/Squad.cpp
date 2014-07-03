@@ -213,6 +213,7 @@ void Squad::setManagerUnits()
 			}
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Science_Vessel)
 			{
+				BWAPI::Broodwar->printf("                                           DebExt: Science Vessel: Added!");
 				terranScienceVessels.push_back(unit);
 				UnitManagerExt::Instance().addUnit(unit);
 			}
