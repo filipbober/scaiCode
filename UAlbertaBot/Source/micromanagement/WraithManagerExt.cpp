@@ -117,14 +117,19 @@ int WraithManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 
 	// Detectors are top priority but Photon Cannons are too strong
-	if (targetType == BWAPI::UnitTypes::Protoss_Carrier)
+	if (targetType == BWAPI::UnitTypes::Protoss_Carrier ||
+		targetType == BWAPI::UnitTypes::Terran_Battlecruiser)
 	{
-		return 99;
+		return selectedUnitWeaponRange + 20;
+	}
+	else if (targetType.isFlyer())
+	{
+		return selectedUnitWeaponRange + 10;
 	}
 	else if (targetType.isDetector()
 		&& targetType != BWAPI::UnitTypes::Protoss_Photon_Cannon)
 	{
-		return 100;
+		return selectedUnitWeaponRange + 5;
 	}
 	// Larvas are low priority targets
 	else if (targetType == BWAPI::UnitTypes::Zerg_Larva

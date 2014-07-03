@@ -18,6 +18,9 @@ public:
 
 	void makeTestQueue();
 
+	// Terran queues
+	void makeTerranVulturesAndTanksQueue();
+
 	void cleanQueue();
 
 	void makeExpansion();
@@ -31,6 +34,7 @@ public:
 	void queueTerranWraiths(double prodPercent);
 	void queueTerranSCVs(double prodPercent);
 	void queueTerranBCs(double prodPercent);	
+	void queueTerranScienceVessels(double prodPercent);
 
 	void queueCommandCenters(int desiredNo);
 	void queueTerranSupply(int desiredNo);
@@ -64,12 +68,18 @@ public:
 	void queueTechBattlecruisers();
 	void queueTechGoliaths();
 
+	// Other
 	bool isAirThreat();
+	bool isDetectorNeeded();
+	int getQueueSupply();
 	
 
 
 private:
 	BuildOrderQueue _queue;
+	int _lastInvoked;
+	bool _airThreatExists;
+	bool _isDetectorNeeded;
 
 
 };

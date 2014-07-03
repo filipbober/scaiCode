@@ -58,7 +58,7 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27";
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 19 0 0 18 0 1 0 1 50 20 17 0 1 0 1 0 4 0 1 50 22 1 1 4 0 1 0 1 50 25 0 17 1 0 1 26 0 1 10 4 10 4 10 39 10 10";		// Against UAlberta Zealot
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27";		// Wins with default Protoss
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";
+	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";
 	terranOpeningBook[TerranWraithRush2PortsTvZ] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 0 25 17 0 1 26 10 20 10 10 39 19 21 0 27";
 	terranOpeningBook[TerranWraithRush2PortsTvT] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 25 0 25 0 3 0 3 17 0 10 26 0 21";
 
@@ -66,7 +66,9 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39";		// Wraith rush vs Protoss
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22 23 0 0 17 22 0 0 38 3 7 3 7 3 7 3 7 3 3";
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 22 0 0 23 0 0 17 38 3 22 0 0 17 7 0 3 0 7 0 3 0 7 3 7 3 3 47";  // Thrusters
-	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
+	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";		// good one
+
+	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
 
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22";  // base build -> upgrade factory OR 2nd factory: 4 tanks and 6 vultures and attack Protoss
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22 23 0 0 17 22 3 7 3 7 3 7 3 7 3 3";
@@ -526,6 +528,10 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 		{
 			// TODO: implement doAttack for the current strategy
 			return true;
+		}
+		else if (currentStrategy == TerranVulturesAndTanks)
+		{
+			return doAttackTerranVulturesAndTanks();
 		}
 	}
 
@@ -1146,6 +1152,8 @@ void StrategyManager::createTerranUsableStrategies()
 		usableStrategies.push_back(TerranTriRaxMnMRush);
 		usableStrategies.push_back(Terran3FactoryVultureRush);
 		usableStrategies.push_back(Terran2FactMechBuild);
+
+		usableStrategies.push_back(TerranVulturesAndTanks);
 	}	
 }
 
@@ -1163,9 +1171,10 @@ int StrategyManager::getStrategyIdx()
 	{
 		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());		// uncomment after testing
 		//chosenStrategy = Terran3FactoryVultureRush;			// for testing purposes
-		//chosenStrategy = TerranDoubleRaxMnM;
-		chosenStrategy = TerranWraithRush1Port;
+		//chosenStrategy = TerranDoubleRaxMnM;		
 		//chosenStrategy = TerranTriRaxMnMRush;
+		//chosenStrategy = TerranWraithRush1Port;
+		chosenStrategy = TerranVulturesAndTanks;
 
 	}
 
@@ -2110,6 +2119,19 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 	}
 
 	return isAttackOrderGranted || isAttackGrantedPermanently;
+}
+
+bool StrategyManager::doAttackTerranVulturesAndTanks()
+{
+	// Attack approximately when 6 vultures and 4 tanks are ready
+	if (BWAPI::Broodwar->getFrameCount() < 10000)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 bool StrategyManager::doAttackTerranTriRaxMnMRush()

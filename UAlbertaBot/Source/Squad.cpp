@@ -50,6 +50,8 @@ void Squad::update()
 		wraithManager.regroup(regroupPosition);
 		bcManager.regroup(regroupPosition);
 		tankManager.regroup(regroupPosition);
+		goliathManager.regroup(regroupPosition);
+		scienceVesselManager.regroup(regroupPosition);
 		// eof ext
 	}
 	else // otherwise, execute micro
@@ -66,6 +68,8 @@ void Squad::update()
 		wraithManager.execute(order);
 		bcManager.execute(order);
 		tankManager.execute(order);
+		goliathManager.execute(order);
+		scienceVesselManager.execute(order);
 		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
@@ -137,6 +141,8 @@ void Squad::setManagerUnits()
 	UnitVector terranWraiths;
 	UnitVector terranBCs;
 	UnitVector terranTanks;
+	UnitVector terranGoliaths;
+	UnitVector terranScienceVessels;
 	// eof ext
 
 	// add units to micro managers
@@ -200,6 +206,16 @@ void Squad::setManagerUnits()
 				terranTanks.push_back(unit);
 				UnitManagerExt::Instance().addUnit(unit);
 			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Goliath)
+			{
+				terranGoliaths.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
+			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Science_Vessel)
+			{
+				terranScienceVessels.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
+			}
 			// select detector units
 			else if (unit->getType().isDetector() && !unit->getType().isBuilding())
 			{
@@ -234,6 +250,8 @@ void Squad::setManagerUnits()
 	wraithManager.setUnits(terranWraiths);
 	bcManager.setUnits(terranBCs);
 	tankManager.setUnits(terranTanks);
+	goliathManager.setUnits(terranGoliaths);
+	scienceVesselManager.setUnits(terranScienceVessels);
 	// eof ext
 
 }
@@ -343,6 +361,8 @@ bool Squad::unitNearEnemy(BWAPI::Unit * unit)
 
 BWAPI::Position Squad::calcCenter()
 {
+
+
 	BWAPI::Position accum(0,0);
 	BOOST_FOREACH(BWAPI::Unit * unit, units)
 	{

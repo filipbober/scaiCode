@@ -15,15 +15,16 @@
 #include "..\QueueConstructorExt.h"
 
 
-ProductionManager::ProductionManager() 
-	: initialBuildSet(false)
-	, reservedMinerals(0)
-	, reservedGas(0)
-	, assignedWorkerForThisBuilding(false)
-	, haveLocationForThisBuilding(false)
-	, enemyCloakedDetected(false)
-	, rushDetected(false)
-	, isBuildOrderSearchOn(false)		// ext
+ProductionManager::ProductionManager()
+: initialBuildSet(false)
+, reservedMinerals(0)
+, reservedGas(0)
+, assignedWorkerForThisBuilding(false)
+, haveLocationForThisBuilding(false)
+, enemyCloakedDetected(false)
+, rushDetected(false)
+, isBuildOrderSearchOn(false)		// ext
+, _lastType(MetaType(BWAPI::UnitTypes::Unknown), 1, true)
 {
 	populateTypeCharMap();
 
@@ -222,8 +223,18 @@ void ProductionManager::manageBuildOrderQueue()
 	// Extension
 	if (queue.isEmpty()) 
 	{		
-		queueDoSomething();		
+		queueDoSomething();
 		return;
+
+		//if (BWAPI::Broodwar->getFrameCount() % 240 == 0)
+		//{
+		//	queueDoSomething();
+		//	return;
+		//}
+		//else
+		//{
+		//	return;
+		//}
 	}
 
 	// Detect if a unit is not blocking the queue
@@ -282,6 +293,7 @@ void ProductionManager::manageBuildOrderQueue()
 		{
 			BWAPI::Broodwar->printf("                                           DebExt: Removing duplicates");
 			queue.removeCurrentHighestPriorityItem();
+			break;
 		}
 		// eof ext
 
@@ -660,6 +672,10 @@ void ProductionManager::queueDoSomething()
 		{
 			queueDoSomethingTerranWraithRush1Port();
 		}
+		else if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranVulturesAndTanks)
+		{
+			queueDoSomethingTerranVulturesAndTanks();
+		}
 		else
 		{
 			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
@@ -679,6 +695,13 @@ void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 {
 	QueueConstructorExt::Instance().clearQueue();
 	QueueConstructorExt::Instance().makeTestQueue();
+	queue = QueueConstructorExt::Instance().getQueue();
+}
+
+void ProductionManager::queueDoSomethingTerranVulturesAndTanks()
+{
+	QueueConstructorExt::Instance().clearQueue();
+	QueueConstructorExt::Instance().makeTerranVulturesAndTanksQueue();
 	queue = QueueConstructorExt::Instance().getQueue();
 }
 

@@ -207,6 +207,12 @@
     <ClCompile Include="..\Source\micromanagement\TankManagerExt.cpp">
       <Filter>game\combat\micro\specific</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\micromanagement\GoliathManagerExt.cpp">
+      <Filter>game\combat\micro\specific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\micromanagement\ScienceVesselManagerExt.cpp">
+      <Filter>game\combat\micro\specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -372,6 +378,12 @@
       <Filter>game\combat\micro\specific</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\micromanagement\TankManagerExt.h">
+      <Filter>game\combat\micro\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\micromanagement\GoliathManagerExt.h">
+      <Filter>game\combat\micro\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\micromanagement\ScienceVesselManagerExt.h">
       <Filter>game\combat\micro\specific</Filter>
     </ClInclude>
   </ItemGroup>

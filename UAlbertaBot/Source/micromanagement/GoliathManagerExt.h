@@ -1,13 +1,11 @@
 #pragma once
-#include "Common.h"
 #include "MicroManager.h"
-
-class MarineManagerExt :
+class GoliathManagerExt :
 	public MicroManager
 {
 public:
-	MarineManagerExt();
-	~MarineManagerExt();
+	GoliathManagerExt();
+	~GoliathManagerExt();
 
 	void executeMicro(const UnitVector & targets);
 
@@ -21,9 +19,6 @@ private:
 	void kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
 
 	void setAverageEnemyPosition(const UnitVector& targets);
-	void useStimpack(BWAPI::Unit * selectedUnit);
-	void goToBunker(BWAPI::Unit * selectedUnit);
-	bool hasBunkerSpace();
 
 	bool isAttack();
 	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);

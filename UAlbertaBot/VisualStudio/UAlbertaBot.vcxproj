@@ -116,7 +116,9 @@
     <ClCompile Include="..\Source\extensions\BuildOrderTest.cpp" />
     <ClCompile Include="..\Source\extensions\ZergBuildOrderCreator.cpp" />
     <ClCompile Include="..\Source\micromanagement\BattlecruiserManagerExt.cpp" />
+    <ClCompile Include="..\Source\micromanagement\GoliathManagerExt.cpp" />
     <ClCompile Include="..\Source\micromanagement\MarineManagerExt.cpp" />
+    <ClCompile Include="..\Source\micromanagement\ScienceVesselManagerExt.cpp" />
     <ClCompile Include="..\Source\micromanagement\TankManagerExt.cpp" />
     <ClCompile Include="..\Source\micromanagement\VultureManagerExt.cpp" />
     <ClCompile Include="..\Source\micromanagement\WraithManagerExt.cpp" />
@@ -169,7 +171,9 @@
     <ClInclude Include="..\Source\extensions\BuildOrderTest.h" />
     <ClInclude Include="..\Source\extensions\ZergBuildOrderCreator.h" />
     <ClInclude Include="..\Source\micromanagement\BattlecruiserManagerExt.h" />
+    <ClInclude Include="..\Source\micromanagement\GoliathManagerExt.h" />
     <ClInclude Include="..\Source\micromanagement\MarineManagerExt.h" />
+    <ClInclude Include="..\Source\micromanagement\ScienceVesselManagerExt.h" />
     <ClInclude Include="..\Source\micromanagement\TankManagerExt.h" />
     <ClInclude Include="..\Source\micromanagement\VultureManagerExt.h" />
     <ClInclude Include="..\Source\micromanagement\WraithManagerExt.h" />

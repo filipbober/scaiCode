@@ -1,18 +1,18 @@
-#include "MarineManagerExt.h"
+#include "GoliathManagerExt.h"
 #include "Common.h"
 #include "StrategyManager.h"
 
 
-MarineManagerExt::MarineManagerExt()
+GoliathManagerExt::GoliathManagerExt()
 {
 }
 
 
-MarineManagerExt::~MarineManagerExt()
+GoliathManagerExt::~GoliathManagerExt()
 {
 }
 
-void MarineManagerExt::executeMicro(const UnitVector & targets)
+void GoliathManagerExt::executeMicro(const UnitVector & targets)
 {
 	const UnitVector & selectedUnits = getUnits();
 
@@ -33,17 +33,6 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
-		if ((selectedUnit->getType() == BWAPI::UnitTypes::Terran_Marine
-			|| selectedUnit->getType() == BWAPI::UnitTypes::Terran_Firebat)
-			&& !(selectedUnit->isLoaded())
-			&& (hasBunkerSpace()))
-		{
-
-			goToBunker(selectedUnit);
-			continue;
-			
-		}
-
 		// if the order is to attack or defend
 		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
 			&& !isAttack())
@@ -65,7 +54,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 				// attack it				
 				kiteTarget(selectedUnit, target);
-				
+
 			}
 			// if there are no targets
 			else
@@ -88,24 +77,24 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 }
 
-void MarineManagerExt::executeAttack(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
+void GoliathManagerExt::executeAttack(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
 {
 
 }
 
-void MarineManagerExt::executeDefend(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
+void GoliathManagerExt::executeDefend(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
 {
 
 }
 
-void MarineManagerExt::executeAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets)
+void GoliathManagerExt::executeAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets)
 {
 
 }
 
 /// Returns target attack priority.
 /// Returned value must be greater than 0
-int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+int GoliathManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
 	BWAPI::UnitType selectedUnitType = selectedUnit->getType();
 	BWAPI::UnitType targetType = target->getType();
@@ -134,20 +123,21 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 	{
 		return selectedUnitWeaponRange + 10;
 	}
-	// Faster than Marine (without Stimpack)
-	else if ((targetType.topSpeed() >= selectedUnitType.topSpeed())
-		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot)
-			&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
+	else if (targetType == BWAPI::UnitTypes::Protoss_Carrier
+		|| targetType == BWAPI::UnitTypes::Terran_Battlecruiser)
 	{
-		return selectedUnitWeaponRange;		// return 160
+		return selectedUnitWeaponRange + 20;
 	}
-	// Slower than Vulture
+	else if (targetType.isFlyer())
+	{
+		return selectedUnitWeaponRange + 15;
+	}
 	else
 	{
 		int priority = selectedUnitWeaponRange - targetWeaponRange;
 		if (priority <= 0)
 		{
-			priority = 1;
+			priority = 3;
 		}
 
 		return priority;
@@ -155,7 +145,7 @@ int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit 
 
 }
 
-BWAPI::Unit* MarineManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
+BWAPI::Unit* GoliathManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
 {
 	int range(selectedUnit->getType().groundWeapon().maxRange());
 
@@ -201,18 +191,10 @@ BWAPI::Unit* MarineManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 	return (highestInRangePriority >= highestNotInRangePriority) ? inRangeTarget : notInRangeTarget;
 }
 
-void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+void GoliathManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().groundWeapon().maxRange());
-
-	BWAPI::UnitType targetType = target->getType();
-	if (((targetType.canAttack())
-		|| (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
-		&& (target->isInWeaponRange(selectedUnit)))
-	{
-		useStimpack(selectedUnit);
-	}
 
 	// determine whether the target can be kited
 	if (selectedUnitRange <= targetRange)
@@ -259,7 +241,7 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 
 }
 
-void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
+void GoliathManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 {
 	if (targets.empty())
 	{
@@ -287,53 +269,7 @@ void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	}
 }
 
-void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
-{
-	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
-		&& (selectedUnit->getHitPoints() > 30)
-		&& (selectedUnit->getStimTimer() == 0))
-	{
-		selectedUnit->useTech(BWAPI::TechTypes::Stim_Packs);
-	}
-	else
-	{
-		return;
-	}
-}
-
-void MarineManagerExt::goToBunker(BWAPI::Unit * selectedUnit)
-{
-	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
-	{
-
-		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
-			&& (unit->getType().spaceProvided() > 1)
-			&& (unit->getLoadedUnits().size() < 4)
-			)
-		{
-			selectedUnit->load(unit);			
-			break;
-		}
-	}
-}
-
-bool MarineManagerExt::hasBunkerSpace()
-{
-	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
-	{
-
-		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
-			&& (unit->getType().spaceProvided() > 1)
-			&& (unit->getLoadedUnits().size() < 4)
-			)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool MarineManagerExt::isAttack()
+bool GoliathManagerExt::isAttack()
 {
 	// Marines should only defend if Wraith Rush 1 Port is the current strategy
 	if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
@@ -350,42 +286,50 @@ bool MarineManagerExt::isAttack()
 	}
 }
 
-void MarineManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+void GoliathManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
 {
-	if (order.type == order.Attack || order.type == order.Defend)
+	// if there are targets
+	if (!selectedUnitTargets.empty())
 	{
-		if (!selectedUnitTargets.empty())
-		{
-			BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
+		// find the best target for this Marine
+		BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
-			if (selectedUnit->getDistance(target) < 300)
-			{
-				kiteTarget(selectedUnit, target);
-			}
-			else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
-			{
-				smartAttackMove(selectedUnit, order.position);
-			}
+		// attack it				
+		kiteTarget(selectedUnit, target);
+
+	}
+	// if there are no targets
+	else
+	{
+		// if we're not near the order position
+		if (selectedUnit->getDistance(order.position) > 100)
+		{
+			// move to it
+			smartAttackMove(selectedUnit, order.position);
 		}
 	}
 }
 
-void MarineManagerExt::executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+void GoliathManagerExt::executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
 {
-	if (order.type == order.Attack || order.type == order.Defend)
+	// if there are targets
+	if (!selectedUnitTargets.empty())
 	{
-		if (!selectedUnitTargets.empty())
-		{
-			BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
+		// find the best target for this Marine
+		BWAPI::Unit * target = getTarget(selectedUnit, selectedUnitTargets);
 
-			if (selectedUnit->getDistance(target) < 300)
-			{
-				kiteTarget(selectedUnit, target);
-			}
-			else if (order.position.getDistance(selectedUnit->getPosition()) < 500)
-			{
-				smartAttackMove(selectedUnit, order.position);
-			}
+		// attack it				
+		kiteTarget(selectedUnit, target);
+
+	}
+	// if there are no targets
+	else
+	{
+		// if we're not near the order position
+		if (selectedUnit->getDistance(order.position) > 100)
+		{
+			// move to it
+			smartAttackMove(selectedUnit, order.position);
 		}
 	}
 }
