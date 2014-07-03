@@ -33,23 +33,19 @@ void ScienceVesselManagerExt::executeMicro(const UnitVector & targets)
 	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: Science Vessel: Selected!");
 		// if the order is to attack or defend
 		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
 			&& !isAttack())
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: Science Vessel: 1!");
 			executeTerranWraithRush1Port(selectedUnit, selectedUnitTargets);
 		}
 		else if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranVulturesAndTanks)
 			&& !isAttack())
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: Science Vessel: 2!");
 			executeTerranVulturesAndTanks(selectedUnit, selectedUnitTargets);
 		}
 		else if (order.type == order.Attack || order.type == order.Defend)
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: Science Vessel: Attack!");
 
 			// if there are targets
 			if (!selectedUnitTargets.empty())

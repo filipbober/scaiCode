@@ -71,7 +71,7 @@ class ProductionManager
 	bool isDuplicate(BWAPI::UnitType unitType);
 
 	bool isBuildOrderSearchOn;
-
+	BuildOrderItem<PRIORITY_TYPE> _lastType;
 	// eof ext
 
 public:
