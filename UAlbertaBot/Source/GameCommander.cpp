@@ -23,7 +23,10 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Production);
 
 	timerManager.startTimer(TimerManager::Building);
-	BuildingManager::Instance().update();
+	if (BWAPI::Broodwar->getFrameCount() % 240 == 0)
+	{
+		BuildingManager::Instance().update();
+	}
 	timerManager.stopTimer(TimerManager::Building);
 
 	

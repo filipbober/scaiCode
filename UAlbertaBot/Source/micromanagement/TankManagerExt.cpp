@@ -207,7 +207,7 @@ void TankManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target
 	int siegeModeMaxRange = BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.groundWeapon().maxRange();
 
 	bool isSiegeModeOn = selectedUnit->isSieged();
-	bool isTargetApproaching = !target->getType().isBuilding() && !target->getType().isFlyer();
+	bool isTargetApproaching = !target->getType().isBuilding() && !target->getType().isFlyer() && !target->getType().isWorker();
 
 	int keepDistance = 200;
 

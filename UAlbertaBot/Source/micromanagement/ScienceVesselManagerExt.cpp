@@ -60,13 +60,16 @@ void ScienceVesselManagerExt::executeMicro(const UnitVector & targets)
 			// if there are no targets
 			else
 			{
-				// if we're not near the order position
-				if (selectedUnit->getDistance(order.position) > 100)
-				{
-					// move to it
-					//smartMove(selectedUnit, order.position);
-					smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
-				}
+				//// if we're not near the order position
+				//if (selectedUnit->getDistance(order.position) > 100)
+				//{
+				//	// move to it
+				//	//smartMove(selectedUnit, order.position);
+				//	smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
+				//}
+
+				BWAPI::Position explorePosition = MapGrid::Instance().getLeastExplored();
+				smartMove(selectedUnit, explorePosition);
 			}
 		}
 
@@ -240,6 +243,12 @@ BWAPI::Position ScienceVesselManagerExt::closestFriendlyUnitPos(BWAPI::Unit* sel
 	BWAPI::Position closestUnitPos = order.position;
 	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
+		// skip mines
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
+		{
+			continue;
+		}
+
 		double distFromTarget = unit->getDistance(order.position);
 
 		if (distFromTarget <= dist)

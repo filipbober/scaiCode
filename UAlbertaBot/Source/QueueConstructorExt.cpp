@@ -333,7 +333,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 7)
 		&& (BWAPI::Broodwar->self()->supplyUsed() <= (200 * 2)))
 	{
-		queueTerranSupply(numSupply + 1);
+		queueTerranSupply(numSupply + 3);
 		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		cleanQueue();
 		return;
@@ -341,6 +341,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	}
 	else if (BWAPI::Broodwar->self()->supplyUsed() > (190 * 2))
 	{
+		queueTerranTurrets(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) + 2);
 		// TODO tech, upgrade etc.
 		// TODO - control supply while building units (ensure there is enough)
 		//queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
