@@ -391,12 +391,11 @@ bool ScienceVesselManagerExt::useTechs(BWAPI::Unit* selectedUnit, BWAPI::Unit* t
 	// Defensive Matrix
 	BWAPI::Unit* closestSelfUnit = closestFriendlyUnit(selectedUnit);
 
-	if (closestSelfUnit != NULL)
+	if ((closestSelfUnit != NULL)
+		&& (energyRemaining > BWAPI::TechTypes::Defensive_Matrix.energyUsed())
+		&& !(closestSelfUnit->isDefenseMatrixed()))
 	{
-		if (energyRemaining > BWAPI::TechTypes::Defensive_Matrix.energyUsed())
-		{
-			selectedUnit->useTech(BWAPI::TechTypes::Defensive_Matrix, closestSelfUnit);			
-		}
+		selectedUnit->useTech(BWAPI::TechTypes::Defensive_Matrix, closestSelfUnit);			
 		return true;
 	}
 	else
