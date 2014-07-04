@@ -24,6 +24,9 @@ private:
 	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
 	void executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
 	BWAPI::Position closestFriendlyUnitPos(BWAPI::Unit* selectedUnit);
+	BWAPI::Unit* closestFriendlyUnit(BWAPI::Unit* selectedUnit);
+
+	bool useTechs(BWAPI::Unit* selectedUnit, BWAPI::Unit* target);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;

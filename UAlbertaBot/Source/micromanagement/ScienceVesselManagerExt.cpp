@@ -188,7 +188,12 @@ void ScienceVesselManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit
 	if (dist > targetRange + 30)
 	{
 		//smartMove(selectedUnit, target->getPosition());
-		smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
+		
+		// If tech was not used
+		if (!useTechs(selectedUnit, target))
+		{
+			smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
+		}		
 	}
 	else
 	{
@@ -271,6 +276,37 @@ BWAPI::Position ScienceVesselManagerExt::closestFriendlyUnitPos(BWAPI::Unit* sel
 	return closestUnitPos;
 }
 
+BWAPI::Unit* ScienceVesselManagerExt::closestFriendlyUnit(BWAPI::Unit* selectedUnit)
+{
+	double dist = 10000;
+	BWAPI::Unit* closestUnit = NULL;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		// skip mines
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
+		{
+			continue;
+		}
+
+		double distFromTarget = selectedUnit->getDistance(unit);
+
+		if (distFromTarget <= dist)
+		{
+			dist = distFromTarget;
+			closestUnit = unit;
+		}
+	}
+
+	if (closestUnit != NULL)
+	{
+		return closestUnit;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
 
 bool ScienceVesselManagerExt::isAttack()
 {
@@ -327,4 +363,46 @@ void ScienceVesselManagerExt::executeTerranVulturesAndTanks(BWAPI::Unit * select
 			}
 		}
 	}
+}
+
+bool ScienceVesselManagerExt::useTechs(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
+{
+	int energyRemaining = selectedUnit->getEnergy();
+
+	// EMP
+	if ((BWAPI::Broodwar->enemy()->getRace() == BWAPI::Races::Protoss)
+		&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::EMP_Shockwave))
+		&& (energyRemaining > BWAPI::TechTypes::EMP_Shockwave.energyUsed()));
+
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::EMP_Shockwave, _averageEnemyPosition);
+		return true;
+	}
+
+	// Irradiate
+	if ( (target->getType().isOrganic())
+		&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Irradiate))
+		&& (energyRemaining > BWAPI::TechTypes::Irradiate.energyUsed()))
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::Irradiate, target);
+		return true;
+	}
+
+	// Defensive Matrix
+	BWAPI::Unit* closestSelfUnit = closestFriendlyUnit(selectedUnit);
+
+	if (closestSelfUnit != NULL)
+	{
+		if (energyRemaining > BWAPI::TechTypes::Defensive_Matrix.energyUsed())
+		{
+			selectedUnit->useTech(BWAPI::TechTypes::Defensive_Matrix, closestSelfUnit);			
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	return false;
 }
