@@ -20,6 +20,7 @@ public:
 
 	// Terran queues
 	void makeTerranVulturesAndTanksQueue();
+	void makeTerranWraithRush1PortQueue();
 
 	void cleanQueue();
 

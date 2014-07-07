@@ -1174,7 +1174,11 @@ int StrategyManager::getStrategyIdx()
 		//chosenStrategy = TerranDoubleRaxMnM;		
 		//chosenStrategy = TerranTriRaxMnMRush;
 		//chosenStrategy = TerranWraithRush1Port;
-		chosenStrategy = TerranVulturesAndTanks;
+
+
+
+		//chosenStrategy = TerranVulturesAndTanks;
+		chosenStrategy = TerranWraithRush1Port;
 
 	}
 
@@ -2076,15 +2080,6 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 	//return true;
 
 
-	if (BWAPI::Broodwar->getFrameCount() < 10000)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-
 
 
 
@@ -2093,32 +2088,32 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 
 
 
-	if (isAttackGrantedPermanently)
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Attack granted");
-		return true;
-	}
+	//if (isAttackGrantedPermanently)
+	//{
+	//	BWAPI::Broodwar->printf("                                           DebExt: Attack granted");
+	//	return true;
+	//}
 
-	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-	int numBCs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+	//int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	//int numBCs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
 
-	if (isAttackOrderGranted
-		&& ((BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) > 1)
-		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) > 1)
-		|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spore_Colony) > 1)))
-	{
-		isAttackOrderGranted = false;
-		BWAPI::Broodwar->printf("                                           DebExt: Attack not granted");
-	}
+	//if (isAttackOrderGranted
+	//	&& ((BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) > 1)
+	//	|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) > 1)
+	//	|| (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Zerg_Spore_Colony) > 1)))
+	//{
+	//	isAttackOrderGranted = false;
+	//	BWAPI::Broodwar->printf("                                           DebExt: Attack not granted");
+	//}
 
-	if ((numBCs > 4)
-		&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)))
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Attack granted");
-		isAttackGrantedPermanently = true;
-	}
+	//if ((numBCs > 4)
+	//	&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)))
+	//{
+	//	BWAPI::Broodwar->printf("                                           DebExt: Attack granted");
+	//	isAttackGrantedPermanently = true;
+	//}
 
-	return isAttackOrderGranted || isAttackGrantedPermanently;
+	//return isAttackOrderGranted || isAttackGrantedPermanently;
 }
 
 bool StrategyManager::doAttackTerranVulturesAndTanks()
