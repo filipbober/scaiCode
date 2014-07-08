@@ -222,9 +222,9 @@ BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector
 void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
 	// If mine is being put or we have issued a command this frame, return
-	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
+	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
 		&& selectedUnit->getSpiderMineCount() > 0
-		&& (UnitManagerExt::Instance().isPuttingMine(selectedUnit))
+		&& (UnitManagerExt::Instance().isPuttingMine(selectedUnit)
 		|| selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount()))
 	{
 		return;
