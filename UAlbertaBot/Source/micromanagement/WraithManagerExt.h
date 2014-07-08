@@ -26,6 +26,8 @@ private:
 	BWAPI::Position getSafeTurretPosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity);
 	int getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWAPI::Unit* target);
 
+	double closestEnemyDist(BWAPI::Unit* selectedUnit);
+
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
 	int _noTurretTargetsNo;

@@ -261,10 +261,12 @@ void WraithManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 	{
 		// If target is a turret and there are other viable targets then
 		// move closer but stay out of the turret range
+		int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 		if (isTurret(target)
-			&& (_noTurretTargetsNo > 0))
+			&& (_noTurretTargetsNo > 0)
+			&& numWraiths < 3)
 		{
-			BWAPI::Position safePos = getSafeTurretPosition(selectedUnit, target, 10);
+			BWAPI::Position safePos = getSafeTurretPosition(selectedUnit, target, 30);
 			if (!safePos.isValid())
 			{
 				safePos.makeValid();
@@ -350,35 +352,74 @@ void WraithManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	}
 }
 
+double WraithManagerExt::closestEnemyDist(BWAPI::Unit* selectedUnit)
+{
+	double dist = 1000;
+
+	BOOST_FOREACH(BWAPI::Unit* enemyUnit, BWAPI::Broodwar->enemy()->getUnits())
+	{
+		int unitDist = enemyUnit->getDistance(selectedUnit);
+
+		if ((unitDist <= dist)
+			&& enemyUnit->getType().canAttack()
+			&& enemyUnit->isVisible()
+			&& !enemyUnit->getType().isFlyer() // ignore Flyers - Vultures cant attack them anyway
+			&& !enemyUnit->isCloaked())
+		{
+			dist = unitDist;
+		}
+	}
+
+	return dist;
+}
+
 void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets)
 {
 	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field))
 	{
 		return;
 	}
-
-	if ((BWAPI::Broodwar->getFrameCount() % 240 == 0)
-		&& (selectedUnit->isDetected())
-		&& (selectedUnit->getEnergy() > 40)
-		&& !(selectedUnit->isCloaked()))
+	else
 	{
-		BWAPI::Broodwar->printf("                                           DebExt: Wraith decloak");
-		selectedUnit->decloak();
-		return;
-	}
+		double dist = closestEnemyDist(selectedUnit);
+		int energy = selectedUnit->getEnergy();
 
-	BOOST_FOREACH(BWAPI::Unit* target, targets)
-	{
-		if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)
-			&& target->isInWeaponRange(selectedUnit)
-			&& !selectedUnit->isCloaked()
-			&& selectedUnit->getEnergy() > 50)			
+		if (selectedUnit->isCloaked()
+			&& selectedUnit->isDetected()
+			&& energy > 40)
 		{
-			BWAPI::Broodwar->printf("                                           DebExt: Wraith cloak");
+			BWAPI::Broodwar->printf("                                           DebExt: Wraith decloak");
+			selectedUnit->decloak();
+		}
+		else if ((dist < 380)
+			&& energy > 50)
+		{
 			selectedUnit->cloak();
-			break;
 		}
 	}
+
+	//if ((BWAPI::Broodwar->getFrameCount() % 240 == 0)
+	//	&& (selectedUnit->isDetected())
+	//	&& (selectedUnit->getEnergy() > 40)
+	//	&& !(selectedUnit->isCloaked()))
+	//{
+	//	BWAPI::Broodwar->printf("                                           DebExt: Wraith decloak");
+	//	selectedUnit->decloak();
+	//	return;
+	//}
+
+	//BOOST_FOREACH(BWAPI::Unit* target, targets)
+	//{
+	//	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field)
+	//		&& target->isInWeaponRange(selectedUnit)
+	//		&& !selectedUnit->isCloaked()
+	//		&& selectedUnit->getEnergy() > 50)			
+	//	{
+	//		BWAPI::Broodwar->printf("                                           DebExt: Wraith cloak");
+	//		selectedUnit->cloak();
+	//		break;
+	//	}
+	//}
 }
 
 bool WraithManagerExt::isInTurretRange(BWAPI::Position position, UnitVector & targets, BWAPI::Unit* selectedUnit)
