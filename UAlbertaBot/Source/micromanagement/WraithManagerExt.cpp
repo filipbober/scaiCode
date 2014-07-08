@@ -352,9 +352,15 @@ void WraithManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 
 void WraithManagerExt::manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets)
 {
+	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Cloaking_Field))
+	{
+		return;
+	}
+
 	if ((BWAPI::Broodwar->getFrameCount() % 240 == 0)
-		&& selectedUnit->isDetected()
-		&& selectedUnit->getEnergy() > 40)
+		&& (selectedUnit->isDetected())
+		&& (selectedUnit->getEnergy() > 40)
+		&& !(selectedUnit->isCloaked()))
 	{
 		BWAPI::Broodwar->printf("                                           DebExt: Wraith decloak");
 		selectedUnit->decloak();
