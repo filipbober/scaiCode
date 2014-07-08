@@ -68,7 +68,8 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 22 0 0 23 0 0 17 38 3 22 0 0 17 7 0 3 0 7 0 3 0 7 3 7 3 3 47";  // Thrusters
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";		// good one
 
-	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";	// beats all default AIs
+	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";	// beats all default AIs
+	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 1 1 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";		// beats the default Protoss
 	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 1 0 17 1 26 39 10 10 10 50";
 

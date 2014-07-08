@@ -6,7 +6,7 @@
 
 VultureManagerExt::VultureManagerExt()
 {
-	_putMineFrame = 96;
+	_putMineFrame = 72;
 }
 
 
@@ -222,9 +222,9 @@ BWAPI::Unit* VultureManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector
 void VultureManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
 	// If mine is being put or we have issued a command this frame, return
-	if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
+	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Spider_Mines)
 		&& selectedUnit->getSpiderMineCount() > 0
-		&& (UnitManagerExt::Instance().isPuttingMine(selectedUnit)
+		&& (UnitManagerExt::Instance().isPuttingMine(selectedUnit))
 		|| selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount()))
 	{
 		return;
@@ -415,7 +415,7 @@ void VultureManagerExt::attackOrMine(BWAPI::Unit* selectedUnit, BWAPI::Unit* tar
 
 	// Put mine
 	if ((selectedUnit->getSpiderMineCount() > 0)
-		&& (selectedUnit->getDistance(target) <= 200)
+		&& (selectedUnit->getDistance(target) <= 380)
 		&& (BWAPI::Broodwar->getFrameCount() % _putMineFrame ==  0
 		&& (selectedUnit->getSpellCooldown() == 0))
 		&& !isMineProximity(selectedUnit))
@@ -449,6 +449,10 @@ void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position f
 
 
 	}
+	else if (selectedUnit->getSpiderMineCount() > 0)
+	{
+		putMine(selectedUnit, fleePosition);
+	}
 	else
 	{
 		//BWAPI::Broodwar->printf("                                           DebExt: Vulture fleeOrMine: smartMove");
@@ -458,7 +462,7 @@ void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position f
 
 bool VultureManagerExt::isMineProximity(BWAPI::Unit* selectedUnit)
 {
-	int proximity = 100;
+	int proximity = 40;
 
 	BOOST_FOREACH(BWAPI::Unit* mine, BWAPI::Broodwar->self()->getUnits())
 	{
