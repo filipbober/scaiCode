@@ -60,6 +60,7 @@ public:
 	void queueTerranBioWeapons();
 	void queueTerranBioArmor();
 
+	void queueTerranShipUpgrades();
 	void queueTerranAirWeapons();
 	void queueTerranAirArmor();
 

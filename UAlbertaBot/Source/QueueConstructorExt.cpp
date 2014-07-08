@@ -479,59 +479,67 @@ void QueueConstructorExt::makeTerranWraithRush1PortQueue()
 		queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
 	}
 
-	if (minerals > 300)
+	if ((minerals > 300)
+		&& (frame > 10000))
+	{
+		queueTerranShipUpgrades();
+	}
+
+	if (frame > 12000)
 	{
 		queueTerranBCUpgrades();
 	}
 
-
-
 	if (numMarines < 20)
 	{
+		queueTerranBarracks(3);
+
 		queueTerranMarines(1.0);
 		queueTerranMarines(1.0);
 		queueTerranMarines(1.0);
 	}
 
-	//if (frame < 14000)
-	//{
-	//	queueTerranWraiths(1.0);
-	//}
-	//else
-	//{
-	//	queueTerranWraiths(0.5);
-	//	queueTerranBCs(0.5);
-	//}
+	if (frame < 14000)
+	{
+		queueTerranWraiths(1.0);
+		queueTerranStarports(2);
+	}
+	else
+	{
+		
+		queueTerranWraiths(0.5);
+		queueTerranBCs(0.5);
+	}
 
-	//if (numScvs < 48)
-	//{
-	//	queueTerranSCVs(1.0);
-	//	queueTerranSCVs(1.0);
-	//}
+	if (numScvs < 48)
+	{
+		queueTerranSCVs(1.0);
+		queueTerranSCVs(1.0);
+	}
 
-	//if (frame > 10000)
-	//{
-	//	queueTerranWraithUpgrades();
-	//	queueTerranStarports(3);
-	//}
+	if (frame > 10000)
+	{
+		queueTerranWraithUpgrades();
+		queueTerranStarports(3);
+	}
 
-	//if (frame > 12000)
-	//{
-	//	queueTerranStarports(4);
-	//}
+	if (frame > 12000)
+	{
+		queueTerranStarports(4);
+	}
 
-	//if (frame > 13000)
-	//{
-	//	queueTechBattlecruisers();
-	//}
+	if (frame > 13000)
+	{
+		queueTechBattlecruisers();
+	}
 
-	//int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
-	//int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	//if (frame > 10000
-	//	&& numScienceVessels < 1)
-	//{
-	//	queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
-	//}
+	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	if (frame > 10000
+		&& numScienceVessels < 1)
+	{
+		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
+	}
 
 	//makeExpansion();
 
@@ -540,16 +548,16 @@ void QueueConstructorExt::makeTerranWraithRush1PortQueue()
 	////	queueTerranWraiths(1.0);
 	////}
 
-	//// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)	
-	//int totalSupplyRequired = BWAPI::Broodwar->self()->supplyUsed() + getQueueSupply();
-	//if (totalSupplyRequired >= BWAPI::Broodwar->self()->supplyTotal())
-	//{
-	//	int supplyRequired = totalSupplyRequired - BWAPI::Broodwar->self()->supplyTotal();
-	//	int supplyDepotsRequired = std::max(1, (int)std::ceil(supplyRequired / 8.0));
-	//	queueTerranSupply(numSupply + supplyDepotsRequired);
-	//}
+	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)	
+	int totalSupplyRequired = BWAPI::Broodwar->self()->supplyUsed() + getQueueSupply();
+	if (totalSupplyRequired >= BWAPI::Broodwar->self()->supplyTotal())
+	{
+		int supplyRequired = totalSupplyRequired - BWAPI::Broodwar->self()->supplyTotal();
+		int supplyDepotsRequired = std::max(1, (int)std::ceil(supplyRequired / 8.0));
+		queueTerranSupply(numSupply + supplyDepotsRequired);
+	}
 
-	//cleanQueue();
+	cleanQueue();
 }
 
 void QueueConstructorExt::queueCommandCenters(int desiredNo)
@@ -1143,6 +1151,60 @@ void QueueConstructorExt::queueTerranBioArmor()
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Infantry_Armor), true);
 		}
 
+	}
+}
+
+void QueueConstructorExt::queueTerranShipUpgrades()
+{
+	int numFactiories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	int numArmory = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Armory);
+	int numScienceFacilities = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
+
+	if (numFactiories < 1)
+	{
+		queueTerranFactories(1);
+	}
+	else if (numArmory < 1)
+	{
+		queueTerranArmory(1);
+	}
+	else
+	{
+		if ((BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Ship_Weapons))
+			|| (BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Ship_Plating)))
+		{
+			return;
+		}
+
+		int weaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons);
+		int armorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating);
+
+		int maxWeaponLevel = BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Weapons);
+		int maxArmorLevel = BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Ship_Plating);
+
+		if (weaponLevel < maxWeaponLevel)
+		{
+			if ((weaponLevel <= armorLevel))
+			{
+				if (((weaponLevel > 0) || (armorLevel > 0))
+					&& (numScienceFacilities < 1))
+				{
+					queueTerranScienceFacilities(1);
+				}
+				else
+				{
+					_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Ship_Weapons), true);
+				}
+			}
+			else
+			{
+				_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Ship_Plating), true);
+			}
+		}
+		else if (armorLevel < maxArmorLevel)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UpgradeTypes::Terran_Ship_Plating), true);
+		}
 	}
 }
 
