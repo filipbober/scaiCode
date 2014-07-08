@@ -1179,8 +1179,8 @@ int StrategyManager::getStrategyIdx()
 
 
 
-		//chosenStrategy = TerranVulturesAndTanks;
-		chosenStrategy = TerranWraithRush1Port;
+		chosenStrategy = TerranVulturesAndTanks;
+		//chosenStrategy = TerranWraithRush1Port;
 
 	}
 
