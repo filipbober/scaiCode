@@ -451,6 +451,12 @@ void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position f
 	}
 	else if (selectedUnit->getSpiderMineCount() > 0)
 	{
+		if (!fleePosition.isValid())
+		{
+			fleePosition.makeValid();
+		}
+
+		UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
 		putMine(selectedUnit, fleePosition);
 	}
 	else
