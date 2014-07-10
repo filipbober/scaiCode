@@ -405,6 +405,31 @@ void BuildingManager::checkForDeadTerranBuilders()
 	//		buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
 	//	}
 	//}
+
+	//BOOST_FOREACH(BWAPI::Unit * buildingStarted, BWAPI::Broodwar->self()->getUnits())
+	//{
+
+	//}
+
+
+	if (!(BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran))
+	{
+		return;
+	}
+
+	buildingData.begin(ConstructionData::UnderConstruction);
+	while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
+	{
+		Building & b = buildingData.getNextBuilding(ConstructionData::UnderConstruction);
+
+		if (!b.builderUnit->exists())
+		{
+			//buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
+			BWAPI::Unit* workerToAssign = WorkerManager::Instance().getBuilder(b);
+		}
+	}
+
+
 }
 
 // STEP 6: CHECK FOR COMPLETED BUILDINGS
