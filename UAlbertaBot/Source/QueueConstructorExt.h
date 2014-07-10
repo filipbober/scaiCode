@@ -20,6 +20,7 @@ public:
 
 	// Terran queues
 	void makeTerranVulturesAndTanksQueue();
+	void makeTerranWraithRush1PortQueue();
 
 	void cleanQueue();
 
@@ -59,6 +60,7 @@ public:
 	void queueTerranBioWeapons();
 	void queueTerranBioArmor();
 
+	void queueTerranShipUpgrades();
 	void queueTerranAirWeapons();
 	void queueTerranAirArmor();
 

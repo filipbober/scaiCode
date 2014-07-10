@@ -6,7 +6,7 @@
 
 VultureManagerExt::VultureManagerExt()
 {
-	_putMineFrame = 96;
+	_putMineFrame = 72;
 }
 
 
@@ -415,7 +415,7 @@ void VultureManagerExt::attackOrMine(BWAPI::Unit* selectedUnit, BWAPI::Unit* tar
 
 	// Put mine
 	if ((selectedUnit->getSpiderMineCount() > 0)
-		&& (selectedUnit->getDistance(target) <= 200)
+		&& (selectedUnit->getDistance(target) <= 380)
 		&& (BWAPI::Broodwar->getFrameCount() % _putMineFrame ==  0
 		&& (selectedUnit->getSpellCooldown() == 0))
 		&& !isMineProximity(selectedUnit))
@@ -449,6 +449,16 @@ void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position f
 
 
 	}
+	else if (selectedUnit->getSpiderMineCount() > 0)
+	{
+		if (!fleePosition.isValid())
+		{
+			fleePosition.makeValid();
+		}
+
+		UnitManagerExt::Instance().putMineFlagOn(selectedUnit);
+		putMine(selectedUnit, fleePosition);
+	}
 	else
 	{
 		//BWAPI::Broodwar->printf("                                           DebExt: Vulture fleeOrMine: smartMove");
@@ -458,7 +468,7 @@ void VultureManagerExt::fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position f
 
 bool VultureManagerExt::isMineProximity(BWAPI::Unit* selectedUnit)
 {
-	int proximity = 100;
+	int proximity = 40;
 
 	BOOST_FOREACH(BWAPI::Unit* mine, BWAPI::Broodwar->self()->getUnits())
 	{

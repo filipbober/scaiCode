@@ -694,7 +694,7 @@ void ProductionManager::queueDoSomething()
 void ProductionManager::queueDoSomethingTerranWraithRush1Port()
 {
 	QueueConstructorExt::Instance().clearQueue();
-	QueueConstructorExt::Instance().makeTestQueue();
+	QueueConstructorExt::Instance().makeTerranWraithRush1PortQueue();
 	queue = QueueConstructorExt::Instance().getQueue();
 }
 
