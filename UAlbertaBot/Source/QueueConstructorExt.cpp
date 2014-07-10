@@ -318,6 +318,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
 
 	int minerals = BWAPI::Broodwar->self()->minerals();
 	int gas = BWAPI::Broodwar->self()->gas();
@@ -347,6 +348,39 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		//queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		return;
 	}
+
+
+
+
+	// Test module
+	if (frame < 8000)
+	{
+		
+		queueTerranVultures(1.0);
+		queueTerranMarines(1.0);
+		queueTerranMarines(1.0);
+
+		queueTerranSupply(numSupply + 1);
+
+		cleanQueue();
+		return;
+	}
+	else if (frame < 10000)
+	{				
+		queueTerranVultures(1.0);
+		queueTerranTanks(0.5);
+		queueTerranMarines(1.0);
+
+		queueTerranSupply(numSupply + 2);
+
+		cleanQueue();
+		return;
+	}
+	// eof test
+
+
+
+
 
 	//bool underConstruction = (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Factory) > 0) 
 	//	|| (BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Bunker));
@@ -389,12 +423,18 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	if (frame > 10000)
 	{
 		queueTechVultures();
-		queueTerranFactories(3);
+
+		int factoriesWanted = std::min(numFactories + 1, 3);
+		queueTerranFactories(factoriesWanted);
+		//queueTerranFactories(3);
 	}
 
 	if (frame > 12000)
 	{
-		queueTerranFactories(4);
+		int factoriesWanted = std::min(numFactories + 1, 4);
+		queueTerranFactories(factoriesWanted);
+
+		//queueTerranFactories(4);
 	}
 
 	if (frame > 13000)
