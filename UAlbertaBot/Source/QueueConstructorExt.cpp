@@ -352,27 +352,27 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 
 
-	// Test module
-	if (frame < 10000)
-	{
-		
-		queueTerranVultures(1.0);
-		queueTerranMarines(1.0);
-		queueTerranMarines(1.0);
+	//// Test module
+	//if (frame < 10000)
+	//{
+	//	
+	//	queueTerranVultures(1.0);
+	//	queueTerranMarines(1.0);
+	//	queueTerranMarines(1.0);
 
-		//cleanQueue();
-		//return;
-	}
-	else if (frame < 14000)
-	{				
-		queueTerranVultures(1.0);
-		queueTerranTanks(0.5);
-		queueTerranMarines(1.0);
+	//	//cleanQueue();
+	//	//return;
+	//}
+	//else if (frame < 14000)
+	//{				
+	//	queueTerranVultures(1.0);
+	//	queueTerranTanks(0.5);
+	//	queueTerranMarines(1.0);
 
-		//cleanQueue();
-		//return;
-	}
-	// eof test
+	//	//cleanQueue();
+	//	//return;
+	//}
+	//// eof test
 
 
 
@@ -407,9 +407,45 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranMarines(1.0);
 	}
 
-	queueTerranVultures(1.0);
-	queueTerranVultures(1.0);
-	queueTerranTanks(0.3);
+	if (frame < 10000)
+	{
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+	}
+	else if (frame < 14000)
+	{
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+		queueTerranTanks(0.3);
+	}
+	else
+	{
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+		queueTerranTanks(1.0);
+	}
+
+	if (minerals > 1000)
+	{
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+		queueTerranVultures(1.0);
+
+		queueTerranFactories(numFactories + 1);
+	}
+
+	if (minerals > 1000
+		&& gas > 500)
+	{
+		queueTerranTanks(1.0);
+	}
+
+
+	//queueTerranVultures(1.0);
+	//queueTerranVultures(1.0);
+	//queueTerranTanks(0.3);
 
 	if (numScvs < 48)
 	{
@@ -421,7 +457,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	if (frame > 10000)
 	{
-		queueTechVultures();
+		//queueTechVultures();
 
 		int factoriesWanted = std::min(numFactories + 1, 3);
 		queueTerranFactories(factoriesWanted);
@@ -436,7 +472,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		//queueTerranFactories(4);
 	}
 
-	if (frame > 13000)
+	if (frame > 10000)
 	{
 		queueTechTanks();
 	}
