@@ -353,28 +353,24 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 
 	// Test module
-	if (frame < 8000)
+	if (frame < 10000)
 	{
 		
 		queueTerranVultures(1.0);
 		queueTerranMarines(1.0);
 		queueTerranMarines(1.0);
 
-		queueTerranSupply(numSupply + 1);
-
-		cleanQueue();
-		return;
+		//cleanQueue();
+		//return;
 	}
-	else if (frame < 10000)
+	else if (frame < 14000)
 	{				
 		queueTerranVultures(1.0);
 		queueTerranTanks(0.5);
 		queueTerranMarines(1.0);
 
-		queueTerranSupply(numSupply + 2);
-
-		cleanQueue();
-		return;
+		//cleanQueue();
+		//return;
 	}
 	// eof test
 
@@ -412,10 +408,13 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	}
 
 	queueTerranVultures(1.0);
+	queueTerranVultures(1.0);
 	queueTerranTanks(0.3);
 
 	if (numScvs < 48)
 	{
+		queueTerranSCVs(1.0);
+		queueTerranSCVs(1.0);
 		queueTerranSCVs(1.0);
 		queueTerranSCVs(1.0);
 	}
@@ -429,7 +428,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		//queueTerranFactories(3);
 	}
 
-	if (frame > 12000)
+	if (frame > 14000)
 	{
 		int factoriesWanted = std::min(numFactories + 1, 4);
 		queueTerranFactories(factoriesWanted);
