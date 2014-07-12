@@ -359,14 +359,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	}
 
 
-	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
-	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	if (frame > 10500
-		&& numScienceVessels < 1)
-	{
-		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
-	}
-
 
 	if (frame < 10000)
 	{
@@ -425,10 +417,13 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 			queueTerranMarines(1.0);
 		}
 
+		queueTerranVultures(1.0);
+		queueTerranTanks(0.5);
+
 	}
 	else
 	{
-		int factoriesWanted = std::min(numFactories + 1, 4);
+		int factoriesWanted = std::min(numFactories + 1, 5);
 		queueTerranFactories(factoriesWanted);
 
 		queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
@@ -449,6 +444,14 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranVultures(1.0);
 		queueTerranVultures(1.0);
 		queueTerranTanks(0.5);
+	}
+
+	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	if (frame > 10500
+		&& numScienceVessels < 1)
+	{
+		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
 	}
 
 
@@ -482,7 +485,8 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranVultures(1.0);
 		queueTerranVultures(1.0);
 
-		queueTerranFactories(numFactories + 1);
+		queueTerranBarracks(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) + 1);
+		queueTerranTurrets(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) + 1);
 
 		queueTerranSupply(numSupply + 3);
 	}
