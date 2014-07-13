@@ -221,6 +221,13 @@ void ProductionManager::manageBuildOrderQueue()
 {
 	// if there is nothing in the queue, oh well
 	// Extension
+	if ((BWAPI::Broodwar->self()->minerals() > 1500)
+		&& (BWAPI::Broodwar->getFrameCount() % 1000 == 0))
+	{
+		queue.clearAll();
+	}
+
+
 	if (queue.isEmpty()) 
 	{		
 		queueDoSomething();
