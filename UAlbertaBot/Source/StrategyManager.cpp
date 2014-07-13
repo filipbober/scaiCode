@@ -1107,61 +1107,76 @@ void StrategyManager::createTerranUsableStrategies()
 	// Specific build orders
 	if (enemyRace == BWAPI::Races::Protoss)
 	{
-		usableStrategies.push_back(TerranTriRaxMnMRush);
-		//usableStrategies.push_back(TerranProxyRaxMarineRush);			// Hard to implement
-		usableStrategies.push_back(Terran3FactoryVultureRush);
-		usableStrategies.push_back(TerranGundamRush);
-		usableStrategies.push_back(Terran1FastExpoDef);			// better against protoss
-		usableStrategies.push_back(Terran1FastExpoNoDef);		// worse against protoss
-		usableStrategies.push_back(Terran2FactMechBuild);
-		usableStrategies.push_back(Terran1FastPortBuild);	
+		//usableStrategies.push_back(TerranTriRaxMnMRush);
+		////usableStrategies.push_back(TerranProxyRaxMarineRush);			// Hard to implement
+		//usableStrategies.push_back(Terran3FactoryVultureRush);
+		//usableStrategies.push_back(TerranGundamRush);
+		//usableStrategies.push_back(Terran1FastExpoDef);			// better against protoss
+		//usableStrategies.push_back(Terran1FastExpoNoDef);		// worse against protoss
+		//usableStrategies.push_back(Terran2FactMechBuild);
+		//usableStrategies.push_back(Terran1FastPortBuild);	
 
-		// Multi
-		usableStrategies.push_back(TerranDoubleRaxMnM);
-		usableStrategies.push_back(TerranTriRaxMnMRush);
+		//// Multi
+		//usableStrategies.push_back(TerranDoubleRaxMnM);
+		//usableStrategies.push_back(TerranTriRaxMnMRush);
+
+		usableStrategies.push_back(TerranVulturesAndTanks);
+		usableStrategies.push_back(TerranWraithRush1Port);
 	}
 	else if (enemyRace == BWAPI::Races::Terran)
 	{
-		//usableStrategies.push_back(TerranProxyRaxMarineRush);		// 8Hard to implement
-		usableStrategies.push_back(Terran1FastExpoNoDef);
-		usableStrategies.push_back(Terran2FactMechBuild);
-		usableStrategies.push_back(TerranGoliathBuild);
-		//usableStrategies.push_back(TerranGoliathDrop);	// Hard to implement
-		usableStrategies.push_back(Terran1FastPortBuild);
-		usableStrategies.push_back(TerranWraithRush2PortsTvT);
+		////usableStrategies.push_back(TerranProxyRaxMarineRush);		// 8Hard to implement
+		//usableStrategies.push_back(Terran1FastExpoNoDef);
+		//usableStrategies.push_back(Terran2FactMechBuild);
+		//usableStrategies.push_back(TerranGoliathBuild);
+		////usableStrategies.push_back(TerranGoliathDrop);	// Hard to implement
+		//usableStrategies.push_back(Terran1FastPortBuild);
+		//usableStrategies.push_back(TerranWraithRush2PortsTvT);
 
-		// Multi
-		usableStrategies.push_back(Terran3FactoryVultureRush);
-		usableStrategies.push_back(TerranDoubleRaxMnM);
-		usableStrategies.push_back(TerranTriRaxMnMRush);
+		//// Multi
+		//usableStrategies.push_back(Terran3FactoryVultureRush);
+		//usableStrategies.push_back(TerranDoubleRaxMnM);
+		//usableStrategies.push_back(TerranTriRaxMnMRush);
+
+		usableStrategies.push_back(TerranVulturesAndTanks);
+		usableStrategies.push_back(TerranWraithRush1Port);
 	}
 	else if (enemyRace == BWAPI::Races::Zerg)
 	{
-		usableStrategies.push_back(TerranDoubleRaxMnM);
-		usableStrategies.push_back(TerranTriRaxMnMRush);
-		//usableStrategies.push_back(TerranProxyRaxMarineRush);		// Hard to implement
-		usableStrategies.push_back(Terran1FastPortBuild);
-		usableStrategies.push_back(TerranWraithRush1Port);
-		usableStrategies.push_back(TerranWraithRush2PortsTvZ);
+		//usableStrategies.push_back(TerranDoubleRaxMnM);
+		//usableStrategies.push_back(TerranTriRaxMnMRush);
+		////usableStrategies.push_back(TerranProxyRaxMarineRush);		// Hard to implement
+		//usableStrategies.push_back(Terran1FastPortBuild);
+		//usableStrategies.push_back(TerranWraithRush1Port);
+		//usableStrategies.push_back(TerranWraithRush2PortsTvZ);
 
-		// Multi
-		usableStrategies.push_back(Terran3FactoryVultureRush);
-		usableStrategies.push_back(Terran2FactMechBuild);
+		//// Multi
+		//usableStrategies.push_back(Terran3FactoryVultureRush);
+		//usableStrategies.push_back(Terran2FactMechBuild);
+
+		usableStrategies.push_back(TerranVulturesAndTanks);
+		usableStrategies.push_back(TerranWraithRush1Port);
 	}
 	else
 	{
-		// Multi
-		usableStrategies.push_back(TerranDoubleRaxMnM);
-		usableStrategies.push_back(TerranTriRaxMnMRush);
-		usableStrategies.push_back(Terran3FactoryVultureRush);
-		usableStrategies.push_back(Terran2FactMechBuild);
+		//// Multi
+		//usableStrategies.push_back(TerranDoubleRaxMnM);
+		//usableStrategies.push_back(TerranTriRaxMnMRush);
+		//usableStrategies.push_back(Terran3FactoryVultureRush);
+		//usableStrategies.push_back(Terran2FactMechBuild);
+
+		//usableStrategies.push_back(TerranVulturesAndTanks);
 
 		usableStrategies.push_back(TerranVulturesAndTanks);
+		usableStrategies.push_back(TerranWraithRush1Port);
 	}	
 }
 
 int StrategyManager::getStrategyIdx()
 {
+	srand(time(NULL));
+	int random = rand() % 100;		// random from 0 to 99
+
 	int chosenStrategy = 0;
 
 	int strategyNo;
@@ -1180,9 +1195,47 @@ int StrategyManager::getStrategyIdx()
 
 
 
-		chosenStrategy = TerranVulturesAndTanks;
+
+		//chosenStrategy = TerranVulturesAndTanks;
 		//chosenStrategy = TerranWraithRush1Port;
 
+		if (enemyRace == BWAPI::Races::Protoss)
+		{
+			if (random <= 90)
+			{
+				chosenStrategy = TerranVulturesAndTanks;
+			}
+			else
+			{
+				chosenStrategy = TerranWraithRush1Port;
+			}
+		}
+		else if (enemyRace == BWAPI::Races::Terran)
+		{
+			if (random <= 70)
+			{
+				chosenStrategy = TerranVulturesAndTanks;
+			}
+			else
+			{
+				chosenStrategy = TerranWraithRush1Port;
+			}
+		}
+		else if (enemyRace == BWAPI::Races::Zerg)
+		{
+			if (random <= 95)
+			{
+				chosenStrategy = TerranVulturesAndTanks;
+			}
+			else
+			{
+				chosenStrategy = TerranWraithRush1Port;
+			}
+		}
+		else
+		{
+
+		}
 	}
 
 	if (selfRace == BWAPI::Races::Zerg)
@@ -1190,7 +1243,7 @@ int StrategyManager::getStrategyIdx()
 		strategyNo = usableStrategies.size();
 
 		// choose strategy
-		chosenStrategy = generateRandomStrategy(0, usableStrategies.size());
+		//chosenStrategy = generateRandomStrategy(0, usableStrategies.size());
 
 	}
 
@@ -2121,15 +2174,40 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 
 bool StrategyManager::doAttackTerranVulturesAndTanks()
 {
-	// Attack approximately when 6 vultures and 4 tanks are ready
-	if (BWAPI::Broodwar->getFrameCount() < 10000)
-	{
-		return false;
-	}
-	else
+	srand(time(NULL));
+	static int random = rand() % 100;		// random from 0 to 99
+
+	if (random < 10)
 	{
 		return true;
 	}
+	else if (random < 80)
+	{
+		// Attack approximately when 6 vultures and 4 tanks are ready
+		if (BWAPI::Broodwar->getFrameCount() < 10000)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		// Attack approximately when 6 vultures and 4 tanks are ready
+		if (BWAPI::Broodwar->getFrameCount() < 14000)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+
+
 }
 
 bool StrategyManager::doAttackTerranTriRaxMnMRush()
