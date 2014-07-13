@@ -427,7 +427,12 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranTanks(1.0);
 	}
 
-	if (minerals > 1000)
+	if (minerals > 1000
+		&& gas > 500)
+	{
+		queueTerranTanks(1.0);
+	}
+	else if (minerals > 1000)
 	{
 		queueTerranVultures(1.0);
 		queueTerranVultures(1.0);
@@ -490,9 +495,21 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	// TODO: if supply is higher than 110 -> go for battlecruisers 
 
+	if (BWAPI::Broodwar->enemy()->allUnitCount(BWAPI::UnitTypes::Protoss_Dragoon) > 0)
+	{
+		int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+		int barracksWanted = std::min(numBarracks + 1, 3);
+		queueTerranBarracks(barracksWanted);
+
+		queueTerranMarines(1.0);
+		queueTerranMarines(1.0);
+
+		queueTerranMarinesUpgrades();
+	}
+
 	if (isAirThreat())
 	{
-		queueTerranGoliaths(0.5);
+		queueTerranGoliaths(0.2);
 		queueTechGoliaths();
 		queueTerranWraiths(1.0);
 	}
