@@ -33,6 +33,11 @@ void QueueConstructorExt::clearQueue()
 
 void QueueConstructorExt::makeExpansion()
 {
+	if (BWAPI::Broodwar->self()->supplyUsed() < 40)
+	{
+		return;
+	}
+
 	int frame = BWAPI::Broodwar->getFrameCount();
 	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 
@@ -40,6 +45,12 @@ void QueueConstructorExt::makeExpansion()
 		&& (frame > 8000))
 	{
 		queueCommandCenters(2);
+	}
+
+	if (numCommandCenters < 2
+		&& frame > 14000)
+	{
+		queueCommandCenters(3);
 	}
 	//else if ((numCommandCenters < 3)
 	//	&& (frame > 14000))
@@ -349,20 +360,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranBunkers(std::min((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1), 5));
 	}
 
-	if (minerals > 1500)
-	{
-		queueTerranBarracks(std::min((numBarracks + 1), 5));
-		queueTerranMarines(1.0);
-		queueTerranMarines(1.0);
-		queueTerranMarinesUpgrades();
-	}
-
-	if (minerals > 300)
-	{
-		//queueTerranBCUpgrades();
-		queueTerranTankUpgrades();
-	}
-
 	if (numMarines < 20)
 	{
 		queueTerranMarines(1.0);
@@ -433,6 +430,20 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranFactories(factoriesWanted);
 
 		//queueTerranFactories(4);
+	}
+
+	if (minerals > 1500)
+	{
+		queueTerranBarracks(std::min((numBarracks + 1), 5));
+		queueTerranMarines(1.0);
+		queueTerranMarines(1.0);
+		queueTerranMarinesUpgrades();
+	}
+
+	if (minerals > 300)
+	{
+		//queueTerranBCUpgrades();
+		queueTerranTankUpgrades();
 	}
 
 	if (frame > 10000)

@@ -254,7 +254,9 @@ BWAPI::Position ScienceVesselManagerExt::closestFriendlyUnitPos(BWAPI::Unit* sel
 	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
 		// skip mines
-		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
+			|| unit->getType().isBuilding()
+			|| !unit->getType().canAttack())
 		{
 			continue;
 		}
