@@ -221,11 +221,25 @@ void ProductionManager::manageBuildOrderQueue()
 {
 	// if there is nothing in the queue, oh well
 	// Extension
-	if ((BWAPI::Broodwar->self()->minerals() > 1500)
-		&& (BWAPI::Broodwar->getFrameCount() % 1000 == 0))
+	static int lastSupply;// = BWAPI::Broodwar->self()->supplyUsed();
+	if (StrategyManager::Instance().isMidGame
+		&& (BWAPI::Broodwar->getFrameCount() % 3000 == 0)
+		&& (BWAPI::Broodwar->self()->supplyUsed() <= lastSupply))
 	{
-		queue.clearAll();
+		BWAPI::Broodwar->printf("                                           DebExt: last supply = %d", lastSupply);
+		//queue.clearAll();
+		queue.removeCurrentHighestPriorityItem();
 	}
+	else
+	{
+		lastSupply = BWAPI::Broodwar->self()->supplyUsed();
+	}
+
+	//if ((BWAPI::Broodwar->self()->minerals() > 1500)
+	//	&& (BWAPI::Broodwar->getFrameCount() % 3000 == 0))
+	//{
+	//	queue.clearAll();
+	//}
 
 
 	if (queue.isEmpty()) 

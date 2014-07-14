@@ -1212,7 +1212,7 @@ int StrategyManager::getStrategyIdx()
 		}
 		else if (enemyRace == BWAPI::Races::Terran)
 		{
-			if (random <= 70)
+			if (random <= 85)
 			{
 				chosenStrategy = TerranVulturesAndTanks;
 			}

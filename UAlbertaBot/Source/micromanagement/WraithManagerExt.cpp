@@ -74,6 +74,10 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 						movePosition = order.position;
 					}
 					// eof Border movement
+					if (!movePosition.isValid())
+					{
+						movePosition.makeValid();
+					}
 
 					smartAttackMove(selectedUnit, movePosition);
 				}

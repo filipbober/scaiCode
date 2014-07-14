@@ -342,7 +342,14 @@ bool MarineManagerExt::isAttack()
 	}
 	else if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranVulturesAndTanks))
 	{
-		return false;
+		if (BWAPI::Broodwar->getFrameCount() < 12000)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	else
 	{
