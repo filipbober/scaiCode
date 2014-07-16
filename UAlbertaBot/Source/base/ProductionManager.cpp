@@ -258,7 +258,10 @@ void ProductionManager::manageBuildOrderQueue()
 		//}
 	}
 
-	manageIdleProductionVulturesAndTanks();
+	if (StrategyManager::Instance().isMidGame)
+	{
+		manageIdleProduction();
+	}
 
 	// Detect if a unit is not blocking the queue
 	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
@@ -774,20 +777,47 @@ void ProductionManager::resetQueue()
 	queue.clearAll();
 }
 
+void ProductionManager::manageIdleProduction()
+{
+	if (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranVulturesAndTanks)
+	{
+		manageIdleProductionVulturesAndTanks();
+	}
+	else
+	{
+		return;
+	}
+}
+
 void ProductionManager::manageIdleProductionVulturesAndTanks()
 {
 	int supplyLeft = BWAPI::Broodwar->self()->supplyTotal() - BWAPI::Broodwar->self()->supplyUsed();
 	int mineralsLeft = BWAPI::Broodwar->self()->minerals();
 	int gasLeft = BWAPI::Broodwar->self()->gas();
 
+	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+
+	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int scvMineralPrice = BWAPI::UnitTypes::Terran_SCV.mineralPrice();
 	int scvSupplyPrice = BWAPI::UnitTypes::Terran_SCV.supplyRequired();
 
+	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
 	int marineMineralPrice = BWAPI::UnitTypes::Terran_Marine.mineralPrice();
 	int marineSupplyPrice = BWAPI::UnitTypes::Terran_Marine.supplyRequired();
-
+	
+	int numVultures = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
 	int vultureMineralPrice = BWAPI::UnitTypes::Terran_Vulture.mineralPrice();
 	int vultureSupplyPrice = BWAPI::UnitTypes::Terran_Vulture.supplyRequired();
+
+	int numTanks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) + BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
+	int tankMineralPrice = BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode.mineralPrice();
+	int tankGasPrice = BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode.gasPrice();
+	int tankSupplyPrice = BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode.supplyRequired();
+
+	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	int wraithMineralPrice = BWAPI::UnitTypes::Terran_Wraith.mineralPrice();
+	int wraithGasPrice = BWAPI::UnitTypes::Terran_Wraith.gasPrice();
+	int wraithSupplyPrice = BWAPI::UnitTypes::Terran_Wraith.supplyRequired();
 
 	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
 	{
@@ -805,7 +835,8 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 			if (unitType == BWAPI::UnitTypes::Terran_Barracks)
 			{
 				if (mineralsLeft >= marineMineralPrice
-					&& supplyLeft >= marineSupplyPrice )
+					&& supplyLeft >= marineSupplyPrice
+					&& numMarines < 24)
 				{
 					unit->train(BWAPI::UnitTypes::Terran_Marine);
 
@@ -815,10 +846,23 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 			}
 			else if (unitType == BWAPI::UnitTypes::Terran_Factory)
 			{
-				if (mineralsLeft > marineMineralPrice
+				if (numVultures * 1.6 > numTanks
+					&& mineralsLeft > tankMineralPrice
+					&& gasLeft > tankMineralPrice
+					&& supplyLeft > tankSupplyPrice
+					&& unit->getAddon() != NULL)
+				{
+					unit->train(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+
+					mineralsLeft -= tankMineralPrice;
+					gasLeft -= tankGasPrice;
+					supplyLeft -= tankSupplyPrice;
+
+				}
+				else if (mineralsLeft > marineMineralPrice
 					&& supplyLeft > vultureSupplyPrice)
 				{
-					unit->train(BWAPI::UnitTypes::Terran_Vulture);
+					unit->train(BWAPI::UnitTypes::Terran_Vulture); 
 
 					mineralsLeft -= vultureMineralPrice;
 					supplyLeft -= vultureSupplyPrice;
@@ -826,12 +870,26 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 			}
 			else if (unitType == BWAPI::UnitTypes::Terran_Command_Center)
 			{
-				if (mineralsLeft > scvMineralPrice
+				if (numScvs < (numCommandCenters * 20)
+					&& mineralsLeft > scvMineralPrice
 					&& supplyLeft > scvSupplyPrice)
 				{
 					unit->train(BWAPI::UnitTypes::Terran_SCV);
 
 					mineralsLeft -= scvMineralPrice;
+					supplyLeft -= scvSupplyPrice;
+				}
+			}
+			else if (unitType == BWAPI::UnitTypes::Terran_Starport)
+			{
+				if (mineralsLeft > wraithMineralPrice
+					&& gasLeft > wraithGasPrice
+					&& supplyLeft > wraithSupplyPrice)
+				{
+					unit->train(BWAPI::UnitTypes::Terran_Wraith);
+
+					mineralsLeft -= scvMineralPrice;
+					gasLeft -= wraithGasPrice;
 					supplyLeft -= scvSupplyPrice;
 				}
 			}

@@ -70,6 +70,7 @@ class ProductionManager
 	void queueDoSomethingTerranVulturesAndTanks();
 	bool isDuplicate(BWAPI::UnitType unitType);
 
+	void manageIdleProduction();
 	void manageIdleProductionVulturesAndTanks();
 
 	bool isBuildOrderSearchOn;
