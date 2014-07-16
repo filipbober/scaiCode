@@ -258,7 +258,9 @@ void ProductionManager::manageBuildOrderQueue()
 		//}
 	}
 
-	if (StrategyManager::Instance().isMidGame)
+	if ((BWAPI::Broodwar->getFrameCount() > 10000)
+		&& (StrategyManager::Instance().isMidGame)
+		&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
 	{
 		manageIdleProduction();
 	}
@@ -794,6 +796,7 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	int supplyLeft = BWAPI::Broodwar->self()->supplyTotal() - BWAPI::Broodwar->self()->supplyUsed();
 	int mineralsLeft = BWAPI::Broodwar->self()->minerals();
 	int gasLeft = BWAPI::Broodwar->self()->gas();
+	int frame = BWAPI::Broodwar->getFrameCount();
 
 	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 
@@ -818,6 +821,13 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	int wraithMineralPrice = BWAPI::UnitTypes::Terran_Wraith.mineralPrice();
 	int wraithGasPrice = BWAPI::UnitTypes::Terran_Wraith.gasPrice();
 	int wraithSupplyPrice = BWAPI::UnitTypes::Terran_Wraith.supplyRequired();
+
+	// To prevent taking all the resources
+	if (BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
+	{
+		mineralsLeft -= 300;
+		gasLeft -= 200;
+	}
 
 	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
 	{
@@ -857,7 +867,6 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 					mineralsLeft -= tankMineralPrice;
 					gasLeft -= tankGasPrice;
 					supplyLeft -= tankSupplyPrice;
-
 				}
 				else if (mineralsLeft > marineMineralPrice
 					&& supplyLeft > vultureSupplyPrice)

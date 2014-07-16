@@ -1,6 +1,7 @@
 #include "WraithManagerExt.h"
 #include "Common.h"
 #include "UnitManagerExt.h"
+#include "StrategyManager.h"
 
 
 WraithManagerExt::WraithManagerExt()
@@ -65,7 +66,8 @@ void WraithManagerExt::executeMicro(const UnitVector & targets)
 
 					// Border movement
 					BWAPI::Position movePosition;
-					if (order.type == SquadOrder::Attack)
+					if (order.type == SquadOrder::Attack
+						&& (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
 					{
 						movePosition = UnitManagerExt::Instance().getMovePosition(selectedUnit);
 					}
