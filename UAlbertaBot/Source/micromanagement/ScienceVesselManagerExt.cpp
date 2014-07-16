@@ -174,6 +174,12 @@ BWAPI::Unit* ScienceVesselManagerExt::getTarget(BWAPI::Unit * selectedUnit, Unit
 
 void ScienceVesselManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
+	// If an order was issued this frame (like siege off), return
+	if (selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount())
+	{
+		return;
+	}
+
 	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
 	double targetRange(target->getType().airWeapon().maxRange());
 
@@ -284,8 +290,9 @@ BWAPI::Unit* ScienceVesselManagerExt::closestFriendlyUnit(BWAPI::Unit* selectedU
 	BWAPI::Unit* closestUnit = NULL;
 	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
-		// skip mines
-		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
+			|| unit->getType().isBuilding()
+			|| !unit->getType().canAttack())
 		{
 			continue;
 		}

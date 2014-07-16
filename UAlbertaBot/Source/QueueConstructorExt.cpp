@@ -419,15 +419,21 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	{
 		//queueTechVultures();
 
-		int factoriesWanted = std::min(numFactories + 1, 3);
-		queueTerranFactories(factoriesWanted);
+		if (minerals > 250)
+		{
+			int factoriesWanted = std::min(numFactories + 1, 3);
+			queueTerranFactories(factoriesWanted);
+		}
 		//queueTerranFactories(3);
 	}
 
 	if (frame > 14000)
 	{
-		int factoriesWanted = std::min(numFactories + 1, 4);
-		queueTerranFactories(factoriesWanted);
+		if (minerals > 250)
+		{
+			int factoriesWanted = std::min(numFactories + 1, 4);
+			queueTerranFactories(factoriesWanted);
+		}
 
 		//queueTerranFactories(4);
 	}
@@ -435,6 +441,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	if (minerals > 1500)
 	{
 		queueTerranBarracks(std::min((numBarracks + 1), 5));
+		queueTerranTurrets(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) + 2);
 		queueTerranMarines(1.0);
 		queueTerranMarines(1.0);
 		queueTerranMarinesUpgrades();

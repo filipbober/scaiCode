@@ -69,9 +69,11 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";		// good one
 
 	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";	// beats all default AIs
-	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 1 1 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
+	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 1 1 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
+	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 0 0 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3"; // survives first UAlberta wave
+	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 0 0 3 1 50 3 17 0 1 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";		// beats the default Protoss
-	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 1 0 17 1 26 39 10 10 10 50";
+	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 50 1 0 22 1 1 25 0 1 0 17 1 26 39 10 10 10";
 
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22";  // base build -> upgrade factory OR 2nd factory: 4 tanks and 6 vultures and attack Protoss
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22 23 0 0 17 22 3 7 3 7 3 7 3 7 3 3";
@@ -2236,4 +2238,10 @@ bool StrategyManager::doAttackTerranTriRaxMnMRush()
 
 	return isAttackOrderGranted;
 
+}
+
+int StrategyManager::attackPointsBalance()
+{
+	int selfKillScore = BWAPI::Broodwar->self()->getKillScore();
+	int enemyKillScore = BWAPI::Broodwar->enemy()->getKillScore();
 }
