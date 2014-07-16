@@ -258,6 +258,8 @@ void ProductionManager::manageBuildOrderQueue()
 		//}
 	}
 
+	manageIdleProductionVulturesAndTanks();
+
 	// Detect if a unit is not blocking the queue
 	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
 	if ( ((BWAPI::Broodwar->getFrameCount() % 1000) == 0)
@@ -770,4 +772,69 @@ bool ProductionManager::isDuplicate(BWAPI::UnitType unitType)
 void ProductionManager::resetQueue()
 {
 	queue.clearAll();
+}
+
+void ProductionManager::manageIdleProductionVulturesAndTanks()
+{
+	int supplyLeft = BWAPI::Broodwar->self()->supplyTotal() - BWAPI::Broodwar->self()->supplyUsed();
+	int mineralsLeft = BWAPI::Broodwar->self()->minerals();
+	int gasLeft = BWAPI::Broodwar->self()->gas();
+
+	int scvMineralPrice = BWAPI::UnitTypes::Terran_SCV.mineralPrice();
+	int scvSupplyPrice = BWAPI::UnitTypes::Terran_SCV.supplyRequired();
+
+	int marineMineralPrice = BWAPI::UnitTypes::Terran_Marine.mineralPrice();
+	int marineSupplyPrice = BWAPI::UnitTypes::Terran_Marine.supplyRequired();
+
+	int vultureMineralPrice = BWAPI::UnitTypes::Terran_Vulture.mineralPrice();
+	int vultureSupplyPrice = BWAPI::UnitTypes::Terran_Vulture.supplyRequired();
+
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		BWAPI::UnitType unitType = unit->getType();
+		// Loop through buildings
+		if (!unitType.isBuilding())
+		{
+			continue;
+		}
+
+		// Idle procution building
+		if (unitType.canProduce()
+			&& !unit->isTraining())
+		{
+			if (unitType == BWAPI::UnitTypes::Terran_Barracks)
+			{
+				if (mineralsLeft >= marineMineralPrice
+					&& supplyLeft >= marineSupplyPrice )
+				{
+					unit->train(BWAPI::UnitTypes::Terran_Marine);
+
+					mineralsLeft -= marineMineralPrice;
+					supplyLeft -= marineSupplyPrice;
+				}
+			}
+			else if (unitType == BWAPI::UnitTypes::Terran_Factory)
+			{
+				if (mineralsLeft > marineMineralPrice
+					&& supplyLeft > vultureSupplyPrice)
+				{
+					unit->train(BWAPI::UnitTypes::Terran_Vulture);
+
+					mineralsLeft -= vultureMineralPrice;
+					supplyLeft -= vultureSupplyPrice;
+				}
+			}
+			else if (unitType == BWAPI::UnitTypes::Terran_Command_Center)
+			{
+				if (mineralsLeft > scvMineralPrice
+					&& supplyLeft > scvSupplyPrice)
+				{
+					unit->train(BWAPI::UnitTypes::Terran_SCV);
+
+					mineralsLeft -= scvMineralPrice;
+					supplyLeft -= scvSupplyPrice;
+				}
+			}
+		}
+	}
 }
