@@ -823,7 +823,13 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	int wraithSupplyPrice = BWAPI::UnitTypes::Terran_Wraith.supplyRequired();
 
 	// To prevent taking all the resources
-	if (BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
+	if (numCommandCenters < 2
+		&& frame > 12000
+		&& BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
+	{
+		mineralsLeft -= 400;
+	}
+	else if (BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
 	{
 		mineralsLeft -= 300;
 		gasLeft -= 200;
