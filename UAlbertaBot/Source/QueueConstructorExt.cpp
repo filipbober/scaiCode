@@ -42,13 +42,13 @@ void QueueConstructorExt::makeExpansion()
 	int numCommandCenters = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
 
 	if ((numCommandCenters < 2)
-		&& (frame > 8000))
+		&& (frame > 10000))
 	{
 		queueCommandCenters(2);
 	}
 
-	if (numCommandCenters < 2
-		&& frame > 14000)
+	if (numCommandCenters < 3
+		&& frame > 16000)
 	{
 		queueCommandCenters(3);
 	}
@@ -392,10 +392,18 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranBunkers(std::min(numBunkers + 1, 5));
 	}
 
-	if (minerals > 400)
-	{
-		queueTerranSupply(numSupply + 2);
-	}
+	//if (minerals > 400
+	//	&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2))
+	//{
+	//	queueTerranSupply(numSupply + 2);
+	//}
+
+	//if (minerals > 600
+	//	&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2))
+	//{
+	//	queueTerranSupply(numSupply + 4);
+	//}
+
 
 	if (isAirThreat())
 	{
@@ -407,7 +415,14 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	if (frame > 10000)
 	{
+		queueTerranTanks(0.5);
+		queueTerranVultures(0.5);
 		queueTechTanks();
+	}
+
+	if (BWAPI::Broodwar->self()->supplyUsed() + 14 > BWAPI::Broodwar->self()->supplyTotal())
+	{
+		queueTerranSupply(numSupply + 1);
 	}
 
 	makeExpansion();

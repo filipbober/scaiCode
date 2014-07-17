@@ -822,10 +822,24 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	int wraithGasPrice = BWAPI::UnitTypes::Terran_Wraith.gasPrice();
 	int wraithSupplyPrice = BWAPI::UnitTypes::Terran_Wraith.supplyRequired();
 
+	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
+	if (mineralsLeft > 100
+		&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2)
+		&& BWAPI::Broodwar->self()->supplyUsed() + 5 > BWAPI::Broodwar->self()->supplyTotal()
+		&& BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot) < 1
+		&& !(highestQueueItem.metaType.isBuilding() && highestQueueItem.metaType.mineralPrice() == 100))
+	{
+		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+	}
+
 	// To prevent taking all the resources
-	if (numCommandCenters < 2
+	if (frame < 12000)
+	{
+		mineralsLeft -= 150;
+	}
+	else if (numCommandCenters < 2
 		&& frame > 12000
-		&& BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
+		&& BWAPI::Broodwar->self()->supplyUsed() > (24 * 2))
 	{
 		mineralsLeft -= 400;
 	}
@@ -846,7 +860,8 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 
 		// Idle procution building
 		if (unitType.canProduce()
-			&& !unit->isTraining())
+			&& !unit->isTraining()
+			&& !unit->isLifted())
 		{
 			if (unitType == BWAPI::UnitTypes::Terran_Barracks)
 			{
