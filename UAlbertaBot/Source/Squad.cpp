@@ -183,7 +183,8 @@ void Squad::setManagerUnits()
 				//	WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
 				//}
 				
-				if (order.type == SquadOrder::Attack)
+				if (order.type == SquadOrder::Attack
+					&& (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
 				{
 					UnitManagerExt::Instance().setWaypoints(unit, order.position, UnitManagerExt::WaypointMovementType_BorderMovement);
 

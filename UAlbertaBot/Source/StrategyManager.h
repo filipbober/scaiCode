@@ -144,6 +144,8 @@ private:
 	bool doAttackTerranVulturesAndTanks();
 	bool doAttackTerranTriRaxMnMRush();
 
+	int attackPointsBalance();
+
 	// Fields
 	bool isAttackOrderGranted;
 	bool isAttackGrantedPermanently;
