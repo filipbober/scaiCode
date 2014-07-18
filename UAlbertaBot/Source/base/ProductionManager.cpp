@@ -822,14 +822,17 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	int wraithGasPrice = BWAPI::UnitTypes::Terran_Wraith.gasPrice();
 	int wraithSupplyPrice = BWAPI::UnitTypes::Terran_Wraith.supplyRequired();
 
-	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
-	if (mineralsLeft > 100
-		&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2)
-		&& BWAPI::Broodwar->self()->supplyUsed() + 5 > BWAPI::Broodwar->self()->supplyTotal()
-		&& BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot) < 1
-		&& !(highestQueueItem.metaType.isBuilding() && highestQueueItem.metaType.mineralPrice() == 100))
+	if (!queue.isEmpty())
 	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+		BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
+		if (mineralsLeft > 100
+			&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2)
+			&& BWAPI::Broodwar->self()->supplyUsed() + 5 > BWAPI::Broodwar->self()->supplyTotal()
+			&& BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot) < 1
+			&& !(highestQueueItem.metaType.isBuilding() && highestQueueItem.metaType.mineralPrice() == 100))
+		{
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+		}
 	}
 
 	// To prevent taking all the resources
@@ -847,6 +850,11 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	{
 		mineralsLeft -= 300;
 		gasLeft -= 200;
+	}
+	else
+	{
+		mineralsLeft -= 150;
+		gasLeft -= 100;
 	}
 
 	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())

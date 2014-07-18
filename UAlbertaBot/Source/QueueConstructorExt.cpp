@@ -358,17 +358,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		&& gas > 100)
 	{
 		queueTerranFactories(std::min((numFactories + 1), 4));
-	}
-
-	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
-	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	if (frame > 10000
-		&& numScienceVessels < 1)
-	{
-		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
-	}
-
-	
+	}	
 
 	// Upgrades
 	if (frame > 12000)
@@ -403,6 +393,14 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	//{
 	//	queueTerranSupply(numSupply + 4);
 	//}
+
+	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	if (frame > 10000
+		&& numScienceVessels < 1)
+	{
+		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
+	}
 
 
 	if (isAirThreat())
