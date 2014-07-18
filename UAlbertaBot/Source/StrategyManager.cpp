@@ -2185,22 +2185,38 @@ bool StrategyManager::doAttackTerranVulturesAndTanks()
 	{
 		return true;
 	}
+	// Attack when Tanks are ready
 	else if (random < 80)
 	{
-		// Attack approximately when 6 vultures and 4 tanks are ready
-		if (BWAPI::Broodwar->getFrameCount() < 10000)
+		// Attack without Science Vessel
+		if (random > 50)
 		{
-			return false;
+			if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			return true;
+			if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode
+				&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel) > 0)))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 	else
 	{
 		// Attack approximately when 6 vultures and 4 tanks are ready
-		if (BWAPI::Broodwar->getFrameCount() < 14000)
+		if (BWAPI::Broodwar->getFrameCount() < 10000)
 		{
 			return false;
 		}

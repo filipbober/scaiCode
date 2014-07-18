@@ -65,10 +65,11 @@ public:
 	void queueTerranAirArmor();
 
 	// Tech
+	void queueTechMarines();
 	void queueTechVultures();
 	void queueTechTanks();
 	void queueTechBattlecruisers();
-	void queueTechGoliaths();
+	void queueTechGoliaths();	
 
 	// Other
 	bool isAirThreat();

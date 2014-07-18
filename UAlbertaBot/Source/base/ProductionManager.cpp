@@ -222,17 +222,20 @@ void ProductionManager::manageBuildOrderQueue()
 	// if there is nothing in the queue, oh well
 	// Extension
 	static int lastSupply;// = BWAPI::Broodwar->self()->supplyUsed();
+	static int lastMineralPrice;
 	if (StrategyManager::Instance().isMidGame
 		&& (BWAPI::Broodwar->getFrameCount() % 3000 == 0)
-		&& (BWAPI::Broodwar->self()->supplyUsed() <= lastSupply))
+		//&& (BWAPI::Broodwar->self()->supplyUsed() <= lastSupply)
+		&& queue.getHighestPriorityItem().metaType.mineralPrice() == lastMineralPrice
+		&& !queue.isEmpty())
 	{
 		BWAPI::Broodwar->printf("                                           DebExt: last supply = %d", lastSupply);
-		//queue.clearAll();
 		queue.removeCurrentHighestPriorityItem();
 	}
-	else
+	else if (!queue.isEmpty())
 	{
 		lastSupply = BWAPI::Broodwar->self()->supplyUsed();
+		lastMineralPrice = queue.getHighestPriorityItem().metaType.mineralPrice();
 	}
 
 	//if ((BWAPI::Broodwar->self()->minerals() > 1500)
@@ -844,7 +847,7 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 		&& frame > 12000
 		&& BWAPI::Broodwar->self()->supplyUsed() > (24 * 2))
 	{
-		mineralsLeft -= 400;
+		mineralsLeft -= 450;
 	}
 	else if (BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
 	{
