@@ -2193,7 +2193,28 @@ bool StrategyManager::doAttackTerranVulturesAndTanks()
 		{
 			shouldAttack = false;
 		} 
+
+
+
+
+
+
+
+
+		if (shouldAttack)
+		{
+			BWAPI::Broodwar->printf("                                           DebExt: Attack Granted");
+		}
+		else
+		{
+			BWAPI::Broodwar->printf("                                           DebExt: Attack Not Granted");
+		}
+
+		BWAPI::Broodwar->printf("                                           DebExt: Kill score = %d", attackPointsBalance());
+
 	}
+
+	
 	
 	return shouldAttack;
 
@@ -2280,10 +2301,27 @@ bool StrategyManager::doAttackTerranTriRaxMnMRush()
 
 int StrategyManager::attackPointsBalance()
 {
-	int selfKillScore = BWAPI::Broodwar->self()->getKillScore();
-	int enemyKillScore = BWAPI::Broodwar->enemy()->getKillScore();
+	int mineralsBalance = 0;
+	int gasBalance = 0;
 
-	return selfKillScore - enemyKillScore;
+	BOOST_FOREACH(BWAPI::UnitType unitType, BWAPI::UnitTypes::allUnitTypes())
+	{
+		int countKilled = BWAPI::Broodwar->self()->killedUnitCount(unitType);
+		int countLost = BWAPI::Broodwar->self()->deadUnitCount(unitType);
+
+		mineralsBalance += (countKilled * unitType.mineralPrice());
+		mineralsBalance -= (countLost * unitType.mineralPrice());
+
+		gasBalance += (countKilled * unitType.gasPrice());
+		gasBalance -= (countLost * unitType.gasPrice());
+	}
+
+	BWAPI::Broodwar->printf("                                           DebExt: mineral balance = %d", mineralsBalance);
+	BWAPI::Broodwar->printf("                                           DebExt: gas balance = %d", gasBalance);
+
+	int balance = mineralsBalance + (1.5 * gasBalance);
+
+	return balance;
 }
 
 bool StrategyManager::isWinning()

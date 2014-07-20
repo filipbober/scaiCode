@@ -84,7 +84,7 @@ void TankManagerExt::executeMicro(const UnitVector & targets)
 			else
 			{
 				// if we're not near the order position
-				if (selectedUnit->getDistance(order.position) > 100)
+				if (selectedUnit->getDistance(order.position) > 150)
 				{
 					// move to it
 					siegeModeOff(selectedUnit);

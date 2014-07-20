@@ -244,6 +244,13 @@ void ProductionManager::manageBuildOrderQueue()
 	//	queue.clearAll();
 	//}
 
+	if ((BWAPI::Broodwar->getFrameCount() > 10000)
+		&& (StrategyManager::Instance().isMidGame)
+		&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
+	{
+		manageIdleProduction();
+	}
+
 
 	if (queue.isEmpty()) 
 	{		
@@ -261,12 +268,12 @@ void ProductionManager::manageBuildOrderQueue()
 		//}
 	}
 
-	if ((BWAPI::Broodwar->getFrameCount() > 10000)
-		&& (StrategyManager::Instance().isMidGame)
-		&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
-	{
-		manageIdleProduction();
-	}
+	//if ((BWAPI::Broodwar->getFrameCount() > 10000)
+	//	&& (StrategyManager::Instance().isMidGame)
+	//	&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
+	//{
+	//	manageIdleProduction();
+	//}
 
 	//// Detect if a unit is not blocking the queue
 	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
