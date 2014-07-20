@@ -145,6 +145,7 @@ private:
 	bool doAttackTerranTriRaxMnMRush();
 
 	int attackPointsBalance();
+	bool isWinning();
 
 	// Fields
 	bool isAttackOrderGranted;

@@ -323,63 +323,71 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	}
 
 
-	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
-	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
-	int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
-	int numTurrets = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
-	int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
+	//int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	//int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
+	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	//int numFactories = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Factory);
+	//int numBarracks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks);
+	//int numTurrets = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
+	//int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 
-	int minerals = BWAPI::Broodwar->self()->minerals();
-	int gas = BWAPI::Broodwar->self()->gas();
-	int frame = BWAPI::Broodwar->getFrameCount();
+	//int minerals = BWAPI::Broodwar->self()->minerals();
+	//int gas = BWAPI::Broodwar->self()->gas();
+	//int frame = BWAPI::Broodwar->getFrameCount();
 
-	// To prevent performance issues
-	if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 7)
-		&& (BWAPI::Broodwar->self()->supplyUsed() <= (200 * 2))
-		&& !(BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot)))
-	{
-		queueTerranSupply(numSupply + 1);
-		queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
-		cleanQueue();
-		return;
-	}
+	//// To prevent performance issues
+	//if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 7)
+	//	&& (BWAPI::Broodwar->self()->supplyUsed() <= (200 * 2))
+	//	&& !(BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot)))
+	//{
+	//	queueTerranSupply(numSupply + 1);
+	//	queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
+	//	cleanQueue();
+	//	return;
+	//}
 
-	queueTechTanks();
-	queueTerranVultures(1.0);
+	//queueTechTanks();
+	////queueTerranVultures(1.0);
 
-	int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
-	int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
-	if (frame > 10000
-		&& numScienceVessels < 1)
-	{
-		queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
-	}
+	//int numScienceVessels = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	//int numStarports = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Starport);
+	//if (frame > 10000
+	//	&& numScienceVessels < 1)
+	//{
+	//	BWAPI::Broodwar->printf("                                           DebExt: Queue Science Vessels");
+	//	queueTerranScienceVessels(1 / std::max(numStarports, 1));	// One is enough
+	//}
 
-	if (isAirThreat())
-	{
-		queueTerranGoliaths(0.5);
-		queueTechGoliaths();
-		queueTerranWraiths(1.0);
-		queueTerranWraithUpgrades();
-	}
+	//addControlTowers();
 
-	queueTerranVultures(1.0);
-	queueTerranTanks(1.0);
-	queueTerranFactories(numFactories + 1);
+	//if (isAirThreat() || frame > 20000)
+	//{
+	//	queueTerranGoliaths(0.5);
+	//	queueTechGoliaths();
+	//	queueTerranWraiths(1.0);
+	//	queueTerranWraithUpgrades();
+	//}
 
-	// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)	
-	int totalSupplyRequired = BWAPI::Broodwar->self()->supplyUsed() + getQueueSupply();
-	if (totalSupplyRequired >= BWAPI::Broodwar->self()->supplyTotal()
-		&& (BWAPI::Broodwar->self()->supplyTotal() < (200*2)) )
-	{
-		int supplyRequired = totalSupplyRequired - BWAPI::Broodwar->self()->supplyTotal();
-		int supplyDepotsRequired = std::max(1, (int)std::ceil(supplyRequired / 8.0));
+	//queueTerranVultures(1.0);
+	//queueTerranTanks(1.0);
 
-		supplyDepotsRequired = std::min(supplyDepotsRequired, 3);
-		queueTerranSupply(numSupply + supplyDepotsRequired);
-	}
+	//if (frame > 10000)
+	//{
+	//	queueTerranFactories(std::min(numFactories + 1, 4));
+	//}
+	////queueTerranFactories(numFactories + 1);
+
+	//// Supply MUST be at the end (highest priority). Otherwise performance issues occur (units can't be build but are inserted before supply)	
+	//int totalSupplyRequired = BWAPI::Broodwar->self()->supplyUsed() + getQueueSupply();
+	//if (totalSupplyRequired >= BWAPI::Broodwar->self()->supplyTotal()
+	//	&& (BWAPI::Broodwar->self()->supplyTotal() < (200*2)) )
+	//{
+	//	int supplyRequired = totalSupplyRequired - BWAPI::Broodwar->self()->supplyTotal();
+	//	int supplyDepotsRequired = std::max(1, (int)std::ceil(supplyRequired / 8.0));
+
+	//	supplyDepotsRequired = std::min(supplyDepotsRequired, 3);
+	//	queueTerranSupply(numSupply + supplyDepotsRequired);
+	//}
 
 	makeExpansion();
 
@@ -1451,6 +1459,18 @@ void QueueConstructorExt::queueTerranArmory(int desiredNo)
 		for (int i = numArmory; i < desiredNo; i++)
 		{
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Armory), true);
+		}
+	}
+}
+
+void QueueConstructorExt::addControlTowers()
+{
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Starport
+			&& unit->getAddon() == NULL)
+		{
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Control_Tower), true);
 		}
 	}
 }

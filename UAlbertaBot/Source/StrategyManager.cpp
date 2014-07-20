@@ -2179,53 +2179,72 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 
 bool StrategyManager::doAttackTerranVulturesAndTanks()
 {
-	srand(time(NULL));
-	static int random = rand() % 100;		// random from 0 to 99
+	static bool shouldAttack = true;
+	int frame = BWAPI::Broodwar->getFrameCount();
 
-	if (random < 10)
+	// Check once per 10000 frames
+	if (frame % 1200 == 0)
 	{
-		return true;
-	}
-	// Attack when Tanks are ready
-	else if (random < 80)
-	{
-		// Attack without Science Vessel
-		if (random > 50)
+		if (isWinning())
 		{
-			if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			shouldAttack = true;
 		}
 		else
 		{
-			if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode
-				&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel) > 0)))
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+			shouldAttack = false;
+		} 
 	}
-	else
-	{
-		// Attack approximately when 6 vultures and 4 tanks are ready
-		if (BWAPI::Broodwar->getFrameCount() < 10000)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
+	
+	return shouldAttack;
+
+	//srand(time(NULL));
+	//static int random = rand() % 100;		// random from 0 to 99
+
+	//if (random < 10)
+	//{
+	//	return true;
+	//}
+	//// Attack when Tanks are ready
+	//else if (random < 80)
+	//{
+	//	// Attack without Science Vessel
+	//	if (random > 50)
+	//	{
+	//		if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	//		{
+	//			return true;
+	//		}
+	//		else
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode
+	//			//&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel) > 0)))
+	//			&& (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel) > 0)))
+	//		{
+	//			return true;
+	//		}
+	//		else
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	// Attack approximately when 6 vultures and 4 tanks are ready
+	//	if (BWAPI::Broodwar->getFrameCount() < 10000)
+	//	{
+	//		return false;
+	//	}
+	//	else
+	//	{
+	//		return true;
+	//	}
+	//}
 
 
 
@@ -2263,4 +2282,20 @@ int StrategyManager::attackPointsBalance()
 {
 	int selfKillScore = BWAPI::Broodwar->self()->getKillScore();
 	int enemyKillScore = BWAPI::Broodwar->enemy()->getKillScore();
+
+	return selfKillScore - enemyKillScore;
+}
+
+bool StrategyManager::isWinning()
+{
+	int score = attackPointsBalance();
+
+	if (score >= 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

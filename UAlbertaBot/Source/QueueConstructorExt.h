@@ -48,6 +48,7 @@ public:
 	void queueTerranStarports(int desiredNo);
 	void queueTerranScienceFacilities(int desiredNo);
 	void queueTerranArmory(int desiredNo);
+	void addControlTowers();
 
 	void queueTerranBCUpgrades();
 	void queueTerranWraithUpgrades();
