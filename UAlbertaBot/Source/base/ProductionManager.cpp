@@ -888,7 +888,7 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 			}
 			else if (unitType == BWAPI::UnitTypes::Terran_Factory)
 			{
-				if (numVultures * 1.6 > numTanks
+				if (numVultures * 1.4 > numTanks
 					&& mineralsLeft > tankMineralPrice
 					&& gasLeft > tankMineralPrice
 					&& supplyLeft > tankSupplyPrice
