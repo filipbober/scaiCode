@@ -2196,7 +2196,10 @@ bool StrategyManager::doAttackTerranVulturesAndTanks()
 
 
 
-
+		if (frame % 3600 == 0)
+		{
+			shouldAttack = true;
+		}
 
 
 
