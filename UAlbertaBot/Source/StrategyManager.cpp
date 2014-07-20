@@ -2316,9 +2316,6 @@ int StrategyManager::attackPointsBalance()
 		gasBalance -= (countLost * unitType.gasPrice());
 	}
 
-	BWAPI::Broodwar->printf("                                           DebExt: mineral balance = %d", mineralsBalance);
-	BWAPI::Broodwar->printf("                                           DebExt: gas balance = %d", gasBalance);
-
 	int balance = mineralsBalance + (1.5 * gasBalance);
 
 	return balance;
@@ -2328,7 +2325,7 @@ bool StrategyManager::isWinning()
 {
 	int score = attackPointsBalance();
 
-	if (score >= 0)
+	if (score >= -400)
 	{
 		return true;
 	}
