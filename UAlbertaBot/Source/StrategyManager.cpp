@@ -2180,10 +2180,11 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 bool StrategyManager::doAttackTerranVulturesAndTanks()
 {
 	static bool shouldAttack = true;
-	int frame = BWAPI::Broodwar->getFrameCount();
+	int frames = BWAPI::Broodwar->getFrameCount();
+	int kFrames = frames / 10000;
 
 	// Check once per 10000 frames
-	if (frame % 1200 == 0)
+	if (frames % 1200 == 0)
 	{
 		if (isWinning())
 		{
@@ -2191,12 +2192,22 @@ bool StrategyManager::doAttackTerranVulturesAndTanks()
 		}
 		else
 		{
-			shouldAttack = false;
+			//shouldAttack = false;
+			int points = attackPointsBalance();
+			points += 1000 * kFrames;
+			if (points >= 0)
+			{
+				shouldAttack = true;
+			}
+			else
+			{
+				shouldAttack = false;
+			}
 		} 
 
 
 
-		if (frame % 3600 == 0)
+		if (frames % 3600 == 0)
 		{
 			shouldAttack = true;
 		}
