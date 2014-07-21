@@ -109,7 +109,8 @@ bool BuildingPlacer::canBuildHereWithSpace(BWAPI::TilePosition position, const B
 		b.type==BWAPI::UnitTypes::Terran_Starport ||
 		b.type==BWAPI::UnitTypes::Terran_Science_Facility)
 	{
-		width += 2;
+		width += 3;
+		height += 2;
 	}
 
 	// define the rectangle of the building spot

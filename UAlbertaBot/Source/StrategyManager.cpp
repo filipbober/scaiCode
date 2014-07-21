@@ -2183,6 +2183,11 @@ bool StrategyManager::doAttackTerranVulturesAndTanks()
 	int frames = BWAPI::Broodwar->getFrameCount();
 	int kFrames = frames / 10000;
 
+	if (BWAPI::Broodwar->self()->supplyUsed() > (140 * 2))
+	{
+		return true;
+	}
+
 	// Check once per 10000 frames
 	if (frames % 1200 == 0)
 	{
