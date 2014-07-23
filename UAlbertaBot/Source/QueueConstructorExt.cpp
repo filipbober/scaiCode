@@ -373,6 +373,11 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranTankUpgrades();
 	}
 
+	if (frame > 10000)
+	{
+		queueTechTanks();
+	}
+
 	// causing crash
 	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)
 	//	&& BWAPI::Broodwar->self()->completedUnitCount((BWAPI::UnitTypes::Terran_Science_Facility)) > 0)
@@ -465,10 +470,10 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	// TODO: if supply is higher than 110 -> go for battlecruisers 
 
-	if (frame > 10000)
-	{
-		queueTechTanks();
-	}
+	//if (frame > 10000)
+	//{
+	//	queueTechTanks();
+	//}
 
 	if (isAirThreat())
 	{
