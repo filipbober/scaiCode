@@ -107,7 +107,8 @@ bool BuildingPlacer::canBuildHereWithSpace(BWAPI::TilePosition position, const B
 	if (b.type==BWAPI::UnitTypes::Terran_Command_Center ||
 		b.type==BWAPI::UnitTypes::Terran_Factory || 
 		b.type==BWAPI::UnitTypes::Terran_Starport ||
-		b.type==BWAPI::UnitTypes::Terran_Science_Facility)
+		b.type==BWAPI::UnitTypes::Terran_Science_Facility
+		|| b.type == BWAPI::UnitTypes::Terran_Bunker)
 	{
 		width += 2;
 	}
@@ -117,6 +118,13 @@ bool BuildingPlacer::canBuildHereWithSpace(BWAPI::TilePosition position, const B
 	int starty = position.y() - buildDist;
 	int endx   = position.x() + width + buildDist;
 	int endy   = position.y() + height + buildDist;
+
+	// ext
+	if (b.type == BWAPI::UnitTypes::Terran_Bunker)
+	{
+		startx -= 2;
+	}
+	// eof ext
 
 	if (horizontalOnly)
 	{

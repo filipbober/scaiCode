@@ -48,6 +48,7 @@ public:
 	void queueTerranStarports(int desiredNo);
 	void queueTerranScienceFacilities(int desiredNo);
 	void queueTerranArmory(int desiredNo);
+	void addControlTowers();
 
 	void queueTerranBCUpgrades();
 	void queueTerranWraithUpgrades();
@@ -65,10 +66,11 @@ public:
 	void queueTerranAirArmor();
 
 	// Tech
+	void queueTechMarines();
 	void queueTechVultures();
 	void queueTechTanks();
 	void queueTechBattlecruisers();
-	void queueTechGoliaths();
+	void queueTechGoliaths();	
 
 	// Other
 	bool isAirThreat();

@@ -68,7 +68,7 @@ void TankManagerExt::executeMicro(const UnitVector & targets)
 			executeTerranWraithRush1Port(selectedUnit, selectedUnitTargets);
 		}
 		else if (order.type == order.Attack || order.type == order.Defend)
-		{
+		{			
 			// if there are targets
 			if (!selectedUnitTargets.empty())
 			{
@@ -84,17 +84,18 @@ void TankManagerExt::executeMicro(const UnitVector & targets)
 			else
 			{
 				// if we're not near the order position
-				if (selectedUnit->getDistance(order.position) > 100)
+				if (selectedUnit->getDistance(order.position) > 350)
 				{
 					// move to it
 					siegeModeOff(selectedUnit);
 					smartAttackMove(selectedUnit, order.position);
 				}
-				else
+				else if (!selectedUnit->isSieged())
 				{
 					siegeModeOn(selectedUnit);
 				}
 			}
+
 		}
 
 		if (Options::Debug::DRAW_UALBERTABOT_DEBUG)

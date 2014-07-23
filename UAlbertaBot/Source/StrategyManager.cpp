@@ -72,7 +72,9 @@ void StrategyManager::addStrategies()
 	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 1 1 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
 	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 0 0 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3"; // survives first UAlberta wave
 	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 0 0 3 1 50 3 17 0 1 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3"; // tanks are being built too slow at the beginning
-	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 1 0 1 0 3 1 50 3 17 0 1 22 0 23 17 1 7 0 3 0 1 0 3 0 3 1 3 1 3"; // newest version but not good neough
+	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 1 0 1 0 3 1 50 3 17 0 1 22 0 23 17 1 7 0 3 0 1 0 3 0 3 1 3 1 3"; // newest version but not good neough
+	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 1 0 0 3 3 17 0 1 22 0 23 17 7 0 3 0 3 0";
+	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 0 38 0 0 3 3 17 0 1 22 0 23 17 7 0 3 0 3 0";
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";		// beats the default Protoss
 	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 50 1 0 22 1 1 25 0 1 0 17 1 26 39 10 10 10";
 
@@ -2177,37 +2179,112 @@ bool StrategyManager::doAttackTerranWraithRush1Port()
 
 bool StrategyManager::doAttackTerranVulturesAndTanks()
 {
-	srand(time(NULL));
-	static int random = rand() % 100;		// random from 0 to 99
+	static bool shouldAttack = true;
+	int frames = BWAPI::Broodwar->getFrameCount();
+	int kFrames = frames / 10000;
 
-	if (random < 10)
+	if (BWAPI::Broodwar->self()->supplyUsed() > (140 * 2))
 	{
 		return true;
 	}
-	else if (random < 80)
+
+	// Check once per 10000 frames
+	if (frames % 1200 == 0)
 	{
-		// Attack approximately when 6 vultures and 4 tanks are ready
-		if (BWAPI::Broodwar->getFrameCount() < 10000)
+		if (isWinning())
 		{
-			return false;
+			shouldAttack = true;
 		}
 		else
 		{
-			return true;
-		}
-	}
-	else
-	{
-		// Attack approximately when 6 vultures and 4 tanks are ready
-		if (BWAPI::Broodwar->getFrameCount() < 14000)
+			//shouldAttack = false;
+			int points = attackPointsBalance();
+			points += 1000 * kFrames;
+			if (points >= 0)
+			{
+				shouldAttack = true;
+			}
+			else
+			{
+				shouldAttack = false;
+			}
+		} 
+
+
+
+		if (frames % 3600 == 0)
 		{
-			return false;
+			shouldAttack = true;
+		}
+
+
+
+
+		if (shouldAttack)
+		{
+			BWAPI::Broodwar->printf("                                           DebExt: Attack Granted");
 		}
 		else
 		{
-			return true;
+			BWAPI::Broodwar->printf("                                           DebExt: Attack Not Granted");
 		}
+
+		BWAPI::Broodwar->printf("                                           DebExt: Kill score = %d", attackPointsBalance());
+
 	}
+
+	
+	
+	return shouldAttack;
+
+	//srand(time(NULL));
+	//static int random = rand() % 100;		// random from 0 to 99
+
+	//if (random < 10)
+	//{
+	//	return true;
+	//}
+	//// Attack when Tanks are ready
+	//else if (random < 80)
+	//{
+	//	// Attack without Science Vessel
+	//	if (random > 50)
+	//	{
+	//		if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	//		{
+	//			return true;
+	//		}
+	//		else
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode
+	//			//&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel) > 0)))
+	//			&& (BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel) > 0)))
+	//		{
+	//			return true;
+	//		}
+	//		else
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	// Attack approximately when 6 vultures and 4 tanks are ready
+	//	if (BWAPI::Broodwar->getFrameCount() < 10000)
+	//	{
+	//		return false;
+	//	}
+	//	else
+	//	{
+	//		return true;
+	//	}
+	//}
 
 
 
@@ -2243,6 +2320,36 @@ bool StrategyManager::doAttackTerranTriRaxMnMRush()
 
 int StrategyManager::attackPointsBalance()
 {
-	int selfKillScore = BWAPI::Broodwar->self()->getKillScore();
-	int enemyKillScore = BWAPI::Broodwar->enemy()->getKillScore();
+	int mineralsBalance = 0;
+	int gasBalance = 0;
+
+	BOOST_FOREACH(BWAPI::UnitType unitType, BWAPI::UnitTypes::allUnitTypes())
+	{
+		int countKilled = BWAPI::Broodwar->self()->killedUnitCount(unitType);
+		int countLost = BWAPI::Broodwar->self()->deadUnitCount(unitType);
+
+		mineralsBalance += (countKilled * unitType.mineralPrice());
+		mineralsBalance -= (countLost * unitType.mineralPrice());
+
+		gasBalance += (countKilled * unitType.gasPrice());
+		gasBalance -= (countLost * unitType.gasPrice());
+	}
+
+	int balance = mineralsBalance + (1.5 * gasBalance);
+
+	return balance;
+}
+
+bool StrategyManager::isWinning()
+{
+	int score = attackPointsBalance();
+
+	if (score >= -400)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

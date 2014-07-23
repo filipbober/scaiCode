@@ -222,17 +222,20 @@ void ProductionManager::manageBuildOrderQueue()
 	// if there is nothing in the queue, oh well
 	// Extension
 	static int lastSupply;// = BWAPI::Broodwar->self()->supplyUsed();
+	static int lastMineralPrice;
 	if (StrategyManager::Instance().isMidGame
 		&& (BWAPI::Broodwar->getFrameCount() % 3000 == 0)
-		&& (BWAPI::Broodwar->self()->supplyUsed() <= lastSupply))
+		//&& (BWAPI::Broodwar->self()->supplyUsed() <= lastSupply)
+		&& !queue.isEmpty()
+		&& queue.getHighestPriorityItem().metaType.mineralPrice() == lastMineralPrice)
 	{
 		BWAPI::Broodwar->printf("                                           DebExt: last supply = %d", lastSupply);
-		//queue.clearAll();
 		queue.removeCurrentHighestPriorityItem();
 	}
-	else
+	else if (!queue.isEmpty())
 	{
 		lastSupply = BWAPI::Broodwar->self()->supplyUsed();
+		lastMineralPrice = queue.getHighestPriorityItem().metaType.mineralPrice();
 	}
 
 	//if ((BWAPI::Broodwar->self()->minerals() > 1500)
@@ -240,6 +243,14 @@ void ProductionManager::manageBuildOrderQueue()
 	//{
 	//	queue.clearAll();
 	//}
+
+	if //((BWAPI::Broodwar->getFrameCount() > 10000)
+		((BWAPI::Broodwar->getFrameCount() > 6000)
+		&& (StrategyManager::Instance().isMidGame)
+		&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
+	{
+		manageIdleProduction();
+	}
 
 
 	if (queue.isEmpty()) 
@@ -258,26 +269,26 @@ void ProductionManager::manageBuildOrderQueue()
 		//}
 	}
 
-	if ((BWAPI::Broodwar->getFrameCount() > 10000)
-		&& (StrategyManager::Instance().isMidGame)
-		&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
-	{
-		manageIdleProduction();
-	}
+	//if ((BWAPI::Broodwar->getFrameCount() > 10000)
+	//	&& (StrategyManager::Instance().isMidGame)
+	//	&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
+	//{
+	//	manageIdleProduction();
+	//}
 
-	// Detect if a unit is not blocking the queue
+	//// Detect if a unit is not blocking the queue
 	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
-	if ( ((BWAPI::Broodwar->getFrameCount() % 1000) == 0)
-		&& !queue.isEmpty()
-		&& ((BWAPI::Broodwar->self()->allUnitCount(highestQueueItem.metaType.whatBuilds()) < 1)
-			|| ((highestQueueItem.metaType.mineralPrice() > BWAPI::Broodwar->self()->minerals())
-				&& (highestQueueItem.metaType.gasPrice() > BWAPI::Broodwar->self()->gas()))))
-	{
-		BWAPI::Broodwar->printf("                                           DebExt: Something is blocking the queue");
-		queue.clearAll();
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
-		//queueDoSomething();
-	}
+	//if ( ((BWAPI::Broodwar->getFrameCount() % 1000) == 0)
+	//	&& !queue.isEmpty()
+	//	&& ((BWAPI::Broodwar->self()->allUnitCount(highestQueueItem.metaType.whatBuilds()) < 1)
+	//		|| ((highestQueueItem.metaType.mineralPrice() > BWAPI::Broodwar->self()->minerals())
+	//			&& (highestQueueItem.metaType.gasPrice() > BWAPI::Broodwar->self()->gas()))))
+	//{
+	//	BWAPI::Broodwar->printf("                                           DebExt: Something is blocking the queue");
+	//	queue.clearAll();
+	//	queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_SCV), true);
+	//	//queueDoSomething();
+	//}
 	
 	// Remove upgrades and research from the queue (otherwise they would block)
 	if (
@@ -822,32 +833,52 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	int wraithGasPrice = BWAPI::UnitTypes::Terran_Wraith.gasPrice();
 	int wraithSupplyPrice = BWAPI::UnitTypes::Terran_Wraith.supplyRequired();
 
-	BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
-	if (mineralsLeft > 100
-		&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2)
-		&& BWAPI::Broodwar->self()->supplyUsed() + 5 > BWAPI::Broodwar->self()->supplyTotal()
-		&& BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot) < 1
-		&& !(highestQueueItem.metaType.isBuilding() && highestQueueItem.metaType.mineralPrice() == 100))
+	if (!queue.isEmpty())
 	{
-		queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+		BuildOrderItem<PRIORITY_TYPE>& highestQueueItem = queue.getHighestPriorityItem();
+		if (mineralsLeft > 100
+			&& BWAPI::Broodwar->self()->supplyTotal() < (200 * 2)
+			&& BWAPI::Broodwar->self()->supplyUsed() + 5 > BWAPI::Broodwar->self()->supplyTotal()
+			&& BWAPI::Broodwar->self()->incompleteUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot) < 1
+			&& !(highestQueueItem.metaType.isBuilding() && highestQueueItem.metaType.mineralPrice() == 100))
+		{
+			queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot), true);
+		}
 	}
 
-	// To prevent taking all the resources
-	if (frame < 12000)
-	{
-		mineralsLeft -= 150;
-	}
-	else if (numCommandCenters < 2
-		&& frame > 12000
-		&& BWAPI::Broodwar->self()->supplyUsed() > (24 * 2))
+
+	if (frame > 14000)
 	{
 		mineralsLeft -= 400;
+		gasLeft -= 250;
 	}
-	else if (BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
+	else
 	{
-		mineralsLeft -= 300;
-		gasLeft -= 200;
+		mineralsLeft -= 100;
+		gasLeft -= 50;
 	}
+
+	//// To prevent taking all the resources
+	//if (frame < 12000)
+	//{
+	//	mineralsLeft -= 150;
+	//}
+	//else if (numCommandCenters < 2
+	//	&& frame > 12000
+	//	&& BWAPI::Broodwar->self()->supplyUsed() > (24 * 2))
+	//{
+	//	mineralsLeft -= 450;
+	//}
+	//else if (BWAPI::Broodwar->self()->supplyUsed() > (30 * 2))
+	//{
+	//	mineralsLeft -= 300;
+	//	gasLeft -= 200;
+	//}
+	//else
+	//{
+	//	mineralsLeft -= 150;
+	//	gasLeft -= 100;
+	//}
 
 	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
 	{
@@ -877,7 +908,7 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 			}
 			else if (unitType == BWAPI::UnitTypes::Terran_Factory)
 			{
-				if (numVultures * 1.6 > numTanks
+				if (numVultures * 1.4 > numTanks
 					&& mineralsLeft > tankMineralPrice
 					&& gasLeft > tankMineralPrice
 					&& supplyLeft > tankSupplyPrice
