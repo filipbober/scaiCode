@@ -373,10 +373,10 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranTankUpgrades();
 	}
 
-	if (frame > 10000)
-	{
-		queueTechTanks();
-	}
+	//if (frame > 10000)
+	//{
+	//	queueTechTanks();
+	//}
 
 	// causing crash
 	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)
@@ -474,6 +474,11 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	//{
 	//	queueTechTanks();
 	//}
+
+	if (frame > 14000)
+	{
+		queueTechTanks();
+	}
 
 	if (isAirThreat())
 	{
