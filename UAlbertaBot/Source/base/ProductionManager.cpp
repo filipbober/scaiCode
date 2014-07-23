@@ -846,9 +846,17 @@ void ProductionManager::manageIdleProductionVulturesAndTanks()
 	}
 
 
+	if (frame > 14000)
+	{
+		mineralsLeft -= 400;
+		gasLeft -= 250;
+	}
+	else
+	{
+		mineralsLeft -= 100;
+		gasLeft -= 50;
+	}
 
-	mineralsLeft -= 400;
-	gasLeft -= 250;
 	//// To prevent taking all the resources
 	//if (frame < 12000)
 	//{

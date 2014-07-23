@@ -90,7 +90,7 @@ void TankManagerExt::executeMicro(const UnitVector & targets)
 					siegeModeOff(selectedUnit);
 					smartAttackMove(selectedUnit, order.position);
 				}
-				else
+				else if (!selectedUnit->isSieged())
 				{
 					siegeModeOn(selectedUnit);
 				}
