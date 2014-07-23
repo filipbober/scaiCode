@@ -244,7 +244,8 @@ void ProductionManager::manageBuildOrderQueue()
 	//	queue.clearAll();
 	//}
 
-	if ((BWAPI::Broodwar->getFrameCount() > 10000)
+	if //((BWAPI::Broodwar->getFrameCount() > 10000)
+		((BWAPI::Broodwar->getFrameCount() > 6000)
 		&& (StrategyManager::Instance().isMidGame)
 		&& (BWAPI::Broodwar->getFrameCount() % 48 == 0))
 	{
