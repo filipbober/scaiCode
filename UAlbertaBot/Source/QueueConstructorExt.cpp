@@ -322,10 +322,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		_lastInvoked = BWAPI::Broodwar->getFrameCount();
 	}
 
-
-
-
-	// Tanks
 	int numScvs = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
 	int numSupply = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
 	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
@@ -334,12 +330,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	int minerals = BWAPI::Broodwar->self()->minerals();
 	int gas = BWAPI::Broodwar->self()->gas();
 	int frame = BWAPI::Broodwar->getFrameCount();
-
-
-	//if ((BWAPI::Broodwar->getFrameCount() % 120) != 0)
-	//{
-	//	return;
-	//}
 
 	// To prevent performance issues
 	if ((BWAPI::Broodwar->self()->supplyTotal() <= BWAPI::Broodwar->self()->supplyUsed() + 7)
@@ -354,9 +344,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	else if (BWAPI::Broodwar->self()->supplyUsed() > (190 * 2))
 	{
 		queueTerranTurrets(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret) + 2);
-		// TODO tech, upgrade etc.
-		// TODO - control supply while building units (ensure there is enough)
-		//queueTerranBunkers(BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) + 1);
 		return;
 	}
 
@@ -372,18 +359,6 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 	{
 		queueTerranTankUpgrades();
 	}
-
-	//if (frame > 10000)
-	//{
-	//	queueTechTanks();
-	//}
-
-	// causing crash
-	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Yamato_Gun)
-	//	&& BWAPI::Broodwar->self()->completedUnitCount((BWAPI::UnitTypes::Terran_Science_Facility)) > 0)
-	//{
-	//	queueTerranBCs(1.0);
-	//}
 
 	if (numMarines < 20)
 	{
@@ -413,12 +388,12 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	if (minerals > 1000)
 	{
-		queueTerranVultures(1.0);
-		queueTerranVultures(1.0);
-		queueTerranVultures(1.0);
-		queueTerranVultures(1.0);
+		//queueTerranVultures(1.0);
+		//queueTerranVultures(1.0);
+		//queueTerranVultures(1.0);
+		//queueTerranVultures(1.0);
 
-		queueTerranFactories(numFactories + 1);
+		queueTerranFactories(std::min((numFactories + 1), 5));
 	}
 
 	if (minerals > 1000
@@ -427,12 +402,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 		queueTerranTanks(1.0);
 	}
 
-
-	//queueTerranVultures(1.0);
-	//queueTerranVultures(1.0);
-	//queueTerranTanks(0.3);
-
-	if (numScvs < 48)
+	if (numScvs < 32)
 	{
 		queueTerranSCVs(1.0);
 		queueTerranSCVs(1.0);
@@ -442,19 +412,14 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	if (frame > 10000)
 	{
-		//queueTechVultures();
-
 		int factoriesWanted = std::min(numFactories + 1, 3);
 		queueTerranFactories(factoriesWanted);
-		//queueTerranFactories(3);
 	}
 
 	if (frame > 14000)
 	{
 		int factoriesWanted = std::min(numFactories + 1, 4);
 		queueTerranFactories(factoriesWanted);
-
-		//queueTerranFactories(4);
 	}
 	
 
@@ -468,14 +433,7 @@ void QueueConstructorExt::makeTerranVulturesAndTanksQueue()
 
 	makeExpansion();
 
-	// TODO: if supply is higher than 110 -> go for battlecruisers 
-
-	//if (frame > 10000)
-	//{
-	//	queueTechTanks();
-	//}
-
-	if (frame > 14000)
+	if (frame > 12000)
 	{
 		queueTechTanks();
 	}
