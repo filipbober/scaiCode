@@ -64,7 +64,24 @@ class ProductionManager
 	int							getFreeMinerals();
 	int							getFreeGas();
 
+	// Extensions
+	void queueDoSomething();
+	void queueDoSomethingTerranWraithRush1Port();
+	void queueDoSomethingTerranVulturesAndTanks();
+	bool isDuplicate(BWAPI::UnitType unitType);
+
+	void manageIdleProduction();
+	void manageIdleProductionVulturesAndTanks();
+
+	bool isBuildOrderSearchOn;
+	BuildOrderItem<PRIORITY_TYPE> _lastType;
+	// eof ext
+
 public:
+
+	// Extensions
+	void resetQueue();
+	// eof ext
 
 	static ProductionManager &	Instance();
 

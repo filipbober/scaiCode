@@ -4,6 +4,9 @@
 
 #include "Common.h"
 #include "BuildingManager.h"
+#include "../UnitManagerExt.h"
+
+#include "ProductionManager.h"
 
 
 BuildingManager::BuildingManager() 
@@ -39,6 +42,14 @@ void BuildingManager::update()
 
 	// check to see if any buildings have completed and update data structures
 	checkForCompletedBuildings();
+
+	// Ext: Scanner Sweep
+	if (BWAPI::Broodwar->getFrameCount() % 48 == 0)
+	{
+		scannerSweep();
+		buildingLiftLand();
+	}
+	// eof ext
 
 	// draw some debug information
 	//BuildingPlacer::Instance().drawReservedTiles();
@@ -277,7 +288,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 			|| (b.type == BWAPI::UnitTypes::Terran_Nuclear_Silo))
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Command_Center) 
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;
@@ -287,7 +298,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 		else if (b.type == BWAPI::UnitTypes::Terran_Machine_Shop)
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Factory)
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;
@@ -297,7 +308,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 		else if (b.type == BWAPI::UnitTypes::Terran_Control_Tower)
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Starport)
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;
@@ -308,7 +319,7 @@ bool BuildingManager::setAddonBuilding(Building &b)
 			|| (b.type == BWAPI::UnitTypes::Terran_Covert_Ops))
 		{
 			if ((unit->getType() == BWAPI::UnitTypes::Terran_Science_Facility)
-				&& (unit->getAddon() == false))
+				&& (unit->getAddon() == NULL))
 			{
 				b.builderUnit = unit;
 				hasFound = true;
@@ -376,7 +387,67 @@ void BuildingManager::checkForStartedConstruction()
 }
 
 // STEP 5: IF WE ARE TERRAN, THIS MATTERS, SO: LOL
-void BuildingManager::checkForDeadTerranBuilders() {}
+void BuildingManager::checkForDeadTerranBuilders() 
+{
+	//// TODO
+	//if (!(BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran))
+	//{
+	//	return;
+	//}
+	//buildingData.begin(ConstructionData::UnderConstruction);
+	//while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
+	//{
+
+	//	Building & b = buildingData.getNextBuilding(ConstructionData::UnderConstruction);
+
+	//	if (!b.builderUnit->exists())
+	//	{
+	//		buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
+	//	}
+	//}
+
+	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (!unit->getType().isBuilding())
+		{
+			continue;
+		}
+		
+		if (!unit->isCompleted()
+			&& !unit->isBeingConstructed())
+		{
+			unit->cancelConstruction();				// Temporary solution
+
+			//BWAPI::Unit* worker = WorkerManager::Instance().getClosestMineralWorkerTo(unit);
+			//worker->repair(unit);
+
+		}
+			
+		
+	}
+
+
+	//if (!(BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran))
+	//{
+	//	return;
+	//}
+
+	//buildingData.begin(ConstructionData::UnderConstruction);
+	//while (buildingData.hasNextBuilding(ConstructionData::UnderConstruction))
+	//{
+	//	Building & b = buildingData.getNextBuilding(ConstructionData::UnderConstruction);
+
+	//	if (!b.builderUnit->exists())
+	//	{
+	//		//buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
+	//		//BWAPI::Unit* workerToAssign = WorkerManager::Instance().getBuilder(b);
+	//		b.builderUnit = WorkerManager::Instance().getClosestMineralWorkerTo(b.buildingUnit);
+	//		b.build
+	//	}
+	//}
+
+
+}
 
 // STEP 6: CHECK FOR COMPLETED BUILDINGS
 void BuildingManager::checkForCompletedBuildings() {
@@ -531,4 +602,185 @@ BuildingManager & BuildingManager::Instance()
 {
 	static BuildingManager instance;
 	return instance;
+}
+
+void BuildingManager::scannerSweep()
+{
+	// Issue
+	// https://code.google.com/p/bwapi/issues/detail?id=147
+
+	 //Sweep once per 240 frames
+	if ((BWAPI::Broodwar->getFrameCount() % 240) != 0)
+	{
+		//BWAPI::Broodwar->printf("                                           DebExt: returning, frame mod 240 = %d", (BWAPI::Broodwar->getFrameCount() % 240));
+		return;
+	}
+
+	//if (!InformationManager::Instance().enemyHasCloakedUnits())
+	//{
+	//	return;
+	//}
+
+	std::set<BWAPI::Unit *> targets = BWAPI::Broodwar->enemy()->getUnits();
+	if (targets.empty())
+	{
+		return;
+	}
+
+	// Select Comsat stations
+	std::set<BWAPI::Unit *>	selectedUnits;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
+		{
+			selectedUnits.insert(unit);
+		}
+	}	
+
+	// Select visible and cloaked enemy units as targets
+	UnitVector selectedUnitTargets;
+	BOOST_FOREACH(BWAPI::Unit* target, targets)
+	{
+		if (target->isVisible()
+			&& !target->getType().isBuilding()
+			&& target->isCloaked())
+		{
+			selectedUnitTargets.push_back(target);
+		}
+	}
+
+
+	if (selectedUnits.empty()
+		|| selectedUnitTargets.empty())
+	{
+		return;
+	}
+
+
+	
+
+	// figure out targets: visible and cloaked
+	
+
+	// Use decloak once per frame, cause it will reveal multiple units. Hopefully
+	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
+	{
+		if (!selectedUnit->isCompleted()
+			|| !selectedUnit->exists())
+		{
+			//break;
+			return;
+		}
+
+		//if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed())
+		if (selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
+		{
+			BWAPI::Unit* chosenTarget = NULL;
+			int distance = 10000;
+
+			// Set target
+			BOOST_FOREACH(BWAPI::Unit * target, selectedUnitTargets)
+			{
+				if ((selectedUnit->getDistance(target) < distance)
+					&& selectedUnit->getDistance(target) > 0)
+				{
+					chosenTarget = target;
+				}
+			}
+
+			if (chosenTarget->isCloaked()
+				&& (chosenTarget != NULL))
+			{
+				BWAPI::Position targetPosition = chosenTarget->getPosition();
+				//BWAPI::Position targetPosition = chosenTarget->getRegion()->getCenter();
+				if (!targetPosition.isValid())
+				{
+					targetPosition.makeValid();
+				}
+
+				if ((selectedUnit->getEnergy() > BWAPI::TechTypes::Scanner_Sweep.energyUsed() + 10)
+					&& (selectedUnit->getSpellCooldown() == 0)
+					&& (targetPosition.isValid()))
+				{
+					BWAPI::Broodwar->printf("                                           DebExt: Scanning");
+					BWAPI::Broodwar->printf("                                           DebExt: selectedUnit = %s", selectedUnit->getType().c_str());
+					BWAPI::Broodwar->printf("                                           DebExt: chosenTarget = %s", chosenTarget->getType().c_str());
+					BWAPI::Broodwar->printf("                                           DebExt: frame = %d", BWAPI::Broodwar->getFrameCount());
+					BWAPI::Broodwar->printf("                                           DebExt: energy = %d", selectedUnit->getEnergy());
+					BWAPI::Broodwar->printf("                                           DebExt: target distance = %d", selectedUnit->getDistance(chosenTarget));
+					BWAPI::Broodwar->printf("                                           DebExt: target x = %d", targetPosition.x());
+					BWAPI::Broodwar->printf("                                           DebExt: target y = %d", targetPosition.y());
+
+					int scannerDuration = 12;
+					int framesPerSecond = 48;
+					if (((selectedUnit->getLastCommandFrame() + (scannerDuration * framesPerSecond)) <= BWAPI::Broodwar->getFrameCount())
+						&& (chosenTarget->exists()))
+					{
+						bool isValidTech = selectedUnit->useTech(BWAPI::TechTypes::Scanner_Sweep, targetPosition);
+						//if (isValidTech) BWAPI::Broodwar->printf("                                           DebExt: Tech is Valid");
+						break;
+					}
+									
+				}	
+			}
+		}
+	}
+	//BWAPI::Broodwar->printf("                                           DebExt: 5");
+}
+
+void BuildingManager::buildingLiftLand()
+{
+	if ((BWAPI::Broodwar->self()->getRace() != BWAPI::Races::Terran)
+		|| (BWAPI::Broodwar->getFrameCount() % 240 != 0))
+	{
+		return;
+	}
+
+	// Set buildings as selectedUnits
+	//std::set<BWAPI::Unit *>	selectedUnits;
+	UnitVector selectedUnits;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType().isBuilding()
+			&& unit->getType().isFlyingBuilding())
+		{
+			//selectedUnits.insert(unit);			
+			selectedUnits.push_back(unit);
+		}
+	}
+
+	if (selectedUnits.empty())
+	{
+		return;
+	}
+
+	BOOST_FOREACH(BWAPI::Unit * unit, selectedUnits)
+	{
+		// If Command Center is lifted it sometimes messes with build orders
+		// Update: Every lift messes with build orders
+		//if (unit->isUnderAttack()
+		//	&& (unit->getType() != BWAPI::UnitTypes::Terran_Command_Center))
+		if (unit-> isUnderAttack() 
+			&& (unit->getType() == BWAPI::UnitTypes::Terran_Barracks))
+		{
+			UnitManagerExt::Instance().setLandingPosition(unit, unit->getTilePosition());			
+			unit->lift();
+		}		
+		else if (unit->isLifted())
+		{
+			BWAPI::TilePosition landingPos = UnitManagerExt::Instance().getLandingPosition(unit);
+			if (!landingPos.isValid())
+			{
+				landingPos.makeValid();
+			}
+
+			BWAPI::Broodwar->printf("                                           DebExt: landing, building name = %s", unit->getType().c_str());
+			unit->land(landingPos);
+
+			ProductionManager::Instance().resetQueue();
+		}
+	}
+
+	
+
 }

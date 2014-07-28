@@ -11,7 +11,6 @@ void GameCommander::update()
 {
 	timerManager.startTimer(TimerManager::All);
 	
-
 	// economy and base managers
 	timerManager.startTimer(TimerManager::Worker);
 	// populate the unit vectors we will pass into various managers
@@ -24,9 +23,20 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Production);
 
 	timerManager.startTimer(TimerManager::Building);
-	BuildingManager::Instance().update();
+	// Extension
+	//BuildingManager::Instance().update(); // ext cmt
+	if (BWAPI::Broodwar->getFrameCount() < 6000)
+	{
+		BuildingManager::Instance().update();
+	}
+	else if (BWAPI::Broodwar->getFrameCount() % 240 == 0)
+	{
+		BuildingManager::Instance().update();
+	}
+	// eof ext
 	timerManager.stopTimer(TimerManager::Building);
 
+	
 	// combat and scouting managers
 	timerManager.startTimer(TimerManager::Combat);
 	if (Options::Modules::USING_COMBATCOMMANDER)
@@ -34,14 +44,12 @@ void GameCommander::update()
 		combatCommander.update(combatUnits);
 	}
 	timerManager.stopTimer(TimerManager::Combat);
-
 	timerManager.startTimer(TimerManager::Scout);
 	if (Options::Modules::USING_SCOUTMANAGER)
 	{
 		scoutManager.update(scoutUnits);
 	}
 	timerManager.stopTimer(TimerManager::Scout);
-
 	// utility managers
 	timerManager.startTimer(TimerManager::InformationManager);
 	InformationManager::Instance().update();
@@ -60,7 +68,6 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Search);
 		
 	timerManager.stopTimer(TimerManager::All);
-
 	drawDebugInterface();
 }
 
@@ -193,17 +200,17 @@ bool GameCommander::isCombatUnit(BWAPI::Unit * unit) const
 {
 	assert(unit != NULL);
 
-	// no workers or buildings allowed
 	if (unit && unit->getType().isWorker() || unit->getType().isBuilding())
 	{
 		return false;
 	}
 
-	// check for various types of combat units
+	//check for various types of combat units
 	if (unit->getType().canAttack() || 
 		unit->getType() == BWAPI::UnitTypes::Terran_Medic ||
 		unit->getType() == BWAPI::UnitTypes::Protoss_High_Templar ||
-		unit->getType() == BWAPI::UnitTypes::Protoss_Observer)
+		unit->getType() == BWAPI::UnitTypes::Protoss_Observer
+		|| unit->getType() == BWAPI::UnitTypes::Terran_Science_Vessel)		// ext
 	{
 		return true;
 	}

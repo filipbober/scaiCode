@@ -1,13 +1,11 @@
 #pragma once
-#include "Common.h"
 #include "MicroManager.h"
-
-class MarineManagerExt :
+class WraithManagerExt :
 	public MicroManager
 {
 public:
-	MarineManagerExt();
-	~MarineManagerExt();
+	WraithManagerExt();
+	~WraithManagerExt();
 
 	void executeMicro(const UnitVector & targets);
 
@@ -21,15 +19,17 @@ private:
 	void kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
 
 	void setAverageEnemyPosition(const UnitVector& targets);
-	void useStimpack(BWAPI::Unit * selectedUnit);
-	void goToBunker(BWAPI::Unit * selectedUnit);
-	bool hasBunkerSpace();
 
-	bool isAttack();
-	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
-	void executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+	void manageCloak(BWAPI::Unit * selectedUnit, UnitVector& targets);
+	bool isInTurretRange(BWAPI::Position position, UnitVector & targets, BWAPI::Unit* selectedUnit);
+	bool isTurret(BWAPI::Unit* target);
+	BWAPI::Position getSafeTurretPosition(BWAPI::Unit* selectedUnit, BWAPI::Unit* target, int proximity);
+	int getTargetWeaponRange(BWAPI::Unit* selectedUnit, BWAPI::Unit* target);
+
+	double closestEnemyDist(BWAPI::Unit* selectedUnit);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
+	int _noTurretTargetsNo;
 };
 

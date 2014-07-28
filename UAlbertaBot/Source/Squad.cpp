@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "Squad.h"
+#include <boost\lexical_cast.hpp>
 
 int  Squad::lastRetreatSwitch = 0;
 bool Squad::lastRetreatSwitchVal = false;
@@ -45,6 +46,12 @@ void Squad::update()
 		
 		// Extensions
 		marineManager.regroup(regroupPosition);
+		vultureManager.regroup(regroupPosition);
+		wraithManager.regroup(regroupPosition);
+		bcManager.regroup(regroupPosition);
+		tankManager.regroup(regroupPosition);
+		goliathManager.regroup(regroupPosition);
+		scienceVesselManager.regroup(regroupPosition);
 		// eof ext
 	}
 	else // otherwise, execute micro
@@ -57,6 +64,12 @@ void Squad::update()
 
 		// Extensions
 		marineManager.execute(order);
+		vultureManager.execute(order);
+		wraithManager.execute(order);
+		bcManager.execute(order);
+		tankManager.execute(order);
+		goliathManager.execute(order);
+		scienceVesselManager.execute(order);
 		// eof ext
 
 		detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
@@ -123,6 +136,13 @@ void Squad::setManagerUnits()
 
 	// Extensions
 	UnitVector terranMarines;
+	UnitVector terranVultures;
+	UnitVector terranComsatStations;
+	UnitVector terranWraiths;
+	UnitVector terranBCs;
+	UnitVector terranTanks;
+	UnitVector terranGoliaths;
+	UnitVector terranScienceVessels;
 	// eof ext
 
 	// add units to micro managers
@@ -130,9 +150,72 @@ void Squad::setManagerUnits()
 	{
 		if(unit->isCompleted() && unit->getHitPoints() > 0 && unit->exists())
 		{
+			// Select Terran Marines
 			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
+			{				
+				terranMarines.push_back(unit);
+			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Firebat)
 			{
 				terranMarines.push_back(unit);
+			}
+			// Select Terran Vultures
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+			{
+				terranVultures.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
+			}
+			// Do not add mines to the manager
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine)
+			{
+				continue;
+			}
+			// Select Terran Wraiths
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Wraith)
+			{
+
+				// Unit data & border movement
+				//UnitManagerExt::Instance().addUnit(unit);
+				//UnitDataExt* unitData = UnitManagerExt::Instance().getUnitData(unit);
+
+				//if (!unitData->isDestinationSet)
+				//{		
+				//	WaypointCreatorExt::setBorderMoveWaypoints(unit, order.position);
+				//}
+				
+				if (order.type == SquadOrder::Attack
+					&& (StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
+				{
+					UnitManagerExt::Instance().setWaypoints(unit, order.position, UnitManagerExt::WaypointMovementType_BorderMovement);
+
+					// Setting waypoints sets unit state to attack
+					UnitManagerExt::Instance().setUnitStateToAttack(unit);
+				}
+
+				// eof unit data
+
+				terranWraiths.push_back(unit);
+			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Battlecruiser)
+			{
+				terranBCs.push_back(unit);
+			}
+			// Set tanks
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode
+				|| unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
+			{
+				terranTanks.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
+			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Goliath)
+			{
+				terranGoliaths.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
+			}
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Science_Vessel)
+			{
+				terranScienceVessels.push_back(unit);
+				UnitManagerExt::Instance().addUnit(unit);
 			}
 			// select detector units
 			else if (unit->getType().isDetector() && !unit->getType().isBuilding())
@@ -164,6 +247,12 @@ void Squad::setManagerUnits()
 
 	// Extensions
 	marineManager.setUnits(terranMarines);
+	vultureManager.setUnits(terranVultures);
+	wraithManager.setUnits(terranWraiths);
+	bcManager.setUnits(terranBCs);
+	tankManager.setUnits(terranTanks);
+	goliathManager.setUnits(terranGoliaths);
+	scienceVesselManager.setUnits(terranScienceVessels);
 	// eof ext
 
 }
@@ -171,6 +260,15 @@ void Squad::setManagerUnits()
 // calculates whether or not to regroup
 bool Squad::needsToRegroup()
 {
+	// Extension
+	//BOOST_FOREACH(BWAPI::Unit* unit, units)
+	//{
+	//	if (unit->getType().isFlyer())
+	//		return false;
+	//}
+	// eof Ext
+
+
 	// if we are not attacking, never regroup
 	if (units.empty() || (order.type != SquadOrder::Attack))
 	{
@@ -195,9 +293,11 @@ bool Squad::needsToRegroup()
 		return false;
 	}
 
-	CombatSimulation sim;
-	sim.setCombatUnits(unitClosest->getPosition(), Options::Micro::COMBAT_REGROUP_RADIUS + InformationManager::Instance().lastFrameRegroup*300);
-	ScoreType score = sim.simulateCombat();
+	// Ext comment v
+	//CombatSimulation sim;
+	//sim.setCombatUnits(unitClosest->getPosition(), Options::Micro::COMBAT_REGROUP_RADIUS + InformationManager::Instance().lastFrameRegroup*300);
+	//ScoreType score = sim.simulateCombat();
+	ScoreType score = 0;
 
     bool retreat = score < 0;
     int switchTime = 100;
@@ -221,12 +321,25 @@ bool Squad::needsToRegroup()
 	
 	if (retreat)
 	{
-		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat");
+		regroupStatus = std::string("\x04 Retreat - simulation predicts defeat, score: " + boost::lexical_cast<std::string>(score));
 	}
 	else
 	{
-		regroupStatus = std::string("\x04 Attack - simulation predicts success");
+		regroupStatus = std::string("\x04 Attack - simulation predicts success, score:  " + boost::lexical_cast<std::string>(score));
 	}
+
+
+	// Extension
+	if ((score > -500)
+		&& (score < 0))
+	{
+		retreat = true;
+	}
+	else
+	{
+		retreat = false;
+	}
+	// eof ext
 
 	return retreat;
 }
@@ -249,6 +362,8 @@ bool Squad::unitNearEnemy(BWAPI::Unit * unit)
 
 BWAPI::Position Squad::calcCenter()
 {
+
+
 	BWAPI::Position accum(0,0);
 	BOOST_FOREACH(BWAPI::Unit * unit, units)
 	{

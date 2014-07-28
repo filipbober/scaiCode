@@ -75,8 +75,9 @@ public:
 		Terran2FactMechBuild = 8,
 		TerranGoliathBuild = 9, TerranGoliathDrop = 10,
 		Terran1FastPortBuild = 11, TerranWraithRush1Port = 12, 
-		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,	
-		NumTerranStrategies=15 };
+		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,
+		TerranVulturesAndTanks = 15,
+		NumTerranStrategies=16 };
 	//enum { ZergZerglingRush = 0, NumZergStrategies = 1 };	// ext
 	
 	enum { ZergCerver4PoolRush = 0, Zerg9PoolHatch = 1, Zerg7PoolRush = 2,
@@ -105,14 +106,28 @@ public:
 private:
 	//int _usableStrategiesNo;			// Number of strategies to be chosen from	
 
-	void CreateZergUsableStrategies();
-	void CreateTerranUsableStrategies();
+	void createZergUsableStrategies();
+	void createTerranUsableStrategies();
 
-	int GetStrategyIdx();
-	int GenerateRandomStrategy(const int min, const int max);
+	int getStrategyIdx();
+	int generateRandomStrategy(const int min, const int max);
 
 	// Build order goals
-	const	MetaPairVector		getTerranDoubleRaxMnMBuildOrderGoal() const;
+	const MetaPairVector getTerranDoubleRaxMnMBuildOrderGoal() const;
+	const MetaPairVector getTerranTriRaxMnMRushBuildOrderGoal() const;
+	const MetaPairVector getTerranProxyRaxMarineRushBuildOrderGoal() const;
+	const MetaPairVector getTerran3FactoryVultureRushBuildOrderGoal() const;
+	const MetaPairVector getTerranGundamRushBuildOrderGoal() const;
+	const MetaPairVector getTerran1FastExpoDefBuildOrderGoal() const;
+	const MetaPairVector getTerran1FastExpoNoDefBuildOrderGoal() const;
+	const MetaPairVector getTerran2FactMechBuildBuildOrderGoal() const;
+	const MetaPairVector getTerranGoliathBuildBuildOrderGoal() const;
+	const MetaPairVector getTerranGoliathDropBuildOrderGoal() const;
+	const MetaPairVector getTerran1FastPortBuildBuildOrderGoal() const;
+	const MetaPairVector getTerranWraithRush1PortBuildOrderGoal() const;
+	const MetaPairVector getTerranWraithRush2PortsTvZBuildOrderGoal() const;
+	const MetaPairVector getTerranWraithRush2PortsTvTBuildOrderGoal() const;
+
 
 	std::vector<std::string>	zergMidgameBook;
 
@@ -122,6 +137,22 @@ private:
 	bool doAttackZerg7PoolRush();
 	bool doAttackZerg9PoolSpeedlingsRush();
 	bool doAttackZergMidgame();
+
+	bool doAttackTerranDoubleRaxMnM();
+	bool doAttackTerran3FactoryVultureRush();	
+	bool doAttackTerranWraithRush1Port();
+	bool doAttackTerranVulturesAndTanks();
+	bool doAttackTerranTriRaxMnMRush();
+
+	int attackPointsBalance();
+	bool isWinning();
+
+	// Fields
+	bool isAttackOrderGranted;
+	bool isAttackGrantedPermanently;
+
+	// expand
+	const bool StrategyManager::expandTerranDoubleRaxMnM() const;
 
 
 };

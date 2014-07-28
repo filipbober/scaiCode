@@ -153,6 +153,18 @@ void WorkerManager::finishedWithCombatWorkers()
 	}
 }
 
+void WorkerManager::finishedWithRepairWorkers()
+{
+	BOOST_FOREACH(BWAPI::Unit * worker, workerData.getWorkers())
+	{
+		if (workerData.getWorkerJob(worker) == WorkerData::Repair
+			&& worker->isIdle())
+		{
+			setMineralWorker(worker);
+		}
+	}
+}
+
 BWAPI::Unit * WorkerManager::getClosestMineralWorkerTo(BWAPI::Unit * enemyUnit)
 {
     BWAPI::Unit * closestMineralWorker = NULL;
@@ -457,6 +469,16 @@ void WorkerManager::setCombatWorker(BWAPI::Unit * worker)
 	}
 
 	workerData.setWorkerJob(worker, WorkerData::Combat, NULL);
+}
+
+void WorkerManager::setRepairWorker(BWAPI::Unit* worker)
+{
+	if (worker == NULL)
+	{
+		assert(false);
+	}
+
+	workerData.setWorkerJob(worker, WorkerData::Repair, NULL);
 }
 
 void WorkerManager::onUnitMorph(BWAPI::Unit * unit)

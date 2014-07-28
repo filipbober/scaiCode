@@ -21,14 +21,21 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		// clear all squad data
 		squadData.clearSquadData();
 
+
 		// give back combat workers to worker manager
 		WorkerManager::Instance().finishedWithCombatWorkers();
+
+		WorkerManager::Instance().finishedWithRepairWorkers();
         
 		// Assign defense and attack squads
         assignScoutDefenseSquads();
+		// Extensions
+		assignRepairSquadsExt();				
+		// eof ext
 		assignDefenseSquads(unitsToAssign);
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);
+
 	}
 
 	squadData.update();
@@ -46,6 +53,8 @@ void CombatCommander::assignIdleSquads(std::set<BWAPI::Unit *> & unitsToAssign)
 
 void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign)
 {
+	//assignAttackSquadsExt(unitsToAssign);
+
 	if (unitsToAssign.empty()) { return; }
 
 	bool workersDefending = false;
@@ -68,6 +77,62 @@ void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign
 		assignAttackVisibleUnits(unitsToAssign);			// attack visible enemy units
 		assignAttackExplore(unitsToAssign);				// attack and explore for unknown units
 	} 
+}
+
+void CombatCommander::assignAttackSquadsExt(std::set<BWAPI::Unit *> & unitsToAssign)
+{
+	if (unitsToAssign.empty()) { return; }
+	
+	bool workersDefending = false;
+	BOOST_FOREACH(BWAPI::Unit * unit, unitsToAssign)
+	{
+		if (unit->getType().isWorker())
+		{
+			workersDefending = true;
+		}
+		else
+		{
+			// Add units to the UnitManagerExt (needed for getting and setting states
+			UnitManagerExt::Instance().addUnit(unit);
+		}
+	}
+
+	
+
+	bool attackEnemy = !unitsToAssign.empty() && !workersDefending && StrategyManager::Instance().doAttack(unitsToAssign);
+
+	// If attack permission is granted set attack units
+	if (attackEnemy)
+	{	
+		BOOST_FOREACH(BWAPI::Unit * unit, unitsToAssign)
+		{
+			if (UnitManagerExt::Instance().getUnitData(unit) != NULL)
+			{
+				UnitManagerExt::Instance().setUnitStateToAttack(unit);				
+			}
+		}
+	}
+	
+	// Get all the attack units
+	// Even if attack is not granted, attacking units should still attack
+	std::set<BWAPI::Unit *> unitsToAttack;
+	BOOST_FOREACH(BWAPI::Unit * unit, unitsToAssign)
+	{
+		if ((UnitManagerExt::Instance().getUnitData(unit) != NULL)
+			&& UnitManagerExt::Instance().isAttacking(unit))
+		{
+			unitsToAttack.insert(unit);
+		}
+	}
+
+	if (!unitsToAttack.empty())
+	{
+		assignAttackRegion(unitsToAttack);				// attack occupied enemy region
+		assignAttackKnownBuildings(unitsToAttack);		// attack known enemy buildings
+		assignAttackVisibleUnits(unitsToAttack);			// attack visible enemy units
+		assignAttackExplore(unitsToAttack);				// attack and explore for unknown units
+	}
+
 }
 
 BWTA::Region * CombatCommander::getClosestEnemyRegion()
@@ -100,7 +165,7 @@ void CombatCommander::assignScoutDefenseSquads()
 		{
 			continue;
 		}
-
+		 
 		// all of the enemy units in this region
 		std::set<BWAPI::Unit *> enemyUnitsInRegion;
 		BOOST_FOREACH (BWAPI::Unit * enemyUnit, BWAPI::Broodwar->enemy()->getUnits())
@@ -131,6 +196,78 @@ void CombatCommander::assignScoutDefenseSquads()
             squadData.addSquad(Squad(workerDefenseForce, SquadOrder(SquadOrder::Defend, regionCenter, 1000, "Get That Scout!")));
 			return;
         }
+	}
+}
+
+void CombatCommander::assignRepairSquadsExt()
+{
+	// for each of our occupied regions
+	BOOST_FOREACH(BWTA::Region * myRegion, InformationManager::Instance().getOccupiedRegions(BWAPI::Broodwar->self()))
+	{
+		BWAPI::Position regionCenter = myRegion->getCenter();
+		if (!regionCenter.isValid())
+		{
+			continue;
+		}
+
+		// all of the enemy units in this region
+		std::set<BWAPI::Unit *> damagedSelfUnits;
+		BOOST_FOREACH(BWAPI::Unit * selfUnit, BWAPI::Broodwar->self()->getUnits())
+		{
+			// Unit should be repaired if it is a building or a Battlecruiser or a tank
+			BWAPI::UnitType selfUnitType = selfUnit->getType();
+			if ( (selfUnitType.isBuilding() || selfUnitType == BWAPI::UnitTypes::Terran_Battlecruiser )
+				//|| selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode || selfUnitType == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode)
+				&& !(selfUnit->isBeingConstructed())
+				&& (selfUnit->isCompleted())
+				&& (selfUnit->getHitPoints() + 10 < selfUnitType.maxHitPoints())
+				&& (BWTA::getRegion(BWAPI::TilePosition(selfUnit->getPosition())) == myRegion)
+				&& !selfUnit->isLifted())
+			{
+				damagedSelfUnits.insert(selfUnit);
+				//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit inserted = %s", selfUnit->getType().c_str());
+			}
+		}
+
+		// special case: figure out if the only attacker is a worker, the enemy is scouting
+		if (!damagedSelfUnits.empty())
+		{
+			BOOST_FOREACH(BWAPI::Unit* unitToRepair, damagedSelfUnits)
+			{
+
+				// the enemy worker that is attacking us
+				//BWAPI::Unit* unitToRepair = *damagedSelfUnits.begin();
+
+				// get our worker unit that is mining that is closest to it
+				//BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
+
+				// Code below should take different worker every time. Now it probably takes one and the same each iteration
+				BWAPI::Unit * workerDefender = WorkerManager::Instance().getClosestMineralWorkerTo(unitToRepair);
+
+				if (workerDefender == NULL)
+				{
+					return;
+				}
+
+				// --
+
+
+				BWAPI::Broodwar->printf("                                           DebExt: Repairing");
+				//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit = %s", unitToRepair->getType().c_str());
+				//BWAPI::Broodwar->printf("                                           DebExt: Damaged Unit Health = %d", unitToRepair->getHitPoints());
+				//BWAPI::Broodwar->printf("                                           DebExt: workerDefender = %s", workerDefender->getType().c_str());
+
+				if (unitToRepair->exists())
+				{
+					workerDefender->repair(unitToRepair);
+					WorkerManager::Instance().setRepairWorker(workerDefender);
+				}
+			}
+
+			// finished with combat worker
+			// --
+			return;
+		}
 	}
 }
 

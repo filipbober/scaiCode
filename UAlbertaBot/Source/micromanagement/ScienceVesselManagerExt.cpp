@@ -1,18 +1,18 @@
-#include "MarineManagerExt.h"
+#include "ScienceVesselManagerExt.h"
 #include "Common.h"
 #include "StrategyManager.h"
 
 
-MarineManagerExt::MarineManagerExt()
+ScienceVesselManagerExt::ScienceVesselManagerExt()
 {
 }
 
 
-MarineManagerExt::~MarineManagerExt()
+ScienceVesselManagerExt::~ScienceVesselManagerExt()
 {
 }
 
-void MarineManagerExt::executeMicro(const UnitVector & targets)
+void ScienceVesselManagerExt::executeMicro(const UnitVector & targets)
 {
 	const UnitVector & selectedUnits = getUnits();
 
@@ -33,17 +33,6 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 	// For each unit
 	BOOST_FOREACH(BWAPI::Unit * selectedUnit, selectedUnits)
 	{
-		if ((selectedUnit->getType() == BWAPI::UnitTypes::Terran_Marine
-			|| selectedUnit->getType() == BWAPI::UnitTypes::Terran_Firebat)
-			&& !(selectedUnit->isLoaded())
-			&& (hasBunkerSpace()))
-		{
-
-			goToBunker(selectedUnit);
-			continue;
-			
-		}
-
 		// if the order is to attack or defend
 		if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port)
 			&& !isAttack())
@@ -57,6 +46,7 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 		}
 		else if (order.type == order.Attack || order.type == order.Defend)
 		{
+
 			// if there are targets
 			if (!selectedUnitTargets.empty())
 			{
@@ -65,18 +55,27 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 				// attack it				
 				kiteTarget(selectedUnit, target);
-				
+
 			}
 			// if there are no targets
 			else
 			{
-				// if we're not near the order position
-				if (selectedUnit->getDistance(order.position) > 100)
-				{
-					// move to it
-					smartAttackMove(selectedUnit, order.position);
-				}
+				//// if we're not near the order position
+				//if (selectedUnit->getDistance(order.position) > 100)
+				//{
+				//	// move to it
+				//	//smartMove(selectedUnit, order.position);
+				//	smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
+				//}
+
+				BWAPI::Position explorePosition = MapGrid::Instance().getLeastExplored();
+				smartMove(selectedUnit, explorePosition);
 			}
+		}
+		else
+		{
+			BWAPI::Position explorePosition = MapGrid::Instance().getLeastExplored();
+			smartMove(selectedUnit, explorePosition);
 		}
 
 		if (Options::Debug::DRAW_UALBERTABOT_DEBUG)
@@ -88,76 +87,48 @@ void MarineManagerExt::executeMicro(const UnitVector & targets)
 
 }
 
-void MarineManagerExt::executeAttack(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
+void ScienceVesselManagerExt::executeAttack(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
 {
 
 }
 
-void MarineManagerExt::executeDefend(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
+void ScienceVesselManagerExt::executeDefend(BWAPI::Unit* terranMarine, UnitVector& marineTargets)
 {
 
 }
 
-void MarineManagerExt::executeAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets)
+void ScienceVesselManagerExt::executeAdvanceToPosition(BWAPI::Unit * terranMarine, UnitVector& marineTargets)
 {
 
 }
 
 /// Returns target attack priority.
 /// Returned value must be greater than 0
-int MarineManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+int ScienceVesselManagerExt::getAttackPriority(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
 	BWAPI::UnitType selectedUnitType = selectedUnit->getType();
 	BWAPI::UnitType targetType = target->getType();
 
 	bool canAttackUs = targetType.groundWeapon() != BWAPI::WeaponTypes::None;
 	int selectedUnitWeaponRange = selectedUnitType.groundWeapon().maxRange();		// 160, Concussive
-	int targetWeaponRange = targetType.groundWeapon().maxRange();
+	int targetWeaponRange = targetType.airWeapon().maxRange();
 
 
 	// Larvas are low priority targets
-	if (targetType == BWAPI::UnitTypes::Zerg_Larva
-		|| targetType == BWAPI::UnitTypes::Protoss_Interceptor)
+	int priority = target->getDistance(selectedUnit) + targetWeaponRange;
+	if (priority <= 0)
 	{
-		return 1;
-	}
-	else if ((targetType.isBuilding()) && !(targetType.canAttack()))
-	{
-		return 2;
-	}
-	else if (targetType == BWAPI::UnitTypes::Protoss_Photon_Cannon)
-	{
-		return selectedUnitWeaponRange + 5;
-	}
-	// Templars are extremely dangerous to bio units and should be eliminated asap.
-	else if (targetType == BWAPI::UnitTypes::Protoss_High_Templar)
-	{
-		return selectedUnitWeaponRange + 10;
-	}
-	// Faster than Marine (without Stimpack)
-	else if ((targetType.topSpeed() >= selectedUnitType.topSpeed())
-		|| ((targetType == BWAPI::UnitTypes::Protoss_Zealot)
-			&& (BWAPI::Broodwar->enemy()->getUpgradeLevel(BWAPI::UpgradeTypes::Leg_Enhancements) > 0)))
-	{
-		return selectedUnitWeaponRange;		// return 160
-	}
-	// Slower than Vulture
-	else
-	{
-		int priority = selectedUnitWeaponRange - targetWeaponRange;
-		if (priority <= 0)
-		{
 			priority = 1;
-		}
-
-		return priority;
 	}
+
+	return priority;
 
 }
 
-BWAPI::Unit* MarineManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
+BWAPI::Unit* ScienceVesselManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector & targets)
 {
-	int range(selectedUnit->getType().groundWeapon().maxRange());
+	//int range(selectedUnit->getType().groundWeapon().maxRange());
+	int range = 100;
 
 	int highestInRangePriority(0);
 	int highestNotInRangePriority(0);
@@ -201,40 +172,34 @@ BWAPI::Unit* MarineManagerExt::getTarget(BWAPI::Unit * selectedUnit, UnitVector 
 	return (highestInRangePriority >= highestNotInRangePriority) ? inRangeTarget : notInRangeTarget;
 }
 
-void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
+void ScienceVesselManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target)
 {
-	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
-	double targetRange(target->getType().groundWeapon().maxRange());
-
-	BWAPI::UnitType targetType = target->getType();
-	if (((targetType.canAttack())
-		|| (targetType != BWAPI::UnitTypes::Protoss_High_Templar))
-		&& (target->isInWeaponRange(selectedUnit)))
+	// If an order was issued this frame (like siege off), return
+	if (selectedUnit->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount())
 	{
-		useStimpack(selectedUnit);
-	}
-
-	// determine whether the target can be kited
-	if (selectedUnitRange <= targetRange)
-	{
-		// if we can't kite it, there's no point to do so
-		smartAttackUnit(selectedUnit, target);
 		return;
 	}
 
-	bool		kite(true);
+	double selectedUnitRange(selectedUnit->getType().groundWeapon().maxRange());
+	double targetRange(target->getType().airWeapon().maxRange());
+
 	double		dist(selectedUnit->getDistance(target));
-	double		speed(selectedUnit->getType().topSpeed());
 
 	int selectedUnitWeaponCooldown = selectedUnit->getGroundWeaponCooldown();
 	int meleeRange = 15;
 
 	// If we are going to be out of range (melee range added just to ensure we are still in range)
 	// or if weapon is ready then attack
-	if ((selectedUnitWeaponCooldown == 0)
-		|| (dist >= (selectedUnitRange - meleeRange)))
+	
+	if (dist > targetRange + 30)
 	{
-		smartAttackUnit(selectedUnit, target);
+		//smartMove(selectedUnit, target->getPosition());
+		
+		// If tech was not used
+		if (!useTechs(selectedUnit, target))
+		{
+			smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
+		}		
 	}
 	else
 	{
@@ -253,13 +218,14 @@ void MarineManagerExt::kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * targ
 		}
 		else
 		{
-			smartAttackMove(selectedUnit, target->getPosition());
+			//smartMove(selectedUnit, target->getPosition());
+			smartMove(selectedUnit, closestFriendlyUnitPos(selectedUnit));
 		}
 	}
 
 }
 
-void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
+void ScienceVesselManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 {
 	if (targets.empty())
 	{
@@ -287,69 +253,80 @@ void MarineManagerExt::setAverageEnemyPosition(const UnitVector& targets)
 	}
 }
 
-void MarineManagerExt::useStimpack(BWAPI::Unit * selectedUnit)
+BWAPI::Position ScienceVesselManagerExt::closestFriendlyUnitPos(BWAPI::Unit* selectedUnit)
 {
-	if ((BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
-		&& (selectedUnit->getHitPoints() > 30)
-		&& (selectedUnit->getStimTimer() == 0))
+	double dist = 10000;	
+	BWAPI::Position closestUnitPos = order.position;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
-		selectedUnit->useTech(BWAPI::TechTypes::Stim_Packs);
+		// skip mines
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
+			|| unit->getType().isBuilding()
+			|| !unit->getType().canAttack())
+		{
+			continue;
+		}
+
+		double distFromTarget = unit->getDistance(order.position);
+
+		if (distFromTarget <= dist)
+		{
+			dist = distFromTarget;
+			closestUnitPos = unit->getPosition();
+		}
+	}
+
+	if (!closestUnitPos.isValid())
+	{
+		closestUnitPos.makeValid();
+	}
+
+	return closestUnitPos;
+}
+
+BWAPI::Unit* ScienceVesselManagerExt::closestFriendlyUnit(BWAPI::Unit* selectedUnit)
+{
+	double dist = 10000;
+	BWAPI::Unit* closestUnit = NULL;
+	BOOST_FOREACH(BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture_Spider_Mine
+			|| unit->getType().isBuilding()
+			|| !unit->getType().canAttack())
+		{
+			continue;
+		}
+
+		double distFromTarget = selectedUnit->getDistance(unit);
+
+		if (distFromTarget <= dist)
+		{
+			dist = distFromTarget;
+			closestUnit = unit;
+		}
+	}
+
+	if (closestUnit != NULL)
+	{
+		return closestUnit;
 	}
 	else
 	{
-		return;
+		return NULL;
 	}
 }
 
-void MarineManagerExt::goToBunker(BWAPI::Unit * selectedUnit)
+
+bool ScienceVesselManagerExt::isAttack()
 {
-	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
-	{
-
-		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
-			&& (unit->getType().spaceProvided() > 1)
-			&& (unit->getLoadedUnits().size() < 4)
-			)
-		{
-			selectedUnit->load(unit);			
-			break;
-		}
-	}
-}
-
-bool MarineManagerExt::hasBunkerSpace()
-{
-	BOOST_FOREACH(BWAPI::Unit* unit, BWAPI::Broodwar->self()->getUnits())
-	{
-
-		if ((unit->getType() == BWAPI::UnitTypes::Terran_Bunker)
-			&& (unit->getType().spaceProvided() > 1)
-			&& (unit->getLoadedUnits().size() < 4)
-			)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool MarineManagerExt::isAttack()
-{
-	// Marines should only defend if Wraith Rush 1 Port is the current strategy
+	// Science Vessel do attack
 	if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranWraithRush1Port))
 	{
-		return false;
+		return true;
 	}
 	else if ((StrategyManager::Instance().getCurrentStrategy() == StrategyManager::Instance().TerranVulturesAndTanks))
 	{
-		if (BWAPI::Broodwar->getFrameCount() < 12000)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return true;
 	}
 	else
 	{
@@ -357,7 +334,7 @@ bool MarineManagerExt::isAttack()
 	}
 }
 
-void MarineManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+void ScienceVesselManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
 {
 	if (order.type == order.Attack || order.type == order.Defend)
 	{
@@ -377,7 +354,7 @@ void MarineManagerExt::executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, 
 	}
 }
 
-void MarineManagerExt::executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
+void ScienceVesselManagerExt::executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets)
 {
 	if (order.type == order.Attack || order.type == order.Defend)
 	{
@@ -395,4 +372,45 @@ void MarineManagerExt::executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit,
 			}
 		}
 	}
+}
+
+bool ScienceVesselManagerExt::useTechs(BWAPI::Unit* selectedUnit, BWAPI::Unit* target)
+{
+	int energyRemaining = selectedUnit->getEnergy();
+
+	// EMP
+	if ((BWAPI::Broodwar->enemy()->getRace() == BWAPI::Races::Protoss)
+		&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::EMP_Shockwave))
+		&& (energyRemaining > BWAPI::TechTypes::EMP_Shockwave.energyUsed()));
+
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::EMP_Shockwave, _averageEnemyPosition);
+		return true;
+	}
+
+	// Irradiate
+	if ( (target->getType().isOrganic())
+		&& (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Irradiate))
+		&& (energyRemaining > BWAPI::TechTypes::Irradiate.energyUsed()))
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::Irradiate, target);
+		return true;
+	}
+
+	// Defensive Matrix
+	BWAPI::Unit* closestSelfUnit = closestFriendlyUnit(selectedUnit);
+
+	if ((closestSelfUnit != NULL)
+		&& (energyRemaining > BWAPI::TechTypes::Defensive_Matrix.energyUsed())
+		&& !(closestSelfUnit->isDefenseMatrixed()))
+	{
+		selectedUnit->useTech(BWAPI::TechTypes::Defensive_Matrix, closestSelfUnit);			
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	return false;
 }

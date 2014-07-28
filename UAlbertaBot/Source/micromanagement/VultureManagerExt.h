@@ -1,13 +1,13 @@
 #pragma once
-#include "Common.h"
 #include "MicroManager.h"
+#include "Common.h"
 
-class MarineManagerExt :
+class VultureManagerExt :
 	public MicroManager
 {
 public:
-	MarineManagerExt();
-	~MarineManagerExt();
+	VultureManagerExt();
+	~VultureManagerExt();
 
 	void executeMicro(const UnitVector & targets);
 
@@ -21,15 +21,26 @@ private:
 	void kiteTarget(BWAPI::Unit * selectedUnit, BWAPI::Unit * target);
 
 	void setAverageEnemyPosition(const UnitVector& targets);
-	void useStimpack(BWAPI::Unit * selectedUnit);
-	void goToBunker(BWAPI::Unit * selectedUnit);
-	bool hasBunkerSpace();
 
 	bool isAttack();
 	void executeTerranWraithRush1Port(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
-	void executeTerranVulturesAndTanks(BWAPI::Unit * selectedUnit, UnitVector& selectedUnitTargets);
+
+	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target);
+	void putMine(BWAPI::Unit * selectedUnit, BWAPI::Position targetPosition);
+	BWAPI::Position getMinePosition(BWAPI::Unit* selectedUnit, BWAPI::Position targetPosition, int proximity);
+
+	void attackOrMine(BWAPI::Unit * selectedUnit, BWAPI::Unit* target);
+	void fleeOrMine(BWAPI::Unit * selectedUnit, BWAPI::Position fleePosition);
+	bool isMineProximity(BWAPI::Unit* selectedUnit);
+
+	double closestEnemyDist(BWAPI::Unit* selectedUnit);
 
 	//Fields
 	BWAPI::Position _averageEnemyPosition;
+
+	bool _isPuttingMine;
+	int _putMineFrame;
+	
+
 };
 

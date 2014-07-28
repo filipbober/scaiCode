@@ -24,7 +24,7 @@ UAlbertaBotModule::~UAlbertaBotModule() {}
 
 void UAlbertaBotModule::onStart()
 {
-	//BWAPI::Broodwar->setLocalSpeed(0);
+	BWAPI::Broodwar->setLocalSpeed(0);
 	//BWAPI::Broodwar->setFrameSkip(240);
 
     SparCraft::init();
@@ -111,7 +111,6 @@ void UAlbertaBotModule::onFrame()
 	{
 		//micro.update();
 	}
-
 
 	if (Options::Modules::USING_REPLAY_VISUALIZER)
 	{
