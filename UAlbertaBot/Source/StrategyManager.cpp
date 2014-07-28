@@ -52,35 +52,12 @@ void StrategyManager::addStrategies()
 	terranOpeningBook[TerranGoliathBuild] = "0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 0 22 0 0 22";
 	terranOpeningBook[TerranGoliathDrop] = "0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 0 22 0 0 22 0 25 24 0 23 17 0 0 26 48 6 6 17 9 6 6";			// hard to implement - needs Dropship micro
 	terranOpeningBook[Terran1FastPortBuild] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 23 1 17 0 7 0 43 26 0 7 21 9";				// hard to implement - needs Dropship micro
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 1 0 17 1 20 10 50 19 0 26 50 21 0 30 0 27 39";
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22"; // base build
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27"; // base 2 ports
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27";
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 19 0 0 18 0 1 0 1 50 20 17 0 1 0 1 0 4 0 1 50 22 1 1 4 0 1 0 1 50 25 0 17 1 0 1 26 0 1 10 4 10 4 10 39 10 10";		// Against UAlberta Zealot
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 39 19 21 27";		// Wins with default Protoss
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";
 	terranOpeningBook[TerranWraithRush2PortsTvZ] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 1 0 1 0 25 0 25 17 0 1 26 10 20 10 10 39 19 21 0 27";
 	terranOpeningBook[TerranWraithRush2PortsTvT] = "0 0 0 0 0 17 0 0 19 0 18 0 0 0 17 0 1 0 22 25 0 25 0 3 0 3 17 0 10 26 0 21";
-
-	// Peters
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39";		// Wraith rush vs Protoss
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22 23 0 0 17 22 0 0 38 3 7 3 7 3 7 3 7 3 3";
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 22 0 0 23 0 0 17 38 3 22 0 0 17 7 0 3 0 7 0 3 0 7 3 7 3 3 47";  // Thrusters
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";		// good one
-
-	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";	// beats all default AIs
-	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 19 0 18 0 1 1 0 17 0 1 1 22 50 0 1 0 23 0 0 17 38 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3";
-	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 0 0 3 3 22 0 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3"; // survives first UAlberta wave
-	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 0 0 3 1 50 3 17 0 1 0 23 17 7 0 3 0 7 0 3 0 7 3 7 3 3"; // tanks are being built too slow at the beginning
-	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 1 0 1 0 3 1 50 3 17 0 1 22 0 23 17 1 7 0 3 0 1 0 3 0 3 1 3 1 3"; // newest version but not good neough
-	//terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 1 0 38 1 0 0 3 3 17 0 1 22 0 23 17 7 0 3 0 3 0";
 	terranOpeningBook[TerranVulturesAndTanks] = "0 0 0 0 17 0 0 19 0 18 0 1 0 22 17 1 1 50 0 1 23 0 0 38 0 0 3 3 17 0 1 22 0 23 17 7 0 3 0 3 0";
 	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 1 0 22 1 1 25 0 25 0 17 1 26 10 20 10 10 50 39 19 21 27";		// beats the default Protoss
 	terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 0 17 0 0 19 0 18 0 0 17 50 1 0 22 1 1 25 0 1 0 17 1 26 39 10 10 10";
 
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22";  // base build -> upgrade factory OR 2nd factory: 4 tanks and 6 vultures and attack Protoss
-	//terranOpeningBook[TerranWraithRush1Port] = "0 0 0 0 17 0 19 0 18 0 0 0 22 23 0 0 17 22 3 7 3 7 3 7 3 7 3 3";
-	//
 	
 	// For testing purposes
 	//terranOpeningBook[TerranMarineRush] = "0";
@@ -454,18 +431,6 @@ const bool StrategyManager::doAttack(const std::set<BWAPI::Unit *> & freeUnits)
 	}
 	else if (selfRace == BWAPI::Races::Terran)
 	{
-
-
-	//	TerranMarineRush = 0, TerranDoubleRaxMnM = 1,
-	//		TerranTriRaxMnMRush = 2, TerranProxyRaxMarineRush = 3,
-	//		Terran3FactoryVultureRush = 4, TerranGundamRush = 5,
-	//		Terran1FastExpoDef = 6, Terran1FastExpoNoDef = 7,
-	//		Terran2FactMechBuild = 8,
-	//		TerranGoliathBuild = 9, TerranGoliathDrop = 10,
-	//		Terran1FastPortBuild = 11, TerranWraithRush1Port = 12,
-	//		TerranWraithRush2PortsTvZ = 13, TerranWraithRush2PortsTvT = 14,
-	//		NumTerranStrategies = 15
-	//};
 
 		if (currentStrategy == TerranDoubleRaxMnM)
 		{
@@ -1266,237 +1231,6 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 {	
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
-	//int numSupplyDepots = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Supply_Depot);
-	//int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	//int numGhosts = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Ghost);
-
-	//int supplyDepotsWanted = 0;
-	//int scvsWanted = 0;
-	//int marinesWanted = 0;
-	//int medicsWanted = 0;		// marine/medic ratio: 5:1
-	//int ghostsWanted = 0;
-
-	//
-	//supplyDepotsWanted = numSupplyDepots + 1;
-	//scvsWanted = numSCV + 2;
-	//marinesWanted = numMarines + 4;
-	//medicsWanted = marinesWanted / 4;
-	//ghostsWanted = numGhosts;		// don't build Ghosts by default
-
-	//
-	//if((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine) > 4) &&
-	//	(BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) < 1))
-	//{
-	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Academy, 1));
-	//}
-
-	//// If scanner is not researched and is not being researched, do it
-	//if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Scanner_Sweep) 
-	//	&& (!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Scanner_Sweep)))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
-	//	goal.push_back(MetaPair(BWAPI::TechTypes::Scanner_Sweep, 1));
-	//}
-	//
-	//if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0))
-	//{
-	//	// If stimpacks are not researched and are not being researched, do it
-	//	if (!BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs) &&
-	//		!BWAPI::Broodwar->self()->isResearching(BWAPI::TechTypes::Stim_Packs))
-	//	{
-	//		goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//	}
-
-	//	// If U238 Shells are not researched and are not being researched, do it
-	//	if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1))
-	//	{
-	//		goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	//	}
-	//}
-
-	//// Research weapons and armor for bio
-	//int currentWeaponLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
-	//int currentArmorLevel = BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
-	//if (BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Stim_Packs))
-	//{
-	//	if (!(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons))
-	//		&& !(BWAPI::Broodwar->self()->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor)))
-	//	{
-	//		if ((currentWeaponLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)) 
-	//			&& (currentWeaponLevel <= (currentArmorLevel + 1)))
-	//		{
-	//			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentWeaponLevel + 1));
-	//		}
-	//		else if ((currentArmorLevel < BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor))
-	//			&& (currentArmorLevel < currentWeaponLevel + 1))
-	//		{
-	//			goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentArmorLevel + 1));
-	//		}
-	//	}
-
-	//}
-
-	//if ((BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor) >= 2) 
-	//	&& (BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons) >= 2))
-	//{
-	//	ghostsWanted = ghostsWanted + 3;
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Ghost, ghostsWanted));
-	//}
-	//
-	//if ((BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Refinery) < 1))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Refinery, 1));
-	//}
-
-	//// Push goals
-	//if (numSCV < 72)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
-	//}
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Supply_Depot, supplyDepotsWanted));
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//int buildComsatFrame = 4000;	
-	//int expandOneFrame = 6000;
-
-	//int numSCV = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	//
-	//int numCommandCentersAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
-	//int numTerranAcademyAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
-	//int numTerranEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
-
-	//int scvsWanted = 0;
-	//int marinesWanted = 0;
-	//int medicsWanted = 0;		// marine/medic ratio: 5:1
-
-	//BWAPI::Player* self = BWAPI::Broodwar->self();
-	//bool isAcademyCompleted = (self->completedUnitCount(BWAPI::UnitTypes::Terran_Academy) > 0);
-	//bool isAcademyConstructing = (self->incompleteUnitCount(BWAPI::UnitTypes::Terran_Academy) > 1);
-	//bool isAcademy = (self->allUnitCount(BWAPI::UnitTypes::Terran_Academy) > 1);
-
-	//bool isEngineeringBayCompleted = (self->completedUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay) > 0);
-	//bool isEngineeringBayConstructing = (self->incompleteUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay) > 1);
-	//bool isEngineeringBay = (self->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay) > 1);
-
-	//bool isComsatCompleted = (self->completedUnitCount(BWAPI::UnitTypes::Terran_Comsat_Station) > 1);
-	//bool isComsatConstructing = (self->incompleteUnitCount(BWAPI::UnitTypes::Terran_Comsat_Station) > 1);
-	//bool isComsat = (self->allUnitCount(BWAPI::UnitTypes::Terran_Comsat_Station) > 1);
-
-	//bool isStimpackResearched = (self->hasResearched(BWAPI::TechTypes::Stim_Packs));
-	//bool isStimackResearching = (self->isResearching(BWAPI::TechTypes::Stim_Packs));
-
-	//bool isShellsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) == 1);
-	//bool isShellsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::U_238_Shells));
-
-	//int currentInfantryWeaponsUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons);
-	//bool isInfantryWeaponsUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
-	//bool isInfantryWeaponsUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons)
-	//	== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Weapons));
-
-	//int currentInfantryArmorUpgrade = self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor);
-	//bool isInfantryArmorUpgrading = (self->isUpgrading(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
-	//bool isInfantryArmorUpgraded = (self->getUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor)
-	//	== BWAPI::Broodwar->self()->getMaxUpgradeLevel(BWAPI::UpgradeTypes::Terran_Infantry_Armor));
-
-	//scvsWanted = numSCV + 2;
-	//marinesWanted = numMarines + 2;
-
-	//if (marinesWanted > 5)
-	//{
-	//	medicsWanted = marinesWanted / 5;
-	//}
-
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, std::min(56, scvsWanted)));
-	////goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_SCV, scvsWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Marine, marinesWanted));
-
-	////Without this check there would be crash during goal searching
-	//if (medicsWanted > 0)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Medic, medicsWanted));
-	//}
-
-	//if (!isAcademy)
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, numTerranAcademyAll + 1));
-	//}
-	//
-	//// Research Stimpacks after Academy is built
-	//if ((isAcademyCompleted)
-	//	&& (isAcademy)
-	//	&& (!isStimpackResearched)
-	//	&& (!isStimackResearching))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//}
-
-	//// Research shells after Stimpacks are researched
-	//if ((isStimpackResearched)
-	//	&& (isAcademyCompleted)
-	//	&& (isAcademy)
-	//	&& (!isShellsUpgraded)
-	//	&& (!isShellsUpgrading))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	//}
-
-	//// Build Engineering Bay after Stimpacks are researched
-	//if ((isStimpackResearched)
-	//	&& (!isEngineeringBay))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, numTerranEngineeringBay + 1));
-	//}
-
-	//if (isEngineeringBayCompleted
-	//	&& isEngineeringBay)
-	//{
-	//	if (!isInfantryWeaponsUpgraded
-	//		&& !isInfantryWeaponsUpgrading
-	//		&& !isInfantryArmorUpgrading
-	//		&& (currentInfantryWeaponsUpgrade < (currentInfantryArmorUpgrade + 1)))
-	//	{
-	//		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, currentInfantryWeaponsUpgrade + 1));
-	//	}
-	//	else if (!isInfantryArmorUpgraded
-	//		&& !isInfantryArmorUpgrading)
-	//	{
-	//		goal.push_back(MetaPair(BWAPI::UpgradeTypes::Terran_Infantry_Armor, currentInfantryArmorUpgrade + 1));
-	//	}
-	//}
-
-	// There is a risk of Dark Templar rush, build Comsat Station
-	//if ((enemyRace == BWAPI::Races::Protoss)		
-	//	&& (!isComsat)
-	//	&& isAcademyCompleted
-	//	&& isAcademy
-	//	&& (numCommandCentersAll > 0))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
-	//}
-	//else if ((BWAPI::Broodwar->getFrameCount() > buildComsatFrame)
-	//	&& !isComsat
-	//	&& isAcademyCompleted
-	//	&& (numCommandCentersAll > 0))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
-	//}
 
 	BWAPI::Player* self = BWAPI::Broodwar->self();
 	//int buildComsatFrame = 4000;	
@@ -1507,58 +1241,22 @@ const MetaPairVector StrategyManager::getTerranDoubleRaxMnMBuildOrderGoal() cons
 	int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
 	//
 	int numCommandCentersAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
-	//int numTerranAcademyAll = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Academy);
-	//int numTerranEngineeringBay = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
-	//int numBunkers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 
 	int scvsWanted = 0;
 	int marinesWanted = 0;
 	int medicsWanted = 0;		// marine/medic ratio: 5:1
 
-
-	//int academiesWanted = 0;
-	//int engineeringBaysWanted = 0;
-	//int comsatStationsWanted = 0;
-	//int bunkersWanted = 0;
-
 	scvsWanted = numSCV + 3;
 	marinesWanted = numMarines + 3;
 	medicsWanted = numMarines / 5;		
 
-	//academiesWanted = 1;
-	//engineeringBaysWanted = 1;
-	//comsatStationsWanted = numCommandCentersAll;
-	//bunkersWanted = 2;
 
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Academy, academiesWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Engineering_Bay, engineeringBaysWanted));
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Bunker, bunkersWanted));
-	//
 	// Expand
 	if (expandTerranDoubleRaxMnM())
 	{
 		goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Command_Center, numCommandCentersAll + 1));
 	}
-
-
-	//// Stimpacks
-	//if (!(self->hasResearched(BWAPI::TechTypes::Stim_Packs))
-	//	&& (numTerranAcademyAll > 0))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::TechTypes::Stim_Packs, 1));
-	//}
-
-	//// U238 Shells
-	//if ((self->getUpgradeLevel(BWAPI::UpgradeTypes::U_238_Shells) < 1)
-	//	&& !(self->isUpgrading(BWAPI::UpgradeTypes::U_238_Shells))
-	//	&& (self->hasResearched(BWAPI::TechTypes::Stim_Packs))
-	//	&& (numTerranAcademyAll > 0))
-	//{
-	//	goal.push_back(MetaPair(BWAPI::UpgradeTypes::U_238_Shells, 1));
-	//}
 	
-
-	//goal.push_back(MetaPair(BWAPI::UnitTypes::Terran_Comsat_Station, comsatStationsWanted));
 	
 	if (scvsWanted > numSCV)
 	{
@@ -2085,20 +1783,6 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 	}
 	else
 	{
-		//int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-		//int numMedics = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-
-		//if ((numMarines >= 10)
-		//	&& (numMedics >= 3))
-		//{
-		//	return true;
-		//}
-		//else
-		//{
-		//	return false;
-		//}
-		//return true;
-
 		if (BWAPI::Broodwar->getFrameCount() > 8000)
 		{
 			return true;
@@ -2112,39 +1796,6 @@ bool StrategyManager::doAttackTerranDoubleRaxMnM()
 
 bool StrategyManager::doAttackTerranWraithRush1Port()
 {
-	// Code below causes SC to crash
-	//if (!isMidGame)
-	//{
-	//	return true;
-	//}
-
-	//int frames = BWAPI::Broodwar->getFrameCount();
-	//if (frames % 1000 == 0)
-	//{
-	//	int numMarines = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	//	int numWraiths = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-	//	int numBattlecruisers = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
-
-	//	if ((numMarines > 5)
-	//		&& numWraiths > 3)
-	//	{
-	//		isAttackOrderGranted = true;
-	//	}
-	//	else
-	//	{
-	//		isAttackOrderGranted = false;
-	//	}
-	//}
-
-	//return isAttackOrderGranted;
-
-	//return true;
-
-
-
-
-
-
 	return true;
 
 
@@ -2210,27 +1861,10 @@ bool StrategyManager::doAttackTerranVulturesAndTanks()
 			}
 		} 
 
-
-
 		if (frames % 3600 == 0)
 		{
 			shouldAttack = true;
 		}
-
-
-
-
-		if (shouldAttack)
-		{
-			BWAPI::Broodwar->printf("                                           DebExt: Attack Granted");
-		}
-		else
-		{
-			BWAPI::Broodwar->printf("                                           DebExt: Attack Not Granted");
-		}
-
-		BWAPI::Broodwar->printf("                                           DebExt: Kill score = %d", attackPointsBalance());
-
 	}
 
 	
